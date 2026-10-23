@@ -54,13 +54,13 @@ export class ErrorBoundary extends Component<Props, State> {
 
             <div>
               <h3 className="text-lg font-bold text-slate-900 dark:text-white">{this.props.fallbackTitle || "Terjadi Kendala Teknis Pada Tampilan"}</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
                 Aplikasi mendeteksi adanya gangguan saat memproses data. Anda dapat memuat ulang aplikasi dengan aman tanpa kehilangan akun login Anda.
               </p>
             </div>
 
             {this.state.error && (
-              <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-[11px] font-mono text-left text-slate-700 dark:text-slate-300 overflow-auto max-h-32 border border-slate-200 dark:border-slate-700">
+              <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-xs font-mono text-left text-slate-700 dark:text-slate-300 overflow-auto max-h-32 border border-slate-200 dark:border-slate-700">
                 <span className="font-bold text-rose-600 dark:text-rose-400 block mb-1">Pesan Kesalahan:</span>
                 {this.state.error.message || String(this.state.error)}
               </div>

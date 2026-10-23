@@ -18,12 +18,12 @@ export function SubmissionFilterPanel({ filters, resultCount, totalCount, onChan
           <Filter className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
           <span>Form Filter Pencarian Dokumen RAB</span>
         </div>
-        <span className="text-[11px] text-slate-400 dark:text-slate-500 font-mono">5 Parameter Penapisan</span>
+        <span className="text-xs text-slate-400 dark:text-slate-500 font-mono">5 Parameter Penapisan</span>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         <div>
-          <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">
+          <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">
             1. Jenis Dokumen <span className="text-slate-400 font-normal lowercase">(teks)</span>
           </label>
           <div className="relative">
@@ -40,7 +40,7 @@ export function SubmissionFilterPanel({ filters, resultCount, totalCount, onChan
         </div>
 
         <div>
-          <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">2. Status Verifikasi</label>
+          <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">2. Status Verifikasi</label>
           <select
             id="filter-status-dropdown"
             value={filters.status}
@@ -55,7 +55,7 @@ export function SubmissionFilterPanel({ filters, resultCount, totalCount, onChan
         </div>
 
         <div>
-          <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">3. Tahun Anggaran</label>
+          <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">3. Tahun Anggaran</label>
           <select
             id="filter-tahun-dropdown"
             value={filters.tahun}
@@ -70,7 +70,7 @@ export function SubmissionFilterPanel({ filters, resultCount, totalCount, onChan
         </div>
 
         <div>
-          <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">4. Tanggal Pengajuan (Mulai - Akhir)</label>
+          <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">4. Tanggal Pengajuan (Mulai - Akhir)</label>
           <div className="flex items-center gap-1.5">
             <input
               type="date"

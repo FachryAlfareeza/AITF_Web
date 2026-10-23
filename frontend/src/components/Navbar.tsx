@@ -53,9 +53,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentUser, activeRole, theme, 
           <div className="min-w-0 flex-1">
             <div className="flex min-w-0 items-center gap-2">
               <h1 className="min-w-0 truncate text-xs sm:text-base font-extrabold text-slate-900 dark:text-white tracking-tight">Sistem Pengecekan File RAB AI</h1>
-              <span className="hidden sm:inline-block px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">v2.6</span>
+              <span className="hidden sm:inline-block px-2 py-0.5 rounded text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">v2.6</span>
             </div>
-            <p className="hidden sm:block text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-xs sm:max-w-md">Kementerian Komunikasi dan Digital RI &bull; Telaah Anggaran Berbasis LLM</p>
           </div>
         </div>
 
@@ -90,7 +89,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentUser, activeRole, theme, 
           <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800">
             <div className="text-right hidden lg:block">
               <span className="text-xs font-bold text-slate-900 dark:text-white block truncate max-w-44">{currentUser.name}</span>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono block">NIP: {currentUser.id}</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-mono block">NIP: {currentUser.id}</span>
             </div>
 
             <button id="btn-logout" onClick={onLogout} className="p-2 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-colors cursor-pointer" title="Keluar dari Sistem">

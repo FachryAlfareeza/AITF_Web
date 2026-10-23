@@ -329,7 +329,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
             <Info className="w-5 h-5" />
           </div>
           <div className="text-xs">
-            <span className="font-bold uppercase tracking-wider block text-[11px] text-sky-800 dark:text-sky-300">Mode Akses: Hanya Lihat (View Only)</span>
+            <span className="font-bold uppercase tracking-wider block text-xs text-sky-800 dark:text-sky-300">Mode Akses: Hanya Lihat (View Only)</span>
             <p className="mt-0.5 text-slate-600 dark:text-slate-300 leading-relaxed">
               {isChecklistMenu
                 ? "Sesuai peran Satker, Anda memiliki hak akses View (V) untuk membaca 20 kriteria kepatuhan AI dan verifikator sebagai panduan penyusunan berkas RAB. Tambah kriteria baru, edit, dan hapus hanya dapat dilakukan oleh Super Admin dan ROCAN (verif)."
@@ -351,7 +351,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
               <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
                 {isChecklistMenu ? "Manajemen Input Ceklist Pertanyaan Evaluasi AI & Verifikator" : "Verifikasi & Telaah Baris per Baris Dokumen RAB"}
               </h2>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1.5 max-w-2xl leading-relaxed">
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 max-w-2xl leading-relaxed">
                 {isChecklistMenu
                   ? "Atur master kriteria pertanyaan telaah RAB yang digunakan oleh mesin AI dan pejabat verifikator. Tambahkan kriteria baru melalui formulir khusus serta kelola status aktif dan aksi CRUD pada tabel."
                   : "Periksa hasil telaah AI atas dokumen RAB dalam satu kesatuan parameter dan evaluasi kriteria terpadu, tentukan status kelayakan (Lolos/Ditolak) beserta catatan evaluasi, dan tetapkan Berita Acara digital."}
@@ -359,9 +359,9 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
             </div>
 
             <div className="bg-slate-50 dark:bg-slate-800/70 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs text-right shadow-2xs shrink-0">
-              <span className="text-slate-400 dark:text-slate-500 block text-[10px] font-bold uppercase tracking-wider">Pejabat Verifikator:</span>
+              <span className="text-slate-400 dark:text-slate-500 block text-xs font-bold uppercase tracking-wider">Pejabat Verifikator:</span>
               <span className="font-bold text-slate-900 dark:text-white block mt-0.5 text-xs sm:text-sm">{reviewDetailSnapshot?.verifiedBy || currentUser.name}</span>
-              <span className="text-slate-500 dark:text-slate-400 text-[10px] font-mono mt-0.5 block">ID (8 Digit): {reviewDetailSnapshot?.verifiedByNip || currentUser.id}</span>
+              <span className="text-slate-500 dark:text-slate-400 text-xs font-mono mt-0.5 block">ID (8 Digit): {reviewDetailSnapshot?.verifiedByNip || currentUser.id}</span>
             </div>
           </div>
         </div>
@@ -386,7 +386,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                         </div>
                         <div className="min-w-0">
                           <span className="text-xs font-bold text-slate-900 dark:text-white block">Detail Histori Reviu RAB</span>
-                          <span className="text-[11px] text-slate-500 dark:text-slate-400 block truncate">{reviewDetailSnapshot.ticketNumber} &bull; {reviewDetailSnapshot.verifiedAt}</span>
+                          <span className="text-xs text-slate-500 dark:text-slate-400 block truncate">{reviewDetailSnapshot.ticketNumber} &bull; {reviewDetailSnapshot.verifiedAt}</span>
                         </div>
                       </div>
                       <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border self-start md:self-auto ${reviewDetailSnapshot.verificationStatus === "Diterima" ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800" : reviewDetailSnapshot.verificationStatus === "Menunggu" ? "bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800" : "bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800"}`}>
@@ -460,29 +460,29 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                                 {/* 1. Program */}
                                 <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                                  <span className="text-[10px] text-slate-400 uppercase font-bold block">1. Program:</span>
-                                  <span className="text-xs font-bold text-slate-900 dark:text-white block mt-0.5">{selectedSubmission.program}</span>
+                                  <span className="text-xs text-slate-400 uppercase font-bold block">1. Program:</span>
+                                  <span className="text-sm font-bold text-slate-900 dark:text-white block mt-0.5">{selectedSubmission.program}</span>
                                 </div>
 
                                 {/* 2. Kegiatan */}
                                 <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                                  <span className="text-[10px] text-slate-400 uppercase font-bold block">2. Kegiatan:</span>
-                                  <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block mt-0.5">{selectedSubmission.kegiatan}</span>
+                                  <span className="text-xs text-slate-400 uppercase font-bold block">2. Kegiatan:</span>
+                                  <span className="text-sm font-semibold text-slate-900 dark:text-slate-200 block mt-0.5">{selectedSubmission.kegiatan}</span>
                                 </div>
 
                                 {/* 3. KRO / RO */}
                                 <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                                  <span className="text-[10px] text-slate-400 uppercase font-bold block">3. KRO / RO:</span>
-                                  <span className="text-xs font-semibold text-slate-900 dark:text-slate-200 block mt-0.5">
+                                  <span className="text-xs text-slate-400 uppercase font-bold block">3. KRO / RO:</span>
+                                  <span className="text-sm font-semibold text-slate-900 dark:text-slate-200 block mt-0.5">
                                     {selectedSubmission.kro} &bull; {selectedSubmission.ro}
                                   </span>
                                 </div>
 
                                 {/* 4. Satker & Unit Eselon Setara */}
                                 <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                                  <span className="text-[10px] text-slate-400 uppercase font-bold block">4. Satker &amp; Unit Eselon:</span>
-                                  <span className="text-xs font-bold text-cyan-700 dark:text-cyan-300 block mt-0.5">{selectedSubmission.satkerUserName}</span>
-                                  <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">
+                                  <span className="text-xs text-slate-400 uppercase font-bold block">4. Satker &amp; Unit Eselon:</span>
+                                  <span className="text-sm font-bold text-cyan-700 dark:text-cyan-300 block mt-0.5">{selectedSubmission.satkerUserName}</span>
+                                  <span className="text-xs text-slate-500 dark:text-slate-400 block mt-0.5">
                                     {selectedSubmission.unitEselon1} &bull; {selectedSubmission.prioritas}
                                   </span>
                                 </div>
@@ -490,7 +490,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
 
                               {/* Dasar Regulasi Acuan AI */}
                               <div className="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex flex-wrap items-center gap-2 text-xs">
-                                <span className="text-[10px] text-slate-400 uppercase font-bold">Dasar Regulasi Acuan AI:</span>
+                                <span className="text-xs text-slate-400 uppercase font-bold">Dasar Regulasi Acuan AI:</span>
                                 <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 flex items-center gap-1.5 shadow-2xs">
                                   <Scale className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                                   {selectedSubmission.activeRegulationTitle || "PMK Standar Biaya Masukan (SBM)"}
@@ -574,7 +574,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                               <Award className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                               <span>Keputusan Akhir Verifikasi</span>
                             </h4>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Tetapkan keputusan akhir berkas RAB secara komprehensif berdasarkan penelaahan 20 kriteria di atas.</p>
+                            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Tetapkan keputusan akhir berkas RAB secara komprehensif berdasarkan penelaahan 20 kriteria di atas.</p>
                           </div>
                           <div className="flex items-center gap-2.5 self-start sm:self-auto">
                             {saveSuccess && (
@@ -593,7 +593,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                                 <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide">
                                   Kolom 1: Keputusan Akhir <span className="text-rose-500">*</span>
                                 </label>
-                                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                <p className="text-sm text-slate-500 dark:text-slate-400">
                                   {canEditDecision ? "Pilih status penetapan akhir dokumen usulan RAB:" : "Status keputusan akhir:"}
                                 </p>
 
@@ -635,7 +635,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                                       </button>
                                     </div>
 
-                                    <div className="text-[11px] font-medium pt-1 text-slate-600 dark:text-slate-400">
+                                    <div className="text-xs font-medium pt-1 text-slate-600 dark:text-slate-400">
                                       Status terpilih: <strong className="font-bold text-slate-900 dark:text-white uppercase">{currentDecision}</strong>
                                     </div>
                                   </>
@@ -660,7 +660,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                                 <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide">
                                   Kolom 2: Catatan / Keterangan Berita Acara <span className="text-rose-500">*</span>
                                 </label>
-                                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                <p className="text-sm text-slate-500 dark:text-slate-400">
                                   {canEditDecision ? "Uraikan dasar pertimbangan penetapan atau arahan revisi bagi SatKer:" : "Catatan / keterangan berita acara:"}
                                 </p>
                                 {canEditDecision ? (
@@ -758,7 +758,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                     <Sliders className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                     <span>Daftar Kriteria &amp; Pertanyaan Pemeriksaan Dokumen RAB</span>
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Halaman ini bertujuan untuk mengelola list pertanyaan yang akan diperiksa oleh mesin AI dan pejabat verifikator.</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Halaman ini bertujuan untuk mengelola list pertanyaan yang akan diperiksa oleh mesin AI dan pejabat verifikator.</p>
                 </div>
 
                 {/* Tombol Masukkan Checklist Baru */}
@@ -927,7 +927,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                     <PlusCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                     <span>Masukkan Checklist Baru Pemeriksaan Dokumen RAB</span>
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                     Isi kriteria pertanyaan dan deskripsi panduan evaluasi. Status aktif dan aksi CRUD akan tersedia pada tabel setelah disimpan.
                   </p>
                 </div>
@@ -958,7 +958,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
               <form onSubmit={handleSubmitNewChecklist} className="space-y-5 text-xs max-w-2xl">
                 {/* a. No (Otomatis) */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                     a. Nomor Urut Kriteria <span className="text-emerald-600 font-bold">(Otomatis Terisi)</span>
                   </label>
                   <div className="relative">
@@ -970,12 +970,12 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                       className="w-full px-3.5 py-2.5 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-mono font-bold text-slate-700 dark:text-slate-300 cursor-not-allowed"
                     />
                   </div>
-                  <span className="text-[11px] text-slate-400 mt-1 block">Nomor urut kriteria otomatis digenerate berikutnya oleh sistem.</span>
+                  <span className="text-xs text-slate-400 mt-1 block">Nomor urut kriteria otomatis digenerate berikutnya oleh sistem.</span>
                 </div>
 
                 {/* b. Kriteria (Teks) */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                     b. Kriteria Pertanyaan Pemeriksaan <span className="text-rose-500">* (Teks)</span>
                   </label>
                   <input
@@ -987,12 +987,12 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                     className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 shadow-2xs font-medium"
                     required
                   />
-                  <span className="text-[11px] text-slate-400 mt-1 block">Tuliskan kalimat pertanyaan kriteria yang jelas dan lugas.</span>
+                  <span className="text-xs text-slate-400 mt-1 block">Tuliskan kalimat pertanyaan kriteria yang jelas dan lugas.</span>
                 </div>
 
                 {/* c. Deskripsi (Teks) */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                     c. Deskripsi &amp; Panduan Pengujian <span className="text-rose-500">* (Teks)</span>
                   </label>
                   <textarea
@@ -1006,7 +1006,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                   />
                 </div>
 
-                <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-[11px] text-slate-500 dark:text-slate-400">
+                <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-sm text-slate-500 dark:text-slate-400">
                   <strong className="text-slate-700 dark:text-slate-300 block mb-0.5">Catatan Sistem:</strong>
                   Sesuai ketentuan, status <em>Aktif / Tidak Aktif</em> dan opsi <em>Aksi (CRUD)</em> akan tersedia langsung pada tabel setelah kriteria ini berhasil disimpan.
                 </div>
@@ -1048,19 +1048,19 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
 
                 <div className="space-y-3 text-xs">
                   <div>
-                    <span className="text-[10px] text-slate-400 uppercase font-bold block">Kriteria:</span>
+                    <span className="text-xs text-slate-400 uppercase font-bold block">Kriteria:</span>
                     <p className="font-semibold text-slate-900 dark:text-white mt-1 text-sm">{viewCriterion.text}</p>
                   </div>
 
                   <div>
-                    <span className="text-[10px] text-slate-400 uppercase font-bold block">Deskripsi:</span>
+                    <span className="text-xs text-slate-400 uppercase font-bold block">Deskripsi:</span>
                     <p className="text-slate-700 dark:text-slate-300 mt-1 leading-relaxed bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
                       {viewCriterion.description}
                     </p>
                   </div>
 
                   <div>
-                    <span className="text-[10px] text-slate-400 uppercase font-bold block">Status Penggunaan:</span>
+                    <span className="text-xs text-slate-400 uppercase font-bold block">Status Penggunaan:</span>
                     <span className={`inline-block mt-1 px-3 py-1 rounded-full text-xs font-bold ${viewCriterion.isActive ? "bg-emerald-100 text-emerald-800" : "bg-slate-200 text-slate-700"}`}>
                       {viewCriterion.isActive ? "Aktif Digunakan AI & Verifikator" : "Tidak Aktif (Diarsipkan)"}
                     </span>
@@ -1096,7 +1096,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
 
                 <form onSubmit={handleSaveEdit} className="space-y-4 text-xs">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Kriteria (Teks)</label>
+                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Kriteria (Teks)</label>
                     <input
                       type="text"
                       value={editKriteriaText}
@@ -1107,7 +1107,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Deskripsi (Teks)</label>
+                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Deskripsi (Teks)</label>
                     <textarea
                       rows={4}
                       value={editDeskripsiText}

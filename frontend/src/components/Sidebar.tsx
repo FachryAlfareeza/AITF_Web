@@ -73,42 +73,36 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
   const allMenuItems: Array<{
     key: StandardMenuKey;
     label: string;
-    sublabel: string;
     icon: React.ElementType;
     badgeCount?: number;
   }> = [
     {
       key: "menu_users",
       label: "Management User",
-      sublabel: "Hak Akses & Kelola Akun",
       icon: Users,
       badgeCount: counts.users ?? 3,
     },
     {
       key: "menu_acuan",
       label: "Input Acuan",
-      sublabel: "Ketentuan & Regulasi AI",
       icon: FolderArchive,
       badgeCount: counts.regulations ?? 2,
     },
     {
       key: "menu_checklist",
       label: "Input Checklist",
-      sublabel: "Master 20 Kriteria AI",
       icon: ListChecks,
       badgeCount: counts.criteria ?? 20,
     },
     {
       key: "menu_master_ro",
       label: "Input Master RO",
-      sublabel: "Katalog & Hierarki RO",
       icon: Layers,
       badgeCount: counts.masterRo ?? 58,
     },
     {
       key: "menu_rab_list",
       label: "Daftar RAB",
-      sublabel: "Riwayat & Pengajuan RAB",
       icon: FileSpreadsheet,
       badgeCount: counts.submissions ?? 0,
     },
@@ -185,10 +179,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
           {!isSidebarCompact ? (
             <div className="bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">Role Akun</span>
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{roleInfo.title}</span>
+                <span className="text-sm font-bold text-slate-800 dark:text-slate-200">{roleInfo.title}</span>
               </div>
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${roleInfo.color}`}>Aktif</span>
             </div>
           ) : (
             <div className="flex justify-center">
@@ -201,8 +193,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
         <div className="px-5 pt-3 pb-1">
           {!isSidebarCompact ? (
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Menu Akses</span>
-              <span className="text-[10px] text-slate-400 font-mono">{visibleMenus.length} Menu</span>
+              <span className="text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Menu Akses</span>
             </div>
           ) : (
             <div className="h-2 border-b border-slate-100 dark:border-slate-800"></div>
@@ -235,7 +226,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
                           <div className="text-xs font-bold truncate flex items-center gap-1.5">
                             <span>{item.label}</span>
                           </div>
-                          <div className={`text-[10px] font-normal truncate ${active ? "text-white/80" : "text-slate-400 dark:text-slate-500"}`}>{item.sublabel}</div>
                         </div>
                       )}
                     </div>
@@ -244,7 +234,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
                       <div className="flex items-center gap-1.5 shrink-0">
                         {/* E / V Permission Indicator Pill */}
                         <span
-                          className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded border select-none ${
+                          className={`text-xs font-black uppercase px-1.5 py-0.5 rounded border select-none ${
                             active
                               ? "bg-white/20 text-white border-white/30"
                               : permission === "E"
@@ -259,7 +249,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
                         {/* Numeric Count Pill if available */}
                         {item.badgeCount !== undefined && (
                           <span
-                            className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-md ${
+                            className={`text-xs font-mono font-bold px-1.5 py-0.5 rounded-md ${
                               active ? "bg-white/20 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
                             }`}
                           >
@@ -292,7 +282,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
                       <div className="text-xs font-bold truncate flex items-center gap-1.5">
                         <span>{item.label}</span>
                       </div>
-                      <div className={`text-[10px] font-normal truncate ${active ? "text-white/80" : "text-slate-400 dark:text-slate-500"}`}>{item.sublabel}</div>
                     </div>
                   )}
                 </div>
@@ -301,7 +290,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
                   <div className="flex items-center gap-1.5 shrink-0">
                     {/* E / V Permission Indicator Pill */}
                     <span
-                      className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded border select-none ${
+                      className={`text-xs font-black uppercase px-1.5 py-0.5 rounded border select-none ${
                         active
                           ? "bg-white/20 text-white border-white/30"
                           : permission === "E"
@@ -316,7 +305,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
                     {/* Numeric Count Pill if available */}
                     {item.badgeCount !== undefined && (
                       <span
-                        className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-md ${
+                        className={`text-xs font-mono font-bold px-1.5 py-0.5 rounded-md ${
                           active ? "bg-white/20 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
                         }`}
                       >
@@ -334,9 +323,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
       {/* Bottom Footer Section: User Snapshot */}
       <div className="p-3 border-t border-sky-100 dark:border-slate-800 space-y-2">
         {!isSidebarCompact && (
-          <div className="px-2.5 py-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400">
+          <div className="px-2.5 py-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
             <div className="font-bold text-slate-900 dark:text-white truncate">{currentUser.name}</div>
-            <div className="flex items-center justify-between text-[10px] font-mono pt-0.5">
+            <div className="flex items-center justify-between text-xs font-mono pt-0.5">
               <span>NIP: {currentUser.id}</span>
               <span className={`px-1.5 py-0.2 rounded font-bold ${roleInfo.color}`}>{roleInfo.title}</span>
             </div>

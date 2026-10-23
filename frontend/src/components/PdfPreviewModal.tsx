@@ -248,16 +248,16 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
               <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="text-sm font-bold truncate text-slate-900 dark:text-white">{title}</h3>
                 {isGeneratedFallback ? (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 shrink-0">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 shrink-0">
                     <AlertCircle className="w-3 h-3" /> Lembar RAB Resmi Standar
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 shrink-0">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 shrink-0">
                     <CheckCircle2 className="w-3 h-3" /> Berkas Asli (.PDF)
                   </span>
                 )}
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono truncate mt-0.5">{fileName || "Dokumen RAB Resmi"}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-mono truncate mt-0.5">{fileName || "Dokumen RAB Resmi"}</p>
             </div>
           </div>
 
@@ -384,7 +384,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
 
         {/* Informational banner when standard fallback is generated */}
         {isGeneratedFallback && activeTab === "pdf" && (
-          <div className="bg-amber-50 dark:bg-amber-950/50 border-b border-amber-200 dark:border-amber-900/60 px-5 py-2.5 text-xs text-amber-900 dark:text-amber-200 flex flex-wrap items-center justify-between gap-3">
+          <div className="bg-amber-50 dark:bg-amber-950/50 border-b border-amber-200 dark:border-amber-900/60 px-5 py-2.5 text-sm text-amber-900 dark:text-amber-200 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <Info className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
               <span>
@@ -394,7 +394,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
             </div>
             <label
               htmlFor="pdf-modal-inline-upload"
-              className="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold text-[11px] cursor-pointer shrink-0 transition-colors shadow-2xs"
+              className="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold text-xs cursor-pointer shrink-0 transition-colors shadow-2xs"
             >
               Unggah PDF Asli Sekarang &rarr;
             </label>
@@ -434,7 +434,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
               <div className="text-center my-auto p-8 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-md">
                 <FileText className="w-10 h-10 mx-auto text-slate-400 mb-3" />
                 <p className="text-sm font-bold text-slate-800 dark:text-slate-200">Berkas PDF Belum Tersedia</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">Silakan unggah dokumen PDF untuk melihat pratinjau berkas secara langsung.</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 mb-4">Silakan unggah dokumen PDF untuk melihat pratinjau berkas secara langsung.</p>
                 <label htmlFor="pdf-modal-inline-upload" className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold cursor-pointer inline-flex items-center gap-1.5">
                   <Upload className="w-3.5 h-3.5" />
                   <span>Unggah Dokumen PDF</span>
@@ -453,7 +453,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
                 <h3 className="text-sm sm:text-base font-extrabold text-cyan-700 dark:text-cyan-400 uppercase mt-0.5">Sekretariat Jenderal &bull; Biro Perencanaan dan Keuangan</h3>
                 <div className="mt-4 pt-3 border-t border-slate-300 dark:border-slate-700 max-w-xl mx-auto">
                   <h2 className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white uppercase">Lembar Telaah Dokumen Rincian Anggaran Biaya (RAB)</h2>
-                  <p className="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">
+                  <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-0.5">
                     Nomor Tiket: <span className="font-bold text-slate-800 dark:text-slate-200">{ticketNumber || "RAB/KOMDIGI/2026/042"}</span> &bull; Tahun Anggaran 2026
                   </p>
                 </div>
@@ -468,37 +468,37 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                     <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200/80 dark:border-slate-700">
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block">Satuan Kerja / Unit Pengusul:</span>
+                      <span className="text-xs uppercase font-bold text-slate-400 block">Satuan Kerja / Unit Pengusul:</span>
                       <span className="font-bold text-slate-800 dark:text-slate-200 block mt-0.5">{metadata?.satkerName || "Satker Kementerian Komunikasi dan Digital"}</span>
-                      <span className="text-[11px] text-cyan-600 dark:text-cyan-400 block mt-0.5">{metadata?.unit || "Sekretariat Jenderal"}</span>
+                      <span className="text-xs text-cyan-600 dark:text-cyan-400 block mt-0.5">{metadata?.unit || "Sekretariat Jenderal"}</span>
                     </div>
 
                     <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200/80 dark:border-slate-700">
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block">Tanggal Pengajuan:</span>
+                      <span className="text-xs uppercase font-bold text-slate-400 block">Tanggal Pengajuan:</span>
                       <span className="font-semibold text-slate-800 dark:text-slate-200 block mt-0.5 flex items-center gap-1.5">
                         <Calendar className="w-3.5 h-3.5 text-slate-400" />
                         <span>{metadata?.submittedAt || new Date().toLocaleDateString("id-ID")}</span>
                       </span>
-                      <span className="text-[10px] font-mono text-slate-500 block mt-0.5">Berkas: {fileName || "RAB_Dokumen.pdf"}</span>
+                      <span className="text-xs font-mono text-slate-500 block mt-0.5">Berkas: {fileName || "RAB_Dokumen.pdf"}</span>
                     </div>
 
                     <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200/80 dark:border-slate-700 md:col-span-2">
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block">Program:</span>
+                      <span className="text-xs uppercase font-bold text-slate-400 block">Program:</span>
                       <span className="font-bold text-slate-800 dark:text-slate-200 block mt-0.5">{metadata?.program || "Belum dipilih"}</span>
                     </div>
 
                     <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200/80 dark:border-slate-700 md:col-span-2">
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block">Kegiatan:</span>
+                      <span className="text-xs uppercase font-bold text-slate-400 block">Kegiatan:</span>
                       <span className="font-semibold text-slate-800 dark:text-slate-200 block mt-0.5">{metadata?.kegiatan || "Belum dipilih"}</span>
                     </div>
 
                     <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200/80 dark:border-slate-700">
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block">Klasifikasi Rincian Output (KRO):</span>
+                      <span className="text-xs uppercase font-bold text-slate-400 block">Klasifikasi Rincian Output (KRO):</span>
                       <span className="font-semibold text-slate-800 dark:text-slate-200 block mt-0.5">{metadata?.kro || "-"}</span>
                     </div>
 
                     <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200/80 dark:border-slate-700">
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block">Rincian Output (RO):</span>
+                      <span className="text-xs uppercase font-bold text-slate-400 block">Rincian Output (RO):</span>
                       <span className="font-semibold text-slate-800 dark:text-slate-200 block mt-0.5">{metadata?.ro || "-"}</span>
                     </div>
                   </div>
@@ -513,7 +513,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div className="p-4 rounded-xl bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-800 flex flex-col justify-between">
-                      <span className="text-[10px] uppercase font-bold text-cyan-800 dark:text-cyan-300">Status Kelayakan AI</span>
+                      <span className="text-xs uppercase font-bold text-cyan-800 dark:text-cyan-300">Status Kelayakan AI</span>
                       <div className="my-2">
                         <span
                           className={`inline-block px-3 py-1 rounded-full text-xs font-extrabold ${
@@ -523,25 +523,25 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
                           {metadata?.aiStatus || "LOLOS"}
                         </span>
                       </div>
-                      <span className="text-[10px] text-cyan-700 dark:text-cyan-400">Evaluasi SBM PMK No. 49/PMK.02/2023</span>
+                      <span className="text-xs text-cyan-700 dark:text-cyan-400">Evaluasi SBM PMK No. 49/PMK.02/2023</span>
                     </div>
 
                     <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
-                      <span className="text-[10px] uppercase font-bold text-slate-400">Skor Kelayakan Anggaran</span>
+                      <span className="text-xs uppercase font-bold text-slate-400">Skor Kelayakan Anggaran</span>
                       <div className="my-2">
                         <span className="text-2xl font-black text-cyan-600 dark:text-cyan-400">{metadata?.aiScore ?? 98}</span>
                         <span className="text-xs text-slate-400"> / 100</span>
                       </div>
-                      <span className="text-[10px] text-slate-500">20 Parameter Terpenuhi</span>
+                      <span className="text-xs text-slate-500">20 Parameter Terpenuhi</span>
                     </div>
 
                     <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
-                      <span className="text-[10px] uppercase font-bold text-slate-400">Status Validasi BAS</span>
+                      <span className="text-xs uppercase font-bold text-slate-400">Status Validasi BAS</span>
                       <div className="my-2 flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
                         <CheckCircle2 className="w-4 h-4" />
                         <span>Akun 522 & 521 Valid</span>
                       </div>
-                      <span className="text-[10px] text-slate-500">Sesuai Bagan Akun Standar Kemenkeu</span>
+                      <span className="text-xs text-slate-500">Sesuai Bagan Akun Standar Kemenkeu</span>
                     </div>
                   </div>
                 </div>
@@ -554,7 +554,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
                     </div>
                     <div>
                       <span className="font-bold text-slate-800 dark:text-slate-200 block text-xs">Dokumen Resmi Terverifikasi OptiMa</span>
-                      <span className="text-[10px] text-slate-400 font-mono block">Hash: DIGISIG-KOMDIGI-SECURE-{ticketNumber?.replace(/[^A-Za-z0-9]/g, "") || "2026"}</span>
+                      <span className="text-xs text-slate-400 font-mono block">Hash: DIGISIG-KOMDIGI-SECURE-{ticketNumber?.replace(/[^A-Za-z0-9]/g, "") || "2026"}</span>
                     </div>
                   </div>
 
@@ -574,7 +574,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
         </div>
 
         {/* Footer info & quick helper */}
-        <div className="px-5 py-2.5 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 gap-2 shrink-0">
+        <div className="px-5 py-2.5 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between text-xs text-slate-500 dark:text-slate-400 gap-2 shrink-0">
           <div className="flex items-center gap-2">
             <span className={`w-2.5 h-2.5 rounded-full ${isGeneratedFallback ? "bg-amber-400" : displayUrl ? "bg-emerald-500 animate-pulse" : "bg-slate-400"}`}></span>
             <span>

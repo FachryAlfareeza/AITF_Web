@@ -25,7 +25,7 @@ export function VerificationCriteriaTable({ criteria, isEditable, isStatusEditab
               <th className="px-4 py-3.5 min-w-45">Catatan Bukti AI</th>
               <th className="px-4 py-3.5 min-w-37.5 text-center bg-cyan-100/60 dark:bg-cyan-950/60 border-l border-r border-cyan-200 dark:border-cyan-800">
                 Kolom Verifikator
-                {isStatusEditable && <span className="block text-[10px] font-semibold text-cyan-700 dark:text-cyan-400 lowercase">{isStatusDisabled ? "(terkunci)" : "(bisa diubah)"}</span>}
+                {isStatusEditable && <span className="block text-xs font-semibold text-cyan-700 dark:text-cyan-400 lowercase">{isStatusDisabled ? "(terkunci)" : "(bisa diubah)"}</span>}
               </th>
               <th className="px-4 py-3.5 min-w-47.5 bg-slate-100/80 dark:bg-slate-800/80">Catatan Evaluasi Verifikator</th>
             </tr>
@@ -47,7 +47,7 @@ export function VerificationCriteriaTable({ criteria, isEditable, isStatusEditab
                   <td className="px-4 py-3.5">
                     <div className="font-semibold text-slate-800 dark:text-slate-200 leading-snug">{criterion.text}</div>
                     {criterion.category && (
-                      <span className="inline-block mt-1 px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded text-[10px] font-mono border border-slate-200 dark:border-slate-700">
+                      <span className="inline-block mt-1 px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded text-xs font-mono border border-slate-200 dark:border-slate-700">
                         {criterion.category}
                       </span>
                     )}
@@ -105,7 +105,7 @@ export function VerificationCriteriaTable({ criteria, isEditable, isStatusEditab
                         {isVerifierPassed ? "Lolos" : "Ditolak"}
                       </span>
                     )}
-                    {isOverridden && <div className="text-[10px] text-amber-700 dark:text-amber-400 font-bold mt-1">*Diubah dari AI</div>}
+                    {isOverridden && <div className="text-xs text-amber-700 dark:text-amber-400 font-bold mt-1">*Diubah dari AI</div>}
                   </td>
                   <td className="px-4 py-3.5 bg-slate-50/40 dark:bg-slate-800/30">
                     {isNotesEditable ? (

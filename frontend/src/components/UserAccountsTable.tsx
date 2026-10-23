@@ -42,7 +42,7 @@ export function UserAccountsTable({ users, currentUser, onEdit, onDelete }: User
                   <td className="px-4 py-3.5 font-semibold text-slate-800 dark:text-slate-200">
                     {user.name}
                     {user.id === currentUser.id && (
-                      <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 font-bold">Anda</span>
+                      <span className="ml-2 text-xs px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 font-bold">Anda</span>
                     )}
                   </td>
                   <td className="px-4 py-3.5 text-slate-600 dark:text-slate-400 max-w-xs truncate">{user.unit}</td>
@@ -51,7 +51,7 @@ export function UserAccountsTable({ users, currentUser, onEdit, onDelete }: User
                       {user.roles.map((role) => (
                         <span
                           key={role}
-                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          className={`px-2 py-0.5 rounded-full text-xs font-bold ${
                             role === "superadmin"
                               ? "bg-cyan-100 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800"
                               : role === "satker"
@@ -66,7 +66,7 @@ export function UserAccountsTable({ users, currentUser, onEdit, onDelete }: User
                   </td>
                   <td className="px-4 py-3.5">
                     <span
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold ${
                         access === "both"
                           ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
                           : access === "view"
@@ -82,7 +82,7 @@ export function UserAccountsTable({ users, currentUser, onEdit, onDelete }: User
                   </td>
                   <td className="px-4 py-3.5">
                     <span
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                      className={`px-2 py-0.5 rounded-full text-xs font-bold ${
                         user.isActive
                           ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300"
                           : "bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300"

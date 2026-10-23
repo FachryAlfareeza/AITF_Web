@@ -518,7 +518,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                 <span>Panel Super Administrator Komdigi</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{currentView === "users" ? "Management User & Hak Akses" : "Input Acuan & Regulasi AI"}</h2>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
                 {currentView === "users"
                   ? "Kelola akun pengguna, penugasan multi-role, serta atur batasan hak akses menu (Hanya Lihat, Hanya Ubah, atau Keduanya)."
                   : "Atur ketentuan normatif serta arsip berkas regulasi acuan resmi (PDF) yang menjadi dasar penelaahan AI terhadap dokumen RAB."}
@@ -553,13 +553,13 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                       <UserPlus className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                       <span>Formulir Pendaftaran Pengguna &amp; Hak Akses</span>
                     </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                       Daftarkan akun aparatur/pejabat baru, tentukan satuan kerja eselon, atur kewenangan menu (*View/Edit/Both*), dan pilih peran (*role*).
                     </p>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-cyan-50 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
+                    <span className="text-xs font-bold px-3 py-1.5 rounded-xl bg-cyan-50 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
                       Total Terdaftar: {users.length} Akun
                     </span>
                   </div>
@@ -579,11 +579,11 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                     {/* ID / NIP */}
                     <div className="space-y-1.5">
                       <div className="flex justify-between items-center">
-                        <label htmlFor="page-input-user-id" className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                        <label htmlFor="page-input-user-id" className="text-sm font-bold text-slate-700 dark:text-slate-300">
                           ID Pengguna / NIP (Wajib Tepat 8 Karakter) <span className="text-rose-500">*</span>
                         </label>
                         <span
-                          className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${formId.length === 8 ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400" : "bg-slate-100 dark:bg-slate-800 text-slate-400"}`}
+                          className={`text-xs font-mono font-bold px-1.5 py-0.5 rounded ${formId.length === 8 ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400" : "bg-slate-100 dark:bg-slate-800 text-slate-400"}`}
                         >
                           {formId.length}/8
                         </span>
@@ -598,12 +598,12 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                         placeholder="Contoh: 19890422 (8 digit)"
                         className="w-full px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-cyan-500 font-mono text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-2xs"
                       />
-                      <p className="text-[10px] text-slate-400 dark:text-slate-500">Gunakan 8 digit angka/karakter unik akun aparatur Komdigi.</p>
+                      <p className="text-sm text-slate-400 dark:text-slate-500">Gunakan 8 digit angka/karakter unik akun aparatur Komdigi.</p>
                     </div>
 
                     {/* Nama Lengkap & Gelar */}
                     <div className="space-y-1.5">
-                      <label htmlFor="page-input-name" className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                      <label htmlFor="page-input-name" className="block text-sm font-bold text-slate-700 dark:text-slate-300">
                         Nama Lengkap &amp; Gelar <span className="text-rose-500">*</span>
                       </label>
                       <input
@@ -615,7 +615,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                         placeholder="Contoh: Dewi Lestari, S.E., M.M."
                         className="w-full px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-cyan-500 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-2xs"
                       />
-                      <p className="text-[10px] text-slate-400 dark:text-slate-500">Nama lengkap beserta gelar kedinasan resmi.</p>
+                      <p className="text-sm text-slate-400 dark:text-slate-500">Nama lengkap beserta gelar kedinasan resmi.</p>
                     </div>
                   </div>
 
@@ -623,7 +623,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Satuan Kerja / Unit Eselon */}
                     <div className="space-y-1.5">
-                      <label htmlFor="page-select-unit" className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                      <label htmlFor="page-select-unit" className="block text-sm font-bold text-slate-700 dark:text-slate-300">
                         Satuan Kerja / Unit Eselon <span className="text-rose-500">*</span>
                       </label>
                       <select
@@ -646,12 +646,12 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                           </optgroup>
                         ))}
                       </select>
-                      <p className="text-[10px] text-slate-400 dark:text-slate-500">Pilih unit kerja eselon I/II yang menaungi aparatur.</p>
+                      <p className="text-sm text-slate-400 dark:text-slate-500">Pilih unit kerja eselon I/II yang menaungi aparatur.</p>
                     </div>
 
                     {/* Password Awal */}
                     <div className="space-y-1.5">
-                      <label htmlFor="page-input-password" className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                      <label htmlFor="page-input-password" className="block text-sm font-bold text-slate-700 dark:text-slate-300">
                         Kata Sandi Awal (Password)
                       </label>
                       <input
@@ -662,18 +662,18 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                         placeholder="password123"
                         className="w-full px-3.5 py-2.5 text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-cyan-500 font-mono text-slate-900 dark:text-white placeholder:text-slate-400 shadow-2xs"
                       />
-                      <p className="text-[10px] text-slate-400 dark:text-slate-500">Default: password123. Pengguna dapat mengubah kata sandi mandiri.</p>
+                      <p className="text-sm text-slate-400 dark:text-slate-500">Default: password123. Pengguna dapat mengubah kata sandi mandiri.</p>
                     </div>
                   </div>
 
                   {/* Row 3: Hak Akses Menu */}
                   <div className="p-4 sm:p-5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl space-y-3">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                      <label className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <label className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                         <Sliders className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                         <span>Pengaturan Hak Akses Menu (Role-Based Access Control)</span>
                       </label>
-                      <span className="text-[11px] text-slate-400">Pilih salah satu izin kewenangan</span>
+                      <span className="text-xs text-slate-400">Pilih salah satu izin kewenangan</span>
                     </div>
                     <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                       Tentukan kewenangan akun pada setiap menu: hanya bisa membaca dokumen (*view*), membuat &amp; mengubah data (*edit*), atau keduanya (*both*).
@@ -693,7 +693,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                           <Eye className="w-4 h-4 text-sky-600 shrink-0" />
                           <div className="text-xs font-bold">Hanya Lihat (View Only)</div>
                         </div>
-                        <div className="text-[11px] text-slate-500 dark:text-slate-400">Hanya dapat membaca dokumen &amp; hasil telaah tanpa izin ubah data.</div>
+                        <div className="text-sm text-slate-500 dark:text-slate-400">Hanya dapat membaca dokumen &amp; hasil telaah tanpa izin ubah data.</div>
                       </button>
 
                       <button
@@ -709,7 +709,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                           <Edit3 className="w-4 h-4 text-amber-600 shrink-0" />
                           <div className="text-xs font-bold">Hanya Ubah (Edit Only)</div>
                         </div>
-                        <div className="text-[11px] text-slate-500 dark:text-slate-400">Dapat menginput dan memodifikasi data pada menu yang diizinkan.</div>
+                        <div className="text-sm text-slate-500 dark:text-slate-400">Dapat menginput dan memodifikasi data pada menu yang diizinkan.</div>
                       </button>
 
                       <button
@@ -725,7 +725,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                           <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                           <div className="text-xs font-bold">Keduanya (View &amp; Edit)</div>
                         </div>
-                        <div className="text-[11px] text-slate-500 dark:text-slate-400">Akses penuh: Membaca, menginput usulan, menelaah, serta mengubah data.</div>
+                        <div className="text-sm text-slate-500 dark:text-slate-400">Akses penuh: Membaca, menginput usulan, menelaah, serta mengubah data.</div>
                       </button>
                     </div>
                   </div>
@@ -733,11 +733,11 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                   {/* Row 4: Role Akun Pengguna (Single Dedicated Role) */}
                   <div className="p-4 sm:p-5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl space-y-3">
                     <div className="flex justify-between items-center">
-                      <label className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <label className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                         <Shield className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                         <span>Role Penugasan Akun Pengguna</span>
                       </label>
-                      <span className="text-[10px] text-cyan-700 dark:text-cyan-400 font-semibold bg-cyan-100 dark:bg-cyan-950/60 px-2 py-0.5 rounded-md">1 Role per Akun</span>
+                      <span className="text-xs text-cyan-700 dark:text-cyan-400 font-semibold bg-cyan-100 dark:bg-cyan-950/60 px-2 py-0.5 rounded-md">1 Role per Akun</span>
                     </div>
                     <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Pilih salah satu peran dinas resmi untuk akun ini dalam alur penyusunan &amp; verifikasi RAB.</p>
 
@@ -759,7 +759,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                               <Shield className={`w-4 h-4 ${isChecked ? "text-cyan-600" : "text-slate-400"}`} />
                               <span className="text-xs font-bold">{r === "superadmin" ? "Super Admin" : r === "satker" ? "Satuan Kerja (Satker)" : "Verifikator (ROCAN)"}</span>
                             </div>
-                            <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                            <p className="text-sm text-slate-500 dark:text-slate-400">
                               {r === "superadmin"
                                 ? "Hak kelola penuh akun, penetapan regulasi acuan AI, dan konfigurasi master sistem."
                                 : r === "satker"
@@ -775,8 +775,8 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                   {/* Row 5: Status Akun Aktif */}
                   <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700">
                     <div>
-                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">Status Akun Aktif</span>
-                      <span className="text-[11px] text-slate-500 dark:text-slate-400">Akun aktif dapat langsung login ke dalam portal sistem.</span>
+                      <span className="text-sm font-bold text-slate-800 dark:text-slate-200 block">Status Akun Aktif</span>
+                      <span className="text-sm text-slate-500 dark:text-slate-400">Akun aktif dapat langsung login ke dalam portal sistem.</span>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" checked={formIsActive} onChange={(e) => setFormIsActive(e.target.checked)} className="sr-only peer" />
@@ -846,7 +846,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                       <Users className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                       <span>Daftar Pengguna &amp; Hak Akses Menu</span>
                     </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                       Ringkasan statistik pengguna, kelola akun pengguna, serta atur batasan hak akses menu (Hanya Lihat, Hanya Ubah, atau Keduanya).
                     </p>
                   </div>
@@ -997,7 +997,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                   <BookOpen className="w-4 h-4" />
                   <span>Acuan dan Regulasi AI</span>
                   <span
-                    className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                    className={`px-2 py-0.5 rounded-full text-xs font-mono font-bold ${
                       regSubTab === "acuan_ai"
                         ? "bg-white/20 text-white"
                         : "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
@@ -1124,8 +1124,8 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                     <Info className="w-5 h-5" />
                   </div>
                   <div className="text-xs">
-                    <span className="font-bold uppercase tracking-wider block text-[11px] text-sky-800 dark:text-sky-300">Mode Akses: Hanya Lihat (View Only)</span>
-                    <p className="mt-0.5 text-slate-600 dark:text-slate-300 leading-relaxed">
+                    <span className="font-bold uppercase tracking-wider block text-xs text-sky-800 dark:text-sky-300">Mode Akses: Hanya Lihat (View Only)</span>
+                    <p className="mt-0.5 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                       Sesuai peran <strong>Satker</strong>, Anda memiliki hak akses <strong>View (V)</strong> untuk membaca regulasi acuan AI, ketentuan, dan berkas PDF sebagai standar acuan
                       penyusunan RAB. Unggah peraturan baru, edit, hapus, dan perubahan status hanya dapat dilakukan oleh <strong>Super Admin</strong> dan <strong>ROCAN (verif)</strong>.
                     </p>
@@ -1145,11 +1145,11 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                       <div>
                         <div className="flex items-center gap-2">
                           <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white">History &amp; Rangkuman Indeksing Regulasi AI</h3>
-                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                          <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                             Konsolidasi {regulations.length} Regulasi
                           </span>
                         </div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
                           Rangkuman seluruh {regulations.length} regulasi acuan yang telah dikonsolidasikan menjadi 1 basis data pengetahuan AI terpadu (RAG Vector Store).
                         </p>
                       </div>
@@ -1200,19 +1200,19 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
 
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                           <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
-                            <span className="text-[10px] text-slate-400 uppercase font-bold block">Regulasi Dirangkum</span>
+                            <span className="text-xs text-slate-400 uppercase font-bold block">Regulasi Dirangkum</span>
                             <span className="text-lg font-black text-slate-900 dark:text-white font-mono">{regulations.length} Dokumen</span>
                           </div>
                           <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
-                            <span className="text-[10px] text-slate-400 uppercase font-bold block">Status RAG LLM</span>
+                            <span className="text-xs text-slate-400 uppercase font-bold block">Status RAG LLM</span>
                             <span className="text-lg font-black text-emerald-600 dark:text-emerald-400 font-mono">100% Siap</span>
                           </div>
                           <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
-                            <span className="text-[10px] text-slate-400 uppercase font-bold block">Dimensi Embedding</span>
+                            <span className="text-xs text-slate-400 uppercase font-bold block">Dimensi Embedding</span>
                             <span className="text-lg font-black text-cyan-600 dark:text-cyan-400 font-mono">768 Dimensi</span>
                           </div>
                           <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
-                            <span className="text-[10px] text-slate-400 uppercase font-bold block">Model AI Penguji</span>
+                            <span className="text-xs text-slate-400 uppercase font-bold block">Model AI Penguji</span>
                             <span className="text-lg font-black text-amber-600 dark:text-amber-400 font-mono">Gemini 1.5 Pro</span>
                           </div>
                         </div>
@@ -1360,7 +1360,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
 
                     {/* PDF File Upload Input */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
+                      <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
                         Berkas Dokumen Peraturan (PDF) <span className="text-rose-500">*</span>
                       </label>
                       <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 rounded-2xl p-6 sm:p-8 text-center bg-slate-50/50 dark:bg-slate-800/40 transition-colors relative cursor-pointer group">
@@ -1380,7 +1380,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                             <div className="space-y-1">
                               <p className="text-xs sm:text-sm font-bold text-cyan-700 dark:text-cyan-400">{regFileName}</p>
                               <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">Ukuran Berkas: {regFileSize || "Tersimpan"}</p>
-                              <span className="inline-block mt-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                              <span className="inline-block mt-1 text-xs text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
                                 Berkas siap diunggah
                               </span>
                             </div>
@@ -1396,7 +1396,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
 
                     {/* Judul Lengkap */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                      <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                         Judul Lengkap Peraturan / Ketentuan <span className="text-rose-500">*</span>
                       </label>
                       <input
@@ -1414,7 +1414,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       {/* Kategori Dokumen (Text by requirement) */}
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                           Kategori Dokumen <span className="text-rose-500">*</span>
                         </label>
                         <input
@@ -1430,7 +1430,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
 
                       {/* Tanggal Dimasukkan */}
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                           Tanggal Dimasukkan <span className="text-rose-500">*</span>
                         </label>
                         <input
@@ -1445,7 +1445,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
 
                       {/* Tahun Anggaran */}
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Tahun Anggaran</label>
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Tahun Anggaran</label>
                         <input
                           id="page-input-reg-target-year"
                           type="text"
@@ -1459,7 +1459,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
 
                     {/* Deskripsi / Ringkasan Cakupan */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Deskripsi / Ringkasan Cakupan</label>
+                      <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Deskripsi / Ringkasan Cakupan</label>
                       <textarea
                         id="page-input-reg-description"
                         rows={4}
@@ -1548,8 +1548,8 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
               {/* ID Input with 8 Char Limit */}
               <div>
                 <div className="flex justify-between items-center mb-1">
-                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">ID Pengguna / NIP (Tepat 8 Karakter)</label>
-                  <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">{formId.length}/8</span>
+                  <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">ID Pengguna / NIP (Tepat 8 Karakter)</label>
+                  <span className="text-xs text-slate-400 dark:text-slate-500 font-mono">{formId.length}/8</span>
                 </div>
                 <input
                   id="modal-input-user-id"
@@ -1566,7 +1566,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
 
               {/* Name */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nama Lengkap &amp; Gelar</label>
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Nama Lengkap &amp; Gelar</label>
                 <input
                   id="modal-input-name"
                   type="text"
@@ -1580,7 +1580,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
 
               {/* Unit Dropdown */}
               <div>
-                <label htmlFor="modal-select-unit" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label htmlFor="modal-select-unit" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Satuan Kerja / Unit Eselon <span className="text-rose-500">*</span>
                 </label>
                 <select
@@ -1609,12 +1609,12 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
               {/* Hak Akses Menu: View, Edit, atau Keduanya */}
               <div className="p-3.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl space-y-2">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <label className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                     <Sliders className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                     <span>Pengaturan Hak Akses Menu (Role-Based Access Control)</span>
                   </label>
                 </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-tight">
                   Tentukan kewenangan akun pada menu: hanya bisa melihat (*view*), mengubah data (*edit*), atau keduanya (*both*).
                 </p>
 
@@ -1630,7 +1630,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                   >
                     <Eye className="w-4 h-4 mx-auto mb-1 text-sky-600" />
                     <div className="text-xs font-bold">Hanya Lihat</div>
-                    <div className="text-[10px] text-slate-400">View Only</div>
+                    <div className="text-xs text-slate-400">View Only</div>
                   </button>
 
                   <button
@@ -1644,7 +1644,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                   >
                     <Edit3 className="w-4 h-4 mx-auto mb-1 text-amber-600" />
                     <div className="text-xs font-bold">Hanya Ubah</div>
-                    <div className="text-[10px] text-slate-400">Edit Only</div>
+                    <div className="text-xs text-slate-400">Edit Only</div>
                   </button>
 
                   <button
@@ -1658,7 +1658,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                   >
                     <CheckCircle2 className="w-4 h-4 mx-auto mb-1 text-emerald-600" />
                     <div className="text-xs font-bold">Keduanya</div>
-                    <div className="text-[10px] text-slate-400">View &amp; Edit</div>
+                    <div className="text-xs text-slate-400">View &amp; Edit</div>
                   </button>
                 </div>
               </div>
@@ -1666,8 +1666,8 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
               {/* Role: Single Dedicated Role Assignment */}
               <div className="p-3.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl">
                 <div className="flex justify-between items-center mb-2">
-                  <label className="text-xs font-bold text-slate-900 dark:text-white">Role Akun Pengguna</label>
-                  <span className="text-[10px] text-cyan-700 dark:text-cyan-400 font-semibold">1 Role per Akun</span>
+                  <label className="text-sm font-bold text-slate-900 dark:text-white">Role Akun Pengguna</label>
+                  <span className="text-xs text-cyan-700 dark:text-cyan-400 font-semibold">1 Role per Akun</span>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2">
@@ -1694,7 +1694,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
 
               {/* Status Aktif */}
               <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700">
-                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Status Akun Aktif:</span>
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Status Akun Aktif:</span>
                 <input
                   type="checkbox"
                   checked={formIsActive}
@@ -1763,7 +1763,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-slate-500 dark:text-slate-400 font-medium">Status Akun:</span>
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${validationModal.user.isActive ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}`}>
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${validationModal.user.isActive ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}`}>
                     {validationModal.user.isActive ? "Aktif" : "Non-Aktif"}
                   </span>
                 </div>
@@ -1826,7 +1826,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
 
               {/* PDF File Upload Input */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Berkas Dokumen Peraturan (PDF) {!editingReg && <span className="text-rose-500">*</span>}</label>
+                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Berkas Dokumen Peraturan (PDF) {!editingReg && <span className="text-rose-500">*</span>}</label>
                 <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-cyan-500 dark:hover:border-cyan-400 rounded-2xl p-4 text-center bg-slate-50/50 dark:bg-slate-800/40 transition-colors relative cursor-pointer">
                   <input
                     id="regulation-file-upload-input"
@@ -1843,12 +1843,12 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                     {regFileName ? (
                       <div>
                         <p className="text-xs font-bold text-cyan-700 dark:text-cyan-400">{regFileName}</p>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">Ukuran Berkas: {regFileSize || "Tersimpan"}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">Ukuran Berkas: {regFileSize || "Tersimpan"}</p>
                       </div>
                     ) : (
                       <div>
                         <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">Klik atau seret berkas PDF peraturan ke sini</p>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400">Mendukung format PDF resmi (Contoh: PMK No. 49/2023)</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Mendukung format PDF resmi (Contoh: PMK No. 49/2023)</p>
                       </div>
                     )}
                   </div>
@@ -1857,7 +1857,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
 
               {/* Title */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Judul Lengkap Peraturan / Ketentuan <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -1873,7 +1873,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {/* Requirement: "Kategori Dokumen ubah jadi kolom teks bukan drop down" */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
                     Kategori Dokumen <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -1888,7 +1888,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
 
                 {/* Requirement: "tambahkan kolom Tanggal Dimasukkan" */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">
                     Tanggal Dimasukkan <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -1902,7 +1902,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
 
                 {/* Target Year */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Tahun Anggaran</label>
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Tahun Anggaran</label>
                   <input
                     type="text"
                     value={regTargetYear}
@@ -1915,7 +1915,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
 
               {/* Description */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Deskripsi / Ringkasan Cakupan</label>
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Deskripsi / Ringkasan Cakupan</label>
                 <textarea
                   rows={3}
                   value={regDescription}

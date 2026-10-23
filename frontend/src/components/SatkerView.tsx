@@ -821,13 +821,13 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                 <span>Portal Satuan Kerja (Satker)</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Daftar Dokumen RAB &amp; Riwayat Pengajuan</h2>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1.5 max-w-2xl leading-relaxed">
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 max-w-2xl leading-relaxed">
                 Pantau status verifikasi dokumen RAB, filter berdasarkan jenis dokumen, status, tahun anggaran dan bulan, serta kelola tindakan CRUD berkas.
               </p>
             </div>
 
             <div className="bg-slate-50 dark:bg-slate-800/80 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs text-right shadow-2xs shrink-0">
-              <span className="text-slate-400 dark:text-slate-500 block text-[10px] font-semibold uppercase tracking-wider">Satker Pengusul:</span>
+              <span className="text-slate-400 dark:text-slate-500 block text-xs font-semibold uppercase tracking-wider">Satker Pengusul:</span>
               <span className="font-bold text-slate-900 dark:text-white block text-sm mt-0.5">{currentUser.name}</span>
               <span className="text-slate-500 dark:text-slate-400 text-xs font-mono mt-0.5 block">ID (8 Digit): {currentUser.id}</span>
             </div>
@@ -884,7 +884,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                   <FileCheck className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                   <span>1. Ringkasan Status Verifikasi Berkas Dokumen PDF RAB</span>
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Statistik keseluruhan dokumen RAB yang diajukan beserta status kelolosan telaah verifikator</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Statistik keseluruhan dokumen RAB yang diajukan beserta status kelolosan telaah verifikator</p>
               </div>
 
               <button
@@ -907,7 +907,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                     <FileSpreadsheet className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                   </div>
                   <div className="text-2xl font-black text-slate-900 dark:text-white mt-2">{relevantSubmissions.length}</div>
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 block">Seluruh dokumen yang diinput</span>
+                  <span className="text-sm text-slate-500 dark:text-slate-400 mt-1 block">Seluruh dokumen yang diinput</span>
                 </div>
 
                 {/* 2. Menunggu Verifikasi */}
@@ -917,7 +917,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                     <Clock className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div className="text-2xl font-black text-amber-600 dark:text-amber-400 mt-2">{waitingCount}</div>
-                  <span className="text-[11px] text-amber-700/80 dark:text-amber-400/80 mt-1 block">Menunggu proses telaah</span>
+                  <span className="text-sm text-amber-700/80 dark:text-amber-400/80 mt-1 block">Menunggu proses telaah</span>
                 </div>
 
                 {/* 3. Diterima */}
@@ -927,7 +927,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                     <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-2">{acceptedCount}</div>
-                  <span className="text-[11px] text-emerald-700/80 dark:text-emerald-400/80 mt-1 block">Memenuhi SBM &amp; disahkan DIPA</span>
+                  <span className="text-sm text-emerald-700/80 dark:text-emerald-400/80 mt-1 block">Memenuhi SBM &amp; disahkan DIPA</span>
                 </div>
 
                 {/* 4. Ditolak */}
@@ -937,7 +937,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                     <XCircle className="w-4 h-4 text-rose-600 dark:text-rose-400" />
                   </div>
                   <div className="text-2xl font-black text-rose-600 dark:text-rose-400 mt-2">{rejectedCount}</div>
-                  <span className="text-[11px] text-rose-700/80 dark:text-rose-400/80 mt-1 block">Perlu perbaikan dari Satker</span>
+                  <span className="text-sm text-rose-700/80 dark:text-rose-400/80 mt-1 block">Perlu perbaikan dari Satker</span>
                 </div>
               </div>
             )}
@@ -957,7 +957,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                   <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   <span>2. Tabel Informasi Dokumen PDF Berdasarkan Status &amp; Aksi CRUD</span>
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                   Gunakan form filter pencarian, kelola berkas dengan tombol aksi CRUD, dan pantau history pembuat (Create) serta pembaru (Update) berkas.
                 </p>
               </div>
@@ -1183,7 +1183,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
             </div>
 
             <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 p-4">
-              <span className="text-[11px] font-semibold uppercase text-slate-500 dark:text-slate-400">Dokumen saat ini</span>
+              <span className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">Dokumen saat ini</span>
               <p className="text-sm font-bold text-slate-900 dark:text-white mt-1 break-all">{reuploadSubmission.rabFileName}</p>
             </div>
 
@@ -1242,7 +1242,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                   <FileSpreadsheet className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                   <span>Formulir Terpadu Hierarki Anggaran &amp; Berkas PDF RAB</span>
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
                   Lengkapi hierarki anggaran beserta tahun anggaran, tentukan klasifikasi kategori dan deskripsi, unggah dokumen PDF RAB, dan kirim untuk pemeriksaan otomatis AI.
                 </p>
               </div>
@@ -1267,7 +1267,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                   <div className="flex flex-col space-y-4">
                     {/* a. Program */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                      <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                         a. Program <span className="text-rose-500">*</span>
                       </label>
                       <div className="relative">
@@ -1292,7 +1292,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
 
                     {/* b. Kegiatan */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                      <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                         b. Kegiatan <span className="text-rose-500">*</span>
                       </label>
                       <div className="relative">
@@ -1318,7 +1318,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
 
                     {/* c. KRO */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                      <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                         c. Klasifikasi Rincian Output (KRO) <span className="text-rose-500">*</span>
                       </label>
                       <div className="relative">
@@ -1344,7 +1344,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
 
                     {/* d. RO */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                      <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                         d. Rincian Output (RO) <span className="text-rose-500">*</span>
                       </label>
                       <div className="relative">
@@ -1370,7 +1370,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
 
                     {/* e. Tahun Anggaran */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                      <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                         e. Tahun Anggaran <span className="text-rose-500">*</span>
                       </label>
                       <input
@@ -1388,15 +1388,15 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                   {(currentUnitEselon1 || currentUnitEselon2 || currentPrioritas) && (
                     <div className="p-3.5 bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-xs grid grid-cols-1 sm:grid-cols-3 gap-2">
                       <div>
-                        <span className="text-[10px] text-slate-400 uppercase font-semibold block">Unit Eselon I:</span>
+                        <span className="text-xs text-slate-400 uppercase font-semibold block">Unit Eselon I:</span>
                         <span className="text-slate-800 dark:text-slate-200 font-medium truncate block">{currentUnitEselon1 || "-"}</span>
                       </div>
                       <div>
-                        <span className="text-[10px] text-slate-400 uppercase font-semibold block">Unit Eselon II:</span>
+                        <span className="text-xs text-slate-400 uppercase font-semibold block">Unit Eselon II:</span>
                         <span className="text-slate-800 dark:text-slate-200 font-medium truncate block">{currentUnitEselon2 || "-"}</span>
                       </div>
                       <div>
-                        <span className="text-[10px] text-slate-400 uppercase font-semibold block">Prioritas:</span>
+                        <span className="text-xs text-slate-400 uppercase font-semibold block">Prioritas:</span>
                         <span className="font-bold text-amber-700 dark:text-amber-400 block">{currentPrioritas || "Bukan Prioritas Nasional"}</span>
                       </div>
                     </div>
@@ -1410,7 +1410,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                       <Tag className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                       <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide">B. Klasifikasi Kategori Usulan RAB</span>
                     </div>
-                    <span className="text-[11px] text-cyan-700 dark:text-cyan-300 font-semibold bg-cyan-100/80 dark:bg-cyan-950/70 px-2.5 py-0.5 rounded-full border border-cyan-300 dark:border-cyan-800 w-fit">
+                    <span className="text-xs text-cyan-700 dark:text-cyan-300 font-semibold bg-cyan-100/80 dark:bg-cyan-950/70 px-2.5 py-0.5 rounded-full border border-cyan-300 dark:border-cyan-800 w-fit">
                       Deskripsi otomatis terisi sesuai kategori yang dipilih
                     </span>
                   </div>
@@ -1418,7 +1418,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Kategori (Dropdown pilihan: 4 Kategori RO) */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                      <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                         Kategori <span className="text-rose-500">*</span>
                       </label>
                       <div className="relative">
@@ -1436,14 +1436,14 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                         </select>
                         <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                       </div>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 leading-normal">
+                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 leading-normal">
                         Pilih kategori untuk memuat deskripsi klasifikasi RO secara otomatis.
                       </p>
                     </div>
 
                     {/* Deskripsi (Otomatis terisi & tidak bisa diedit) */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                      <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                         Deskripsi <span className="text-slate-400 font-normal lowercase">(otomatis terisi)</span>
                       </label>
                       <div
@@ -1460,7 +1460,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                 <div className="p-5 bg-slate-50/70 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/80 rounded-2xl space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide block">C. Unggah Berkas Dokumen PDF RAB</span>
-                    <span className="text-[11px] text-slate-400 font-medium">Format: .pdf</span>
+                    <span className="text-xs text-slate-400 font-medium">Format: .pdf</span>
                   </div>
 
                   <div className="border border-slate-200 dark:border-slate-700 rounded-2xl p-5 bg-white dark:bg-slate-800/60 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -1478,17 +1478,17 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="text-sm font-bold text-slate-900 dark:text-white truncate">{rabFileName || "Belum ada berkas PDF dipilih"}</span>
                           {rabFile ? (
-                            <span className="px-2.5 py-0.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 text-[10px] rounded-full font-mono font-bold flex items-center gap-1">
+                            <span className="px-2.5 py-0.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 text-xs rounded-full font-mono font-bold flex items-center gap-1">
                               <CheckCircle2 className="w-3 h-3" />
                               {formatFileSize(rabFile.size, 2)} &bull; PDF Terpilih
                             </span>
                           ) : (
-                            <span className="px-2.5 py-0.5 bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800 text-[10px] rounded-full font-semibold flex items-center gap-1">
+                            <span className="px-2.5 py-0.5 bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800 text-xs rounded-full font-semibold flex items-center gap-1">
                               <AlertCircle className="w-3 h-3" /> Wajib Unggah PDF
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pilih dokumen PDF RAB resmi Satker Anda untuk diperiksa kepatuhan tarif dan kalkulasi anggarannya.</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Pilih dokumen PDF RAB resmi Satker Anda untuk diperiksa kepatuhan tarif dan kalkulasi anggarannya.</p>
                       </div>
                     </div>
 
@@ -1539,7 +1539,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                         <span>Hapus / Reset Formulir</span>
                       </button>
                     ) : (
-                      <span className="text-[11px] text-slate-400 italic">Tombol reset formulir akan muncul setelah Anda memilih berkas PDF.</span>
+                      <span className="text-xs text-slate-400 italic">Tombol reset formulir akan muncul setelah Anda memilih berkas PDF.</span>
                     )}
                   </div>
 
@@ -1623,7 +1623,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
 
               {/* List of Related Reference Documents */}
               <div className="space-y-3">
-                <span className="text-[11px] font-bold text-emerald-900 dark:text-emerald-200 uppercase tracking-wider block">Daftar Dokumen Acuan Terkait Berkas PDF yang Baru Diunggah:</span>
+                <span className="text-xs font-bold text-emerald-900 dark:text-emerald-200 uppercase tracking-wider block">Daftar Dokumen Acuan Terkait Berkas PDF yang Baru Diunggah:</span>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {(currentSubmission.referenceDocuments || []).map((doc, idx) => (
@@ -1633,7 +1633,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                       </div>
                       <div className="min-w-0">
                         <span className="text-xs font-bold text-slate-900 dark:text-white block leading-snug">{doc}</span>
-                        <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-0.5 block">Dokumen Regulasi Acuan AI</span>
+                        <span className="text-xs text-slate-400 dark:text-slate-500 font-mono mt-0.5 block">Dokumen Regulasi Acuan AI</span>
                       </div>
                     </div>
                   ))}
@@ -1710,9 +1710,9 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                             <td className="px-4 py-2.5 font-medium text-slate-900 dark:text-white">{c.text}</td>
                             <td className="px-4 py-2.5 text-center">
                               {c.status === "passed" ? (
-                                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-[11px] font-bold">Lolos</span>
+                                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold">Lolos</span>
                               ) : (
-                                <span className="px-2 py-0.5 bg-rose-100 text-rose-800 rounded-full text-[11px] font-bold">Ditolak</span>
+                                <span className="px-2 py-0.5 bg-rose-100 text-rose-800 rounded-full text-xs font-bold">Ditolak</span>
                               )}
                             </td>
                             <td className="px-4 py-2.5 text-slate-600 dark:text-slate-400">{c.notes}</td>
@@ -1746,7 +1746,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                       {selectedDetailSubmission.ticketNumber}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     Diajukan pada {selectedDetailSubmission.submittedAt} &bull; {selectedDetailSubmission.satkerUserName}
                   </p>
                 </div>
@@ -1764,7 +1764,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
               {/* Status Banner */}
               <div className="p-4 rounded-xl border flex items-center justify-between gap-3 text-xs bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700">
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Status Verifikasi:</span>
+                  <span className="text-xs text-slate-400 uppercase font-bold block">Status Verifikasi:</span>
                   <span className="font-bold text-sm text-slate-900 dark:text-white mt-0.5 block">{selectedDetailSubmission.verificationStatus}</span>
                   {selectedDetailSubmission.verifikatorNotes && <p className="text-slate-600 dark:text-slate-300 mt-1">Catatan: {selectedDetailSubmission.verifikatorNotes}</p>}
                 </div>
@@ -1791,53 +1791,53 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
               {/* Hierarchy and Categories */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                 <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
-                  <span className="font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider block text-[11px]">Hierarki Anggaran RKA-K/L</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider block text-xs">Hierarki Anggaran RKA-K/L</span>
                   <div>
-                    <span className="text-[10px] text-slate-400 uppercase font-semibold block">Program:</span>
+                    <span className="text-xs text-slate-400 uppercase font-semibold block">Program:</span>
                     <span className="font-semibold text-slate-800 dark:text-slate-200 block truncate">{selectedDetailSubmission.program}</span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400 uppercase font-semibold block">Kegiatan:</span>
+                    <span className="text-xs text-slate-400 uppercase font-semibold block">Kegiatan:</span>
                     <span className="font-semibold text-slate-800 dark:text-slate-200 block truncate">{selectedDetailSubmission.kegiatan}</span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400 uppercase font-semibold block">KRO &bull; RO:</span>
+                    <span className="text-xs text-slate-400 uppercase font-semibold block">KRO &bull; RO:</span>
                     <span className="font-semibold text-slate-800 dark:text-slate-200 block truncate">
                       {selectedDetailSubmission.kro} &bull; {selectedDetailSubmission.ro}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400 uppercase font-semibold block">Tahun Anggaran:</span>
+                    <span className="text-xs text-slate-400 uppercase font-semibold block">Tahun Anggaran:</span>
                     <span className="font-semibold text-slate-800 dark:text-slate-200 block">{selectedDetailSubmission.tahunAnggaran || "2026"}</span>
                   </div>
                 </div>
 
                 <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
-                  <span className="font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider block text-[11px]">Klasifikasi Kategori &amp; User Logging</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider block text-xs">Klasifikasi Kategori &amp; User Logging</span>
                   <div>
-                    <span className="text-[10px] text-slate-400 uppercase font-semibold block">Kategori:</span>
+                    <span className="text-xs text-slate-400 uppercase font-semibold block">Kategori:</span>
                     <span className="font-semibold text-slate-800 dark:text-slate-200 block">{selectedDetailSubmission.kategori || selectedDetailSubmission.kategori1 || "-"}</span>
                   </div>
                   {selectedDetailSubmission.deskripsi && (
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase font-semibold block">Deskripsi:</span>
+                      <span className="text-xs text-slate-400 uppercase font-semibold block">Deskripsi:</span>
                       <span className="font-semibold text-slate-800 dark:text-slate-200 block">{selectedDetailSubmission.deskripsi}</span>
                     </div>
                   )}
                   {selectedDetailSubmission.kategori2 && (
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase font-semibold block">Kategori 2 (Lama):</span>
+                      <span className="text-xs text-slate-400 uppercase font-semibold block">Kategori 2 (Lama):</span>
                       <span className="font-semibold text-slate-800 dark:text-slate-200 block">{selectedDetailSubmission.kategori2}</span>
                     </div>
                   )}
                   {selectedDetailSubmission.kategori3 && (
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase font-semibold block">Kategori 3 (Lama):</span>
+                      <span className="text-xs text-slate-400 uppercase font-semibold block">Kategori 3 (Lama):</span>
                       <span className="font-semibold text-slate-800 dark:text-slate-200 block">{selectedDetailSubmission.kategori3}</span>
                     </div>
                   )}
                   <div className="pt-2 border-t border-slate-200 dark:border-slate-700">
-                    <span className="text-[10px] text-slate-400 uppercase font-semibold block">Created By:</span>
+                    <span className="text-xs text-slate-400 uppercase font-semibold block">Created By:</span>
                     <span className="font-semibold text-slate-800 dark:text-slate-200 block">{selectedDetailSubmission.createdBy || selectedDetailSubmission.satkerUserName}</span>
                   </div>
                 </div>
@@ -1875,7 +1875,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
 
             <form onSubmit={handleSaveEdit} className="p-6 space-y-4 text-xs">
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nama Dokumen PDF</label>
+                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Nama Dokumen PDF</label>
                 <input
                   type="text"
                   value={editFileName}
@@ -1887,7 +1887,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Kategori</label>
+                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Kategori</label>
                   <select
                     value={editKategori}
                     onChange={(e) => handleEditKategoriChange(e.target.value)}
@@ -1902,7 +1902,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Tahun Anggaran</label>
+                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Tahun Anggaran</label>
                   <input
                     type="text"
                     value={editTahunAnggaran}
@@ -1914,7 +1914,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">
                   Deskripsi <span className="text-slate-400 font-normal lowercase">(otomatis terisi)</span>
                 </label>
                 <div className="w-full p-3 bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-700 dark:text-slate-300 leading-relaxed min-h-[72px] select-text">
@@ -1922,7 +1922,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                 </div>
               </div>
 
-              <div className="pt-2 text-[11px] text-slate-500 dark:text-slate-400">
+              <div className="pt-2 text-xs text-slate-500 dark:text-slate-400">
                 Pembaruan ini akan dicatat ke dalam log history dengan akun pembaru: <strong className="text-slate-800 dark:text-slate-200">{currentUser.name}</strong>
               </div>
 
@@ -1961,7 +1961,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
 
             <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
               <span className="font-bold block text-slate-900 dark:text-white truncate">{deleteCandidate.rabFileName}</span>
-              <span className="text-[11px] text-slate-500 font-mono mt-0.5 block">{deleteCandidate.ticketNumber}</span>
+              <span className="text-xs text-slate-500 font-mono mt-0.5 block">{deleteCandidate.ticketNumber}</span>
             </div>
 
             <div className="flex justify-end gap-2.5 pt-2">
@@ -1999,11 +1999,11 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
             <div className="p-6 space-y-4 text-xs">
               <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700">
                 <span className="font-bold text-slate-900 dark:text-white block">{historyLogItem.rabFileName}</span>
-                <span className="text-[11px] text-slate-500 font-mono mt-0.5 block">{historyLogItem.ticketNumber}</span>
+                <span className="text-xs text-slate-500 font-mono mt-0.5 block">{historyLogItem.ticketNumber}</span>
               </div>
 
               <div className="space-y-3">
-                <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide block">Aktivitas Pengguna (User Logging):</span>
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide block">Aktivitas Pengguna (User Logging):</span>
 
                 <div className="border border-slate-200 dark:border-slate-800 rounded-xl divide-y divide-slate-100 dark:divide-slate-800">
                   {(historyLogItem.auditTrail && historyLogItem.auditTrail.length > 0
@@ -2020,7 +2020,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                     <div key={i} className="p-3.5 space-y-1">
                       <div className="flex items-center justify-between">
                         <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          className={`px-2 py-0.5 rounded text-xs font-bold ${
                             entry.action === "CREATE"
                               ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
                               : entry.action === "UPDATE"
@@ -2030,10 +2030,10 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                         >
                           {entry.action}
                         </span>
-                        <span className="text-[10px] text-slate-400 font-mono">{entry.timestamp}</span>
+                        <span className="text-xs text-slate-400 font-mono">{entry.timestamp}</span>
                       </div>
                       <div className="font-semibold text-slate-900 dark:text-white mt-1">Oleh: {entry.performedBy}</div>
-                      {entry.details && <p className="text-[11px] text-slate-500 dark:text-slate-400">{entry.details}</p>}
+                      {entry.details && <p className="text-xs text-slate-500 dark:text-slate-400">{entry.details}</p>}
                     </div>
                   ))}
                 </div>

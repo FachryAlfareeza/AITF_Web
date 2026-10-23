@@ -16,7 +16,7 @@ export function RegulationCardList({ regulations, isEditable, onToggle, onPrevie
       <div className="bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-14 text-center text-slate-400 dark:text-slate-500 transition-colors">
         <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-40" />
         <p className="text-sm font-bold">Belum ada dokumen peraturan yang cocok.</p>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Klik tombol "Unggah Peraturan Baru (PDF)" di atas untuk menambahkan berkas regulasi acuan.</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Klik tombol "Unggah Peraturan Baru (PDF)" di atas untuk menambahkan berkas regulasi acuan.</p>
       </div>
     );
   }
@@ -44,18 +44,18 @@ export function RegulationCardList({ regulations, isEditable, onToggle, onPrevie
 
               <div className="min-w-0 flex-1 space-y-1.5">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="wrap-break-word text-xs sm:text-sm font-bold text-slate-900 dark:text-white">{regulation.title}</span>
-                  <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
+                  <span className="wrap-break-word text-sm font-bold text-slate-900 dark:text-white">{regulation.title}</span>
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
                     {regulation.category}
                   </span>
                   {regulation.targetYear && (
-                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
                       TA {regulation.targetYear}
                     </span>
                   )}
                 </div>
 
-                {regulation.description && <p className="wrap-break-word text-xs text-slate-600 dark:text-slate-400 line-clamp-2 max-w-3xl leading-relaxed">{regulation.description}</p>}
+                {regulation.description && <p className="wrap-break-word text-sm text-slate-600 dark:text-slate-400 line-clamp-2 max-w-3xl leading-relaxed">{regulation.description}</p>}
 
                 <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400 dark:text-slate-500 font-mono pt-1">
                   <span className="flex min-w-0 items-start gap-1.5">

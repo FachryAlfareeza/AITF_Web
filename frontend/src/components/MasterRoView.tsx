@@ -254,7 +254,7 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
               <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
               <div className="text-xs space-y-1">
                 <strong className="block font-bold">Akses Dibatasi (View Only)</strong>
-                <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                   Anda sedang menggunakan akun dengan hak akses Lihat Saja (V). Menambah atau memodifikasi Master RO hanya dapat dilakukan oleh Super Admin atau Tim Perencana (ROCAN).
                 </p>
                 <button
@@ -281,12 +281,12 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
                   </div>
                   <div>
                     <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">{editingItem ? "Ubah Data Master RO" : "Tambah Master RO Baru"}</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Masukkan nomenklatur Program, Kegiatan, KRO, dan RO resmi.</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Masukkan nomenklatur Program, Kegiatan, KRO, dan RO resmi.</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-cyan-50 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
+                  <span className="text-xs font-bold px-3 py-1.5 rounded-xl bg-cyan-50 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
                     Total Terdaftar: {hierarchyData.length} Master RO
                   </span>
                 </div>
@@ -302,7 +302,7 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
               <form onSubmit={handleSubmitForm} className="space-y-5">
                 {/* Program */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     Program <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -318,7 +318,7 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
                 {/* Unit Eselon I & Unit Eselon II */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Unit Eselon I</label>
+                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Unit Eselon I</label>
                     <input
                       type="text"
                       value={formUnitEselon1}
@@ -328,7 +328,7 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Unit Eselon II</label>
+                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Unit Eselon II</label>
                     <input
                       type="text"
                       value={formUnitEselon2}
@@ -341,7 +341,7 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
 
                 {/* Kegiatan */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     Kegiatan <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -357,7 +357,7 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
                 {/* KRO & Status Prioritas */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                       Klasifikasi Rincian Output (KRO) <span className="text-rose-500">*</span>
                     </label>
                     <input
@@ -370,7 +370,7 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Status Prioritas</label>
+                    <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Status Prioritas</label>
                     <select
                       value={formPrioritas}
                       onChange={(e) => setFormPrioritas(e.target.value)}
@@ -384,7 +384,7 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
 
                 {/* Rincian Output (RO) */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     Rincian Output (RO) <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -428,8 +428,8 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
                 <Info className="w-5 h-5" />
               </div>
               <div className="text-xs">
-                <span className="font-bold uppercase tracking-wider block text-[11px] text-sky-800 dark:text-sky-300">Mode Akses: Hanya Lihat (View Only)</span>
-                <p className="mt-0.5 text-slate-600 dark:text-slate-300 leading-relaxed">
+                <span className="font-bold uppercase tracking-wider block text-xs text-sky-800 dark:text-sky-300">Mode Akses: Hanya Lihat (View Only)</span>
+                <p className="mt-0.5 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                   Sesuai peran <strong>Satker</strong>, Anda memiliki hak akses <strong>View (V)</strong> untuk meninjau katalog Master RO, Program, Kegiatan, dan KRO resmi Kementerian Komunikasi dan
                   Digital sebagai panduan pengisian formulir RAB. Modifikasi dan penambahan Master RO hanya dapat dilakukan oleh <strong>Super Admin</strong> dan <strong>ROCAN (verif)</strong>.
                 </p>
@@ -451,7 +451,7 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
                 <Layers className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                 <h3 className="text-sm sm:text-base font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">1. Ringkasan Parameter Master Rincian Output (RO)</h3>
                 <span
-                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${isEditable ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20" : "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20"}`}
+                  className={`text-xs font-bold px-2 py-0.5 rounded-full border ${isEditable ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20" : "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20"}`}
                 >
                   {isEditable ? "Hak Akses: Edit (E)" : "Hak Akses: View (V)"}
                 </span>
@@ -504,7 +504,7 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
                   <FolderGit2 className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                   <span>2. Katalog Parameter Master Rincian Output (RO)</span>
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Hierarki anggaran APBN Kementerian Komdigi: Program &bull; Unit Eselon &bull; Kegiatan &bull; KRO &bull; RO.</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Hierarki anggaran APBN Kementerian Komdigi: Program &bull; Unit Eselon &bull; Kegiatan &bull; KRO &bull; RO.</p>
               </div>
 
               <div className="flex items-center gap-2.5">
@@ -581,7 +581,7 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
                 {/* Master RO Table */}
                 <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800">
                   <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-                    <thead className="bg-slate-50 dark:bg-slate-800/80 text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
+                    <thead className="bg-slate-50 dark:bg-slate-800/80 text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
                       <tr>
                         <th className="px-4 py-3.5 w-12 text-center">No</th>
                         <th className="px-4 py-3.5 min-w-[220px]">Program &bull; Eselon I</th>
@@ -608,14 +608,14 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
                               <td className="px-4 py-3 text-center font-mono font-medium text-slate-400">{globalIndex}</td>
                               <td className="px-4 py-3">
                                 <div className="font-bold text-slate-800 dark:text-slate-200 leading-snug">{item.program}</div>
-                                <div className="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1">
+                                <div className="text-xs text-slate-400 mt-0.5 flex items-center gap-1">
                                   <Building2 className="w-3 h-3 text-cyan-600" />
                                   <span>{item.unitEselon1}</span>
                                 </div>
                               </td>
                               <td className="px-4 py-3">
                                 <div className="font-medium text-slate-700 dark:text-slate-300 leading-snug">{item.kegiatan}</div>
-                                <div className="text-[10px] text-slate-400 mt-0.5">Unit: {item.unitEselon2}</div>
+                                <div className="text-xs text-slate-400 mt-0.5">Unit: {item.unitEselon2}</div>
                               </td>
                               <td className="px-4 py-3">
                                 <span className="font-semibold text-cyan-700 dark:text-cyan-400 block leading-snug">{item.kro}</span>
@@ -625,7 +625,7 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
                               </td>
                               <td className="px-4 py-3 text-center">
                                 <span
-                                  className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                  className={`inline-block text-xs font-bold px-2 py-0.5 rounded-full ${
                                     item.prioritasCheck.toLowerCase().includes("prioritas nasional") && !item.prioritasCheck.toLowerCase().includes("bukan")
                                       ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300/40"
                                       : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
@@ -672,7 +672,7 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
                       Menampilkan <span className="font-bold text-slate-800 dark:text-slate-200">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span> -{" "}
                       <span className="font-bold text-slate-800 dark:text-slate-200">{Math.min(currentPage * ITEMS_PER_PAGE, filteredList.length)}</span> dari{" "}
                       <span className="font-bold text-slate-800 dark:text-slate-200">{filteredList.length}</span> total baris Master RO
-                      <span className="ml-2 font-mono text-[11px] text-cyan-700 dark:text-cyan-400 font-semibold">
+                      <span className="ml-2 font-mono text-xs text-cyan-700 dark:text-cyan-400 font-semibold">
                         (Halaman {currentPage} dari {totalPages})
                       </span>
                     </div>

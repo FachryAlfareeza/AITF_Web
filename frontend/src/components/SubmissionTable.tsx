@@ -60,7 +60,7 @@ export function SubmissionTable({
                 <td colSpan={9} className="text-center py-14 text-slate-400 dark:text-slate-500">
                   <FileSpreadsheet className="w-9 h-9 mx-auto mb-2.5 opacity-50" />
                   <p className="font-bold text-xs">Tidak ada dokumen PDF RAB yang sesuai dengan filter.</p>
-                  <p className="text-[11px] mt-1 text-slate-400">Silakan sesuaikan parameter pencarian atau gunakan menu "Form Pengajuan RAB Baru".</p>
+                  <p className="text-sm mt-1 text-slate-400">Silakan sesuaikan parameter pencarian atau gunakan menu "Form Pengajuan RAB Baru".</p>
                 </td>
               </tr>
             ) : (
@@ -89,25 +89,25 @@ export function SubmissionTable({
                           <span className="font-bold text-slate-900 dark:text-white block truncate max-w-xs" title={submission.rabFileName}>
                             {submission.rabFileName}
                           </span>
-                          <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono block">{submission.rabFileSize || "2.1 MB"} &bull; Format PDF</span>
+                          <span className="text-xs text-slate-400 dark:text-slate-500 font-mono block">{submission.rabFileSize || "2.1 MB"} &bull; Format PDF</span>
                           <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                             {(submission.kategori || submission.kategori1) && (
-                              <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-cyan-50 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
+                              <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-cyan-50 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
                                 {submission.kategori || submission.kategori1}
                               </span>
                             )}
                             {submission.deskripsi && (
-                              <span className="text-[10px] text-slate-500 dark:text-slate-400 italic block truncate max-w-50" title={submission.deskripsi}>
+                              <span className="text-xs text-slate-500 dark:text-slate-400 italic block truncate max-w-50" title={submission.deskripsi}>
                                 &bull; {submission.deskripsi}
                               </span>
                             )}
                             {submission.kategori2 && (
-                              <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                              <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                                 {submission.kategori2}
                               </span>
                             )}
                             {submission.kategori3 && (
-                              <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                              <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
                                 {submission.kategori3}
                               </span>
                             )}
@@ -117,24 +117,24 @@ export function SubmissionTable({
                     </td>
                     <td className="px-4 py-4">
                       <span className="font-semibold text-slate-900 dark:text-slate-200 block truncate max-w-xs" title={submission.kegiatan}>{submission.kegiatan}</span>
-                      <span className="text-[11px] text-slate-500 dark:text-slate-400 block truncate max-w-xs mt-0.5">{submission.kro} &bull; {submission.ro}</span>
+                      <span className="text-sm text-slate-500 dark:text-slate-400 block truncate max-w-xs mt-0.5">{submission.kro} &bull; {submission.ro}</span>
                       {submission.tahunAnggaran && (
-                        <span className="inline-block mt-1 px-1.5 py-0.5 text-[10px] font-mono font-semibold rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                        <span className="inline-block mt-1 px-1.5 py-0.5 text-xs font-mono font-semibold rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
                           TA {submission.tahunAnggaran}
                         </span>
                       )}
                     </td>
                     <td className="px-4 py-4">
                       <div className="space-y-1">
-                        <div className="text-[11px] text-slate-600 dark:text-slate-400">
+                        <div className="text-sm text-slate-600 dark:text-slate-400">
                           <span className="font-semibold text-slate-800 dark:text-slate-200">Created: </span>
                           <span className="truncate block" title={creator}>{creator}</span>
                         </div>
-                        <div className="text-[11px] text-slate-600 dark:text-slate-400">
+                        <div className="text-sm text-slate-600 dark:text-slate-400">
                           <span className="font-semibold text-slate-800 dark:text-slate-200">Updated: </span>
                           <span className="truncate block" title={updater}>{updater}</span>
                         </div>
-                        <button type="button" onClick={() => onOpenCrudHistory(submission)} className="inline-flex items-center gap-1 text-[10px] font-bold text-cyan-600 dark:text-cyan-400 hover:underline cursor-pointer pt-0.5">
+                        <button type="button" onClick={() => onOpenCrudHistory(submission)} className="inline-flex items-center gap-1 text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline cursor-pointer pt-0.5">
                           <History className="w-3 h-3" />
                           <span>Lihat History CRUD PDF</span>
                         </button>
