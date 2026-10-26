@@ -41,10 +41,12 @@ disimpan di peramban.
 
 Data dari sistem utama → parse → validasi → pemetaan → tampilan.
 
-- **Fase sekarang:** impor berkas **JSON**. Lapisan impor (`frontend/src/utils/import/`)
-  mem-parse, memvalidasi (memperlakukan input sebagai data tak tepercaya), dan memetakan
-  artefak JSON ke model frontend di `frontend/src/types.ts`. Belum ada UI unggah JSON untuk
-  pengguna akhir; lapisan ini disiapkan agar UI atau API tinggal dipasang nanti.
+- **Fase sekarang:** impor berkas **JSON** melalui UI "Unggah JSON" (tempel teks / pilih
+  berkas `.json` / muat contoh). Lapisan impor (`frontend/src/utils/import/`) mem-parse,
+  memvalidasi (memperlakukan input sebagai data tak tepercaya), dan memetakan artefak JSON ke
+  model frontend di `frontend/src/types.ts`; kesalahan ditampilkan per tahap (Parse / Validasi /
+  Deteksi Jenis) tanpa membuat view crash. Blok "Hasil Ulasan (Pratinjau)" bersifat rancangan —
+  kontrak hasil ulasan dari sistem utama masih draf.
 - **Fase berikutnya:** integrasi **API** langsung. Daftar endpoint belum final, sehingga
   jalur API belum diaktifkan. Batas parse → validasi → pemetaan sengaja dibuat bersih agar
   klien API bisa memakai adapter yang sama.
