@@ -353,6 +353,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
   // Modals for Daftar RAB
   const [selectedDetailSubmission, setSelectedDetailSubmission] = useState<SubmissionData | null>(null);
   const [historyPreviewItem, setHistoryPreviewItem] = useState<SubmissionData | null>(null);
+  const [historyTorPreviewItem, setHistoryTorPreviewItem] = useState<SubmissionData | null>(null);
   // CRUD Modals: Edit & Delete & User Log History
   const [editItem, setEditItem] = useState<SubmissionData | null>(null);
   const [deleteCandidate, setDeleteCandidate] = useState<SubmissionData | null>(null);
@@ -458,15 +459,23 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
     }
   };
 
-  // File Upload State: RAB PDF ONLY
+  // File Upload State: RAB PDF
   const [rabFile, setRabFile] = useState<File | null>(null);
   const [rabFileName, setRabFileName] = useState<string>("");
   const [rabDataUrl, setRabDataUrl] = useState<string | undefined>(undefined);
   const [rabBlobUrl, setRabBlobUrl] = useState<string | undefined>(undefined);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  // Live Form Preview Modal
+  // File Upload State: TOR PDF (mirror of RAB state)
+  const [torFile, setTorFile] = useState<File | null>(null);
+  const [torFileName, setTorFileName] = useState<string>("");
+  const [torDataUrl, setTorDataUrl] = useState<string | undefined>(undefined);
+  const [torBlobUrl, setTorBlobUrl] = useState<string | undefined>(undefined);
+  const [torUploadError, setTorUploadError] = useState<string | null>(null);
+
+  // Live Form Preview Modals
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [torPreviewOpen, setTorPreviewOpen] = useState(false);
 
   // AI Loading & Result States
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -560,6 +569,44 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
     }
   };
 
+  // TOR upload: strict PDF magic-bytes validation (mirrors handleReuploadFileChange),
+  // then store blob URL + data URL exactly like handleDirectFileUpload does for RAB.
+  const handleTorUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.currentTarget.value = "";
+    if (!file) return;
+
+    const header = new Uint8Array(await file.slice(0, 5).arrayBuffer());
+    const isPdf = file.name.toLowerCase().endsWith(".pdf") && new TextDecoder().decode(header) === "%PDF-";
+    if (!isPdf) {
+      if (torBlobUrl && torBlobUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(torBlobUrl);
+      }
+      setTorFile(null);
+      setTorFileName("");
+      setTorDataUrl(undefined);
+      setTorBlobUrl(undefined);
+      setTorUploadError("Berkas Dokumen TOR harus berupa PDF yang valid.");
+      return;
+    }
+
+    setTorFile(file);
+    setTorFileName(file.name);
+    setTorUploadError(null);
+
+    if (torBlobUrl && torBlobUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(torBlobUrl);
+    }
+    const blobUrl = URL.createObjectURL(file);
+    setTorBlobUrl(blobUrl);
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setTorDataUrl(event.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
   // Reset Formulir (Only available when rabFile !== null)
   const handleResetForm = () => {
     setSelectedProgram("");
@@ -580,6 +627,16 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
     setRabFile(null);
     setRabFileName("");
     setRabDataUrl(undefined);
+
+    if (torBlobUrl && torBlobUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(torBlobUrl);
+    }
+    setTorBlobUrl(undefined);
+    setTorFile(null);
+    setTorFileName("");
+    setTorDataUrl(undefined);
+    setTorUploadError(null);
+
     setCurrentSubmission(null);
     setShowReferenceDocsTrigger(false);
     setUploadError(null);
@@ -605,7 +662,12 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
       setUploadError("Wajib mengunggah berkas dokumen PDF RAB sebelum mengajukan telaah AI.");
       return;
     }
+    if (!torFile) {
+      setUploadError("Wajib mengunggah berkas dokumen PDF TOR sebelum mengajukan telaah AI.");
+      return;
+    }
     setUploadError(null);
+    setTorUploadError(null);
     setIsAnalyzing(true);
     const regLabel = activeRegulations.length > 0 ? activeRegulations.map((r) => r.title).join(" & ") : "PMK Standar Biaya Masukan (SBM)";
 
@@ -675,6 +737,9 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
       rabFileName: rabFileName,
       rabFileSize: rabFile ? formatFileSize(rabFile.size) : "1.8 MB",
       pdfDataUrl: rabBlobUrl || rabDataUrl,
+      torFileName: torFileName,
+      torFileSize: torFile ? formatFileSize(torFile.size) : undefined,
+      torPdfDataUrl: torBlobUrl || torDataUrl,
       activeRegulationTitle: analysis?.activeRegulationTitle || regLabel,
 
       // Klasifikasi Kategori (Dropdown) & Deskripsi (Teks)
@@ -692,7 +757,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
           action: "CREATE",
           performedBy: userLabel,
           timestamp: nowFormatted,
-          details: `Pendaftaran berkas RAB PDF: ${rabFileName}`,
+          details: `Pendaftaran berkas RAB PDF: ${rabFileName} & dokumen TOR PDF: ${torFileName}`,
         },
       ],
 
@@ -718,6 +783,13 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
       storePdfBlob(newSubmission.id, rabFile);
       storePdfBlob(newSubmission.ticketNumber, rabFile);
       storePdfBlob(newSubmission.rabFileName, rabFile);
+    }
+
+    // Store TOR under `tor:`-prefixed keys so RAB and TOR blobs never collide in IndexedDB.
+    if (torFile) {
+      storePdfBlob(`tor:${newSubmission.id}`, torFile);
+      storePdfBlob(`tor:${newSubmission.ticketNumber}`, torFile);
+      storePdfBlob(`tor:${torFileName}`, torFile);
     }
 
     try {
@@ -926,6 +998,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                   onOpenReviewHistory={handleOpenReviewHistory}
                   onOpenDetails={setSelectedDetailSubmission}
                   onPreview={setHistoryPreviewItem}
+                  onPreviewTor={setHistoryTorPreviewItem}
                   onEdit={handleOpenEdit}
                   onDelete={setDeleteCandidate}
                 />
@@ -1378,13 +1451,14 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                   </div>
                 </div>
 
-                {/* SUB-SECTION C: UNGGAH BERKAS DOKUMEN PDF RAB */}
+                {/* SUB-SECTION C: UNGGAH BERKAS DOKUMEN PDF (RAB & TOR) */}
                 <div className="p-5 bg-slate-50/70 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/80 rounded-2xl space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide block">C. Unggah Berkas Dokumen PDF RAB</span>
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide block">C. Unggah Berkas Dokumen PDF (RAB &amp; TOR)</span>
                     <span className="text-xs text-slate-400 font-medium">Format: .pdf</span>
                   </div>
 
+                  {/* Dokumen RAB */}
                   <div className="border border-slate-200 dark:border-slate-700 rounded-2xl p-5 bg-white dark:bg-slate-800/60 flex flex-col md:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-4 w-full md:w-auto">
                       <div
@@ -1398,6 +1472,10 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-xs font-black uppercase tracking-wider text-cyan-700 dark:text-cyan-400">Dokumen RAB</span>
+                          <span className="text-rose-500 font-bold" title="Wajib diunggah">*</span>
+                        </div>
+                        <div className="flex items-center gap-2 flex-wrap mt-0.5">
                           <span className="text-sm font-bold text-slate-900 dark:text-white truncate">{rabFileName || "Belum ada berkas PDF dipilih"}</span>
                           {rabFile ? (
                             <span className="px-2.5 py-0.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 text-xs rounded-full font-mono font-bold flex items-center gap-1">
@@ -1436,7 +1514,71 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                       )}
                     </div>
                   </div>
+
+                  {/* Dokumen TOR */}
+                  <div className="border border-slate-200 dark:border-slate-700 rounded-2xl p-5 bg-white dark:bg-slate-800/60 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-4 w-full md:w-auto">
+                      <div
+                        className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border ${
+                          torFile
+                            ? "bg-emerald-50 dark:bg-emerald-950/60 border-emerald-300 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400"
+                            : "bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400"
+                        }`}
+                      >
+                        <FileText className="w-6 h-6" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-xs font-black uppercase tracking-wider text-cyan-700 dark:text-cyan-400">Dokumen TOR</span>
+                          <span className="text-rose-500 font-bold" title="Wajib diunggah">*</span>
+                        </div>
+                        <div className="flex items-center gap-2 flex-wrap mt-0.5">
+                          <span className="text-sm font-bold text-slate-900 dark:text-white truncate">{torFileName || "Belum ada berkas PDF dipilih"}</span>
+                          {torFile ? (
+                            <span className="px-2.5 py-0.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 text-xs rounded-full font-mono font-bold flex items-center gap-1">
+                              <CheckCircle2 className="w-3 h-3" />
+                              {formatFileSize(torFile.size, 2)} &bull; PDF Terpilih
+                            </span>
+                          ) : (
+                            <span className="px-2.5 py-0.5 bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800 text-xs rounded-full font-semibold flex items-center gap-1">
+                              <AlertCircle className="w-3 h-3" /> Wajib Unggah PDF
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Pilih dokumen PDF TOR (Kerangka Acuan Kerja) resmi Satker Anda. Dokumen ini disimpan dan dapat dipratinjau berdampingan dengan RAB.</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2.5 w-full md:w-auto shrink-0">
+                      <label
+                        htmlFor="tor-file-upload-input"
+                        className="h-10 px-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-semibold cursor-pointer transition-colors shadow-2xs inline-flex items-center justify-center gap-2"
+                      >
+                        <Upload className="w-3.5 h-3.5 text-slate-500" />
+                        <span>{torFile ? "Ganti Berkas PDF" : "Pilih Berkas PDF"}</span>
+                      </label>
+                      <input id="tor-file-upload-input" type="file" accept=".pdf" onChange={handleTorUpload} className="hidden" />
+
+                      {torFile && (
+                        <button
+                          type="button"
+                          onClick={() => setTorPreviewOpen(true)}
+                          className="h-10 px-4 bg-sky-50 dark:bg-slate-800 text-cyan-700 dark:text-cyan-300 border border-cyan-300 dark:border-cyan-700 hover:bg-cyan-100 rounded-xl text-xs font-bold inline-flex items-center justify-center gap-2 transition-all cursor-pointer"
+                        >
+                          <Eye className="w-4 h-4" />
+                          <span>Preview PDF</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
+
+                {torUploadError && (
+                  <div className="p-3.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 rounded-xl text-rose-700 dark:text-rose-400 text-xs flex items-center gap-2.5">
+                    <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+                    <span>{torUploadError}</span>
+                  </div>
+                )}
 
                 {uploadError && (
                   <div className="p-3.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 rounded-xl text-rose-700 dark:text-rose-400 text-xs flex items-center gap-2.5">
@@ -1480,7 +1622,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                     ) : (
                       <>
                         <Sparkles className="w-4 h-4 text-amber-300" />
-                        <span>Submit &amp; Periksa RAB dengan AI (LLM)</span>
+                        <span>Submit &amp; Jalankan Analisis Demo RAB (Prototipe)</span>
                       </>
                     )}
                   </button>
@@ -1495,7 +1637,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
               <div className="inline-flex p-4 rounded-full bg-cyan-50 dark:bg-cyan-950 text-cyan-600 dark:text-cyan-400 mb-2">
                 <Loader2 className="w-8 h-8 animate-spin" />
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">Engine AI LLM Sedang Menelaah Dokumen RAB</h3>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">Analisis Demo Prototipe Sedang Menelaah Dokumen RAB</h3>
               <p className="text-xs text-cyan-700 dark:text-cyan-400 font-mono animate-pulse">{analysisProgressText}</p>
               <div className="max-w-md mx-auto bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
                 <div className="bg-cyan-500 h-full w-3/4 animate-pulse rounded-full" />
@@ -1573,14 +1715,14 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
               {/* Outline Label Badge */}
               <div className="absolute -top-3.5 left-5 sm:left-6 z-10 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-sm border bg-amber-600 text-white border-amber-400 select-none">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>HASIL PENELAAHAN AI &bull; 20 KRITERIA KEPATUHAN SBM</span>
+                <span>HASIL ANALISIS DEMO (PROTOTIPE) &bull; 20 KRITERIA KEPATUHAN SBM</span>
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
                 <div>
                   <h4 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-amber-500" />
-                    <span>Laporan Evaluasi Penapisan AI Dokumen RAB</span>
+                    <span>Laporan Analisis Demo Penapisan Dokumen RAB (Hasil Sementara Prototipe)</span>
                   </h4>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     Tiket: {currentSubmission.ticketNumber} &bull; Skor: {currentSubmission.aiScore}% ({currentSubmission.aiStatus})
@@ -1762,6 +1904,41 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                     <span className="text-xs text-slate-400 uppercase font-semibold block">Created By:</span>
                     <span className="font-semibold text-slate-800 dark:text-slate-200 block">{selectedDetailSubmission.createdBy || selectedDetailSubmission.satkerUserName}</span>
                   </div>
+                </div>
+              </div>
+
+              {/* Dokumen Terlampir: RAB & TOR */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <span className="text-xs text-slate-400 uppercase font-semibold block">Dokumen RAB:</span>
+                    <span className="font-semibold text-slate-800 dark:text-slate-200 block truncate" title={selectedDetailSubmission.rabFileName}>{selectedDetailSubmission.rabFileName}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setHistoryPreviewItem(selectedDetailSubmission)}
+                    className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-50 hover:bg-cyan-100 dark:bg-cyan-950/60 dark:hover:bg-cyan-900/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800 text-xs font-bold cursor-pointer"
+                  >
+                    <Eye className="w-3.5 h-3.5" /> Preview
+                  </button>
+                </div>
+
+                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <span className="text-xs text-slate-400 uppercase font-semibold block">Dokumen TOR:</span>
+                    <span className="font-semibold text-slate-800 dark:text-slate-200 block truncate" title={selectedDetailSubmission.torFileName || "Belum ada Dokumen TOR"}>
+                      {selectedDetailSubmission.torFileName || "Belum ada Dokumen TOR"}
+                    </span>
+                  </div>
+                  {selectedDetailSubmission.torFileName && (
+                    <button
+                      type="button"
+                      onClick={() => setHistoryTorPreviewItem(selectedDetailSubmission)}
+                      className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-bold cursor-pointer"
+                    >
+                      <Eye className="w-3.5 h-3.5" /> Preview
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -2035,6 +2212,48 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
         }}
         onUploadFile={handleDirectFileUpload}
       />
+
+      {/* PDF Preview Modal for TOR (Live Form) */}
+      <PdfPreviewModal
+        isOpen={torPreviewOpen}
+        onClose={() => setTorPreviewOpen(false)}
+        fileName={torFileName || "Dokumen Usulan TOR"}
+        fileDataUrl={torBlobUrl || torDataUrl}
+        title="Pratinjau Dokumen TOR (Kerangka Acuan Kerja)"
+        ticketNumber="FORM-USULAN-BARU-TOR"
+        metadata={{
+          program: selectedProgram,
+          kegiatan: selectedKegiatan,
+          kro: selectedKro,
+          ro: selectedRo,
+          unit: currentUnitEselon1,
+          satkerName: currentUser.name,
+          prioritas: currentPrioritas,
+        }}
+      />
+
+      {/* History PDF Preview Modal for TOR (stored submission) */}
+      {historyTorPreviewItem && (
+        <PdfPreviewModal
+          isOpen={!!historyTorPreviewItem}
+          onClose={() => setHistoryTorPreviewItem(null)}
+          fileName={historyTorPreviewItem.torFileName || "Dokumen TOR"}
+          fileDataUrl={historyTorPreviewItem.torPdfDataUrl}
+          ticketNumber={`tor:${historyTorPreviewItem.ticketNumber}`}
+          submissionId={`tor:${historyTorPreviewItem.id}`}
+          title={`Pratinjau Dokumen TOR: ${historyTorPreviewItem.ticketNumber}`}
+          metadata={{
+            program: historyTorPreviewItem.program,
+            kegiatan: historyTorPreviewItem.kegiatan,
+            kro: historyTorPreviewItem.kro,
+            ro: historyTorPreviewItem.ro,
+            unit: historyTorPreviewItem.unitEselon1,
+            satkerName: historyTorPreviewItem.satkerUserName,
+            prioritas: historyTorPreviewItem.prioritas,
+            submittedAt: historyTorPreviewItem.submittedAt,
+          }}
+        />
+      )}
 
     </div>
   );

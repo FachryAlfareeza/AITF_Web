@@ -122,6 +122,11 @@ export interface SubmissionData {
   rabFileName: string;
   rabFileSize: string;
   pdfDataUrl?: string;
+  // Optional TOR (Term of Reference) document fields — optional so previously-stored
+  // submissions (which have no TOR) stay valid when re-read from localStorage.
+  torFileName?: string;
+  torFileSize?: string;
+  torPdfDataUrl?: string;
   activeRegulationTitle?: string;
 
   // Category & Description & Budget Year

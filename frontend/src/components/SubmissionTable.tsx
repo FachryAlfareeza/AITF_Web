@@ -8,6 +8,7 @@ interface SubmissionTableProps {
   onOpenReviewHistory: (submission: SubmissionData) => void;
   onOpenDetails: (submission: SubmissionData) => void;
   onPreview: (submission: SubmissionData) => void;
+  onPreviewTor: (submission: SubmissionData) => void;
   onEdit: (submission: SubmissionData) => void;
   onDelete: (submission: SubmissionData) => void;
 }
@@ -34,6 +35,7 @@ export function SubmissionTable({
   onOpenReviewHistory,
   onOpenDetails,
   onPreview,
+  onPreviewTor,
   onEdit,
   onDelete,
 }: SubmissionTableProps) {
@@ -90,6 +92,19 @@ export function SubmissionTable({
                             {submission.rabFileName}
                           </span>
                           <span className="text-xs text-slate-400 dark:text-slate-500 font-mono block">{submission.rabFileSize || "2.1 MB"} &bull; Format PDF</span>
+                          {submission.torFileName ? (
+                            <button
+                              type="button"
+                              onClick={() => onPreviewTor(submission)}
+                              className="mt-1 inline-flex items-center gap-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                              title={`Pratinjau Dokumen TOR: ${submission.torFileName}`}
+                            >
+                              <Eye className="w-3 h-3" />
+                              <span className="truncate max-w-[10rem]">TOR: {submission.torFileName}</span>
+                            </button>
+                          ) : (
+                            <span className="mt-1 inline-block text-xs text-slate-400 dark:text-slate-500 italic">Belum ada Dokumen TOR</span>
+                          )}
                           <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                             {(submission.kategori || submission.kategori1) && (
                               <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-cyan-50 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
