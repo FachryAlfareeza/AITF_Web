@@ -25,6 +25,10 @@ disimpan di peramban.
     **Kategori 0** bila bukti kurang/gagal teknis (perlu reviu manual). MATCH pertama menang;
     Kategori 4 adalah fallback.
   - Verdict AI adalah **kandidat**; **ROCAN (Verifikator)** memegang keputusan akhir per baris.
+- **Tampilan ulasan terpadu (document-centric):** dokumen TOR dan RAB ditampilkan berpasangan
+  (dengan pratinjau) di tabel dan detail. Layar ulasan menyatukan: pasangan dokumen → konteks
+  program (nilai kosong tampil sebagai "—") → hasil Screening 1 → kategori Screening 2 →
+  formulir keputusan ROCAN. Dokumen acuan aktif ikut ditampilkan sebagai rujukan ulasan.
 - **Manajemen data master:** Master RO, master kriteria (Screening 1 & 2), dan akun pengguna
   (Super Admin).
 - **Analisis demo (sementara):** pemeriksaan di sisi peramban menghasilkan verdict model dua
