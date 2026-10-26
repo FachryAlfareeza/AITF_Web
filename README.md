@@ -17,11 +17,19 @@ disimpan di peramban.
   tersimpan secara lokal.
 - **Manajemen dokumen acuan (peran Verifikator / Rocan):** Verifikator dapat menambah,
   melihat, mengaktifkan/menonaktifkan, dan menghapus dokumen acuan, sesuai matriks hak akses.
-- **Manajemen data master:** Master RO, kriteria verifikasi, dan akun pengguna
+- **Model dua penapisan (Screening 1 & 2):**
+  - **Screening 1** — kualitas substansi TOR/RAB: 6 kriteria (II.A.1, II.C.1, II.C.2, IV.A.1,
+    IV.B.1, IV.C.1), verdict per kriteria `PASS` / `NOT_PASS` / `INSUFFICIENT_EVIDENCE`, disertai
+    dokumen rujukan wajib (TOR/RAB/REFERENCE) dan status teknis terpisah.
+  - **Screening 2** — kategorisasi prioritas RO: 12 pertanyaan (C01–C12) → **Kategori 1–4**, atau
+    **Kategori 0** bila bukti kurang/gagal teknis (perlu reviu manual). MATCH pertama menang;
+    Kategori 4 adalah fallback.
+  - Verdict AI adalah **kandidat**; **ROCAN (Verifikator)** memegang keputusan akhir per baris.
+- **Manajemen data master:** Master RO, master kriteria (Screening 1 & 2), dan akun pengguna
   (Super Admin).
-- **Analisis demo (sementara):** pemeriksaan RAB di sisi peramban masih ada sebagai
-  pratinjau/prototipe. Ini **bukan** hasil ulasan AI sungguhan — ulasan sebenarnya berjalan
-  di sistem utama.
+- **Analisis demo (sementara):** pemeriksaan di sisi peramban menghasilkan verdict model dua
+  penapisan di atas sebagai **pratinjau/prototipe** ("Mode Demo"). Ini **bukan** hasil ulasan AI
+  sungguhan — ulasan sebenarnya berjalan di sistem utama.
 - **Lapisan impor JSON:** tipe, validasi, dan adapter untuk memetakan artefak JSON dari
   sistem utama ke model frontend (lihat bagian di bawah).
 
