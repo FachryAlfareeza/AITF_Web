@@ -24,6 +24,10 @@ pnpm-debug.log*
 Thumbs.db
 *.log
 
-# Kiro IDE & additional context
+# Kiro IDE, workflow run artifacts & local-only context (never commit)
 .kiro/
+.agents/
+.worktrees/
+Context/
 .Context/
+ForTelaah/
