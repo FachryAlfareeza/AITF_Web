@@ -49,7 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentUser, activeRole, theme, 
           >
             <Menu className="w-5 h-5" />
           </button>
-          <img src="/logo-komdigi-emblem.svg" alt="Logo Kementerian Komunikasi dan Digital RI" className="w-8 h-8 sm:w-10 sm:h-10 object-contain drop-shadow-xs shrink-0" />
+          <img src={`${import.meta.env.BASE_URL}logo-komdigi-emblem.svg`} alt="Logo Kementerian Komunikasi dan Digital RI" className="w-8 h-8 sm:w-10 sm:h-10 object-contain drop-shadow-xs shrink-0" />
           <div className="min-w-0 flex-1">
             <div className="flex min-w-0 items-center gap-2">
               <h1 className="min-w-0 truncate text-xs sm:text-base font-extrabold text-slate-900 dark:text-white tracking-tight">Sistem Pengecekan File RAB AI</h1>

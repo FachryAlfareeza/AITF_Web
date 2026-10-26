@@ -8,6 +8,10 @@ const projectDirectory = fileURLToPath(new URL('..', import.meta.url));
 
 export default defineConfig(() => {
   return {
+    // Base public path for GitHub Pages project site:
+    // https://<user>.github.io/AITF_Web/. Override with VITE_BASE if the
+    // repo/site path ever changes. Use '/' for local dev and root hosting.
+    base: process.env.VITE_BASE ?? '/AITF_Web/',
     root: frontendDirectory,
     envDir: projectDirectory,
     plugins: [react(), tailwindcss()],

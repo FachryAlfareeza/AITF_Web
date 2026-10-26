@@ -94,7 +94,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ users, theme = "light", on
         <div className="text-center mb-6">
           <div className="flex justify-center mb-3">
             <img
-              src="/logo-komdigi-emblem.svg"
+              src={`${import.meta.env.BASE_URL}logo-komdigi-emblem.svg`}
               alt="Logo Kementerian Komunikasi dan Digital RI"
               className="w-14 h-14 sm:w-16 sm:h-16 object-contain drop-shadow-xs transition-transform hover:scale-105"
             />
