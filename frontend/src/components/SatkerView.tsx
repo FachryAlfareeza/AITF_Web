@@ -28,6 +28,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { PdfPreviewModal } from "./PdfPreviewModal";
+import { DocumentPair } from "./DocumentPair";
 import { inspectUploadedRabDocument } from "../utils/pdfInspector";
 import { VerifikatorView } from "./VerifikatorView";
 import { SubmissionTable } from "./SubmissionTable";
@@ -1940,40 +1941,16 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                 </div>
               </div>
 
-              {/* Dokumen Terlampir: RAB & TOR */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <span className="text-xs text-slate-400 uppercase font-semibold block">Dokumen RAB:</span>
-                    <span className="font-semibold text-slate-800 dark:text-slate-200 block truncate" title={selectedDetailSubmission.rabFileName}>{selectedDetailSubmission.rabFileName}</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setHistoryPreviewItem(selectedDetailSubmission)}
-                    className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-50 hover:bg-cyan-100 dark:bg-cyan-950/60 dark:hover:bg-cyan-900/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800 text-xs font-bold cursor-pointer"
-                  >
-                    <Eye className="w-3.5 h-3.5" /> Preview
-                  </button>
-                </div>
-
-                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <span className="text-xs text-slate-400 uppercase font-semibold block">Dokumen TOR:</span>
-                    <span className="font-semibold text-slate-800 dark:text-slate-200 block truncate" title={selectedDetailSubmission.torFileName || "Belum ada Dokumen TOR"}>
-                      {selectedDetailSubmission.torFileName || "Belum ada Dokumen TOR"}
-                    </span>
-                  </div>
-                  {selectedDetailSubmission.torFileName && (
-                    <button
-                      type="button"
-                      onClick={() => setHistoryTorPreviewItem(selectedDetailSubmission)}
-                      className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-bold cursor-pointer"
-                    >
-                      <Eye className="w-3.5 h-3.5" /> Preview
-                    </button>
-                  )}
-                </div>
-              </div>
+              {/* Dokumen Terlampir: TOR & RAB (pasangan) */}
+              <DocumentPair
+                variant="card"
+                rabFileName={selectedDetailSubmission.rabFileName}
+                rabFileSize={selectedDetailSubmission.rabFileSize}
+                torFileName={selectedDetailSubmission.torFileName}
+                torFileSize={selectedDetailSubmission.torFileSize}
+                onPreviewRab={() => setHistoryPreviewItem(selectedDetailSubmission)}
+                onPreviewTor={() => setHistoryTorPreviewItem(selectedDetailSubmission)}
+              />
             </div>
 
             <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/80 border-t border-slate-200 dark:border-slate-700 flex justify-end gap-2">

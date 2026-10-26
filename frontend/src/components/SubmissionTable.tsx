@@ -1,6 +1,7 @@
 import type { SubmissionData } from "../types";
 import { roCategoryLabel } from "../data/defaultCriteria";
 import { CheckCircle2, Clock, ExternalLink, Eye, FileSpreadsheet, History, Pencil, Trash2, XCircle } from "lucide-react";
+import { DocumentPair } from "./DocumentPair";
 
 interface SubmissionTableProps {
   submissions: SubmissionData[];
@@ -49,7 +50,7 @@ export function SubmissionTable({
               <th className="px-4 py-4 w-12 text-center">No</th>
               <th className="px-4 py-4 w-44">Kode</th>
               <th className="px-4 py-4 w-36">Tanggal</th>
-              <th className="px-4 py-4">Dokumen PDF RAB &amp; Kategori</th>
+              <th className="px-4 py-4">Dokumen TOR &amp; RAB &amp; Kategori</th>
               <th className="px-4 py-4">Hierarki Anggaran RKA-K/L</th>
               <th className="px-4 py-4 w-48">User Logging (Create &amp; Update)</th>
               <th className="px-4 py-4 w-40 text-center">Penapisan (Kandidat)</th>
@@ -84,29 +85,17 @@ export function SubmissionTable({
                       <span className="text-xs text-slate-600 dark:text-slate-300 font-medium block whitespace-nowrap">{submission.submittedAt}</span>
                     </td>
                     <td className="px-4 py-4">
-                      <div className="flex items-start gap-2.5">
-                        <div className="p-2 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 border border-rose-200 dark:border-rose-900 shrink-0 mt-0.5">
-                          <FileSpreadsheet className="w-4 h-4" />
-                        </div>
-                        <div className="min-w-0">
-                          <span className="font-bold text-slate-900 dark:text-white block truncate max-w-xs" title={submission.rabFileName}>
-                            {submission.rabFileName}
-                          </span>
-                          <span className="text-xs text-slate-400 dark:text-slate-500 font-mono block">{submission.rabFileSize || "2.1 MB"} &bull; Format PDF</span>
-                          {submission.torFileName ? (
-                            <button
-                              type="button"
-                              onClick={() => onPreviewTor(submission)}
-                              className="mt-1 inline-flex items-center gap-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
-                              title={`Pratinjau Dokumen TOR: ${submission.torFileName}`}
-                            >
-                              <Eye className="w-3 h-3" />
-                              <span className="truncate max-w-[10rem]">TOR: {submission.torFileName}</span>
-                            </button>
-                          ) : (
-                            <span className="mt-1 inline-block text-xs text-slate-400 dark:text-slate-500 italic">Belum ada Dokumen TOR</span>
-                          )}
-                          <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                      <div className="min-w-0">
+                        <DocumentPair
+                          variant="table"
+                          rabFileName={submission.rabFileName}
+                          rabFileSize={submission.rabFileSize}
+                          torFileName={submission.torFileName}
+                          torFileSize={submission.torFileSize}
+                          onPreviewRab={() => onPreview(submission)}
+                          onPreviewTor={() => onPreviewTor(submission)}
+                        />
+                        <div className="flex flex-wrap items-center gap-1.5 mt-2">
                             {(submission.kategori || submission.kategori1) && (
                               <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-cyan-50 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
                                 {submission.kategori || submission.kategori1}
@@ -129,7 +118,6 @@ export function SubmissionTable({
                             )}
                           </div>
                         </div>
-                      </div>
                     </td>
                     <td className="px-4 py-4">
                       <span className="font-semibold text-slate-900 dark:text-slate-200 block truncate max-w-xs" title={submission.kegiatan}>{submission.kegiatan}</span>

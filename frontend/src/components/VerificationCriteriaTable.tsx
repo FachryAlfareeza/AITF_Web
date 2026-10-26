@@ -57,15 +57,15 @@ export function VerificationCriteriaTable({ criteria, isEditable, isStatusEditab
         <table className="w-full text-left text-xs">
           <thead className="bg-slate-100/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-200 uppercase font-black text-xs sticky top-0 z-10 border-b-2 border-slate-300 dark:border-slate-700">
             <tr>
-              <th className="px-4 py-3.5 w-12 text-center">No</th>
-              <th className="px-4 py-3.5 min-w-50">Kriteria Penapisan 1 (Substansi)</th>
-              <th className="px-4 py-3.5 w-32 text-center">Status AI (Kandidat)</th>
-              <th className="px-4 py-3.5 min-w-45">Catatan Bukti AI</th>
-              <th className="px-4 py-3.5 min-w-37.5 text-center bg-cyan-100/60 dark:bg-cyan-950/60 border-l border-r border-cyan-200 dark:border-cyan-800">
+              <th scope="col" className="px-4 py-3.5 w-12 text-center">No</th>
+              <th scope="col" className="px-4 py-3.5 min-w-50">Kriteria Penapisan 1 (Substansi)</th>
+              <th scope="col" className="px-4 py-3.5 w-32 text-center">Status AI (Kandidat)</th>
+              <th scope="col" className="px-4 py-3.5 min-w-45">Catatan Bukti AI</th>
+              <th scope="col" className="px-4 py-3.5 min-w-37.5 text-center bg-cyan-100/60 dark:bg-cyan-950/60 border-l border-r border-cyan-200 dark:border-cyan-800">
                 Kolom Verifikator (ROCAN)
                 {isStatusEditable && <span className="block text-xs font-semibold text-cyan-700 dark:text-cyan-400 lowercase">{isStatusDisabled ? "(terkunci)" : "(bisa diubah)"}</span>}
               </th>
-              <th className="px-4 py-3.5 min-w-47.5 bg-slate-100/80 dark:bg-slate-800/80">Catatan Evaluasi Verifikator</th>
+              <th scope="col" className="px-4 py-3.5 min-w-47.5 bg-slate-100/80 dark:bg-slate-800/80">Catatan Evaluasi Verifikator</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
@@ -89,7 +89,12 @@ export function VerificationCriteriaTable({ criteria, isEditable, isStatusEditab
                         </span>
                       )}
                       {criterion.requiredRoles?.map((role) => (
-                        <span key={role} className="inline-block px-1.5 py-0.5 bg-cyan-50 dark:bg-cyan-950/50 text-cyan-700 dark:text-cyan-300 rounded text-xs font-semibold border border-cyan-200 dark:border-cyan-800">
+                        <span
+                          key={role}
+                          className="inline-block px-1.5 py-0.5 bg-cyan-50 dark:bg-cyan-950/50 text-cyan-700 dark:text-cyan-300 rounded text-xs font-semibold border border-cyan-200 dark:border-cyan-800"
+                          title={`Rujukan bukti wajib: ${role}`}
+                          aria-label={`Rujukan bukti wajib: ${role}`}
+                        >
                           {role}
                         </span>
                       ))}

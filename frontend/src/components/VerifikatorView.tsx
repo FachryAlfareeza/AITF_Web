@@ -13,6 +13,7 @@ import {
   AlertTriangle,
   Sparkles,
   Scale,
+  BookOpen,
   ChevronDown,
   ChevronUp,
   PlusCircle,
@@ -27,7 +28,9 @@ import {
 } from "lucide-react";
 import { PdfPreviewModal } from "./PdfPreviewModal";
 import { VerificationCriteriaTable } from "./VerificationCriteriaTable";
+import { DocumentPair } from "./DocumentPair";
 import { formatIndonesianDateTime } from "../utils/formatUtils";
+import { orDash } from "../utils/displayValue";
 
 interface VerifikatorViewProps {
   currentUser: UserAccount;
@@ -59,6 +62,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
   const isEditable = permission === "E";
 
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [torPreviewOpen, setTorPreviewOpen] = useState(false);
 
   // Section Minimize States
   const [isUnifiedSectionCollapsed, setIsUnifiedSectionCollapsed] = useState(false);
@@ -187,6 +191,10 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
   const screening2Results = Array.isArray(selectedSubmission?.screening2Results) ? selectedSubmission.screening2Results : [];
   // Deciding question: first MATCH (category chosen), else the INSUFFICIENT that forced manual review.
   const decidingQuestion = screening2Results.find((q) => q.status === "MATCH") ?? screening2Results.find((q) => q.status === "INSUFFICIENT_EVIDENCE");
+
+  // Active dokumen acuan set surfaced in the review detail (Item 10). The
+  // `regulations` prop is passed through from App; render only the active set.
+  const activeRegulations = Array.isArray(regulations) ? regulations.filter((r) => r.isActive) : [];
 
   // -------------------------------------------------------------
   // MASTER CHECKLIST STATES (activeMenu === "verifikator_checklist")
@@ -431,15 +439,6 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
 
                           <div className="flex items-center gap-2.5 self-start sm:self-auto">
                             <button
-                              id="btn-preview-submission-pdf"
-                              onClick={() => setPreviewOpen(true)}
-                              className="h-8 px-3.5 bg-cyan-50 dark:bg-cyan-950/60 hover:bg-cyan-100 dark:hover:bg-cyan-900/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
-                            >
-                              <Eye className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
-                              <span>Lihat PDF RAB Satker</span>
-                            </button>
-
-                            <button
                               type="button"
                               onClick={() => setIsUnifiedSectionCollapsed(!isUnifiedSectionCollapsed)}
                               className="h-8 px-3 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-bold"
@@ -453,62 +452,103 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
 
                         {!isUnifiedSectionCollapsed && (
                           <div className="space-y-6 animate-fadeIn">
-                            {/* BAGIAN 1: PARAMETER HIERARKI & SATKER */}
+                            {/* BAGIAN A: PASANGAN DOKUMEN TOR & RAB (Item 9 + 11a) */}
+                            <div className="p-5 bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl space-y-3">
+                              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide block">A. Pasangan Dokumen TOR &amp; RAB</span>
+                              <DocumentPair
+                                variant="card"
+                                rabFileName={selectedSubmission.rabFileName || "Dokumen_RAB.pdf"}
+                                rabFileSize={selectedSubmission.rabFileSize}
+                                torFileName={selectedSubmission.torFileName}
+                                torFileSize={selectedSubmission.torFileSize}
+                                onPreviewRab={() => setPreviewOpen(true)}
+                                onPreviewTor={() => setTorPreviewOpen(true)}
+                              />
+                            </div>
+
+                            {/* BAGIAN B: PARAMETER PROGRAM & IDENTITAS SATKER (Item 11b) */}
                             <div className="p-5 bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl space-y-4">
-                              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide block">A. Parameter Hierarki &amp; Identitas Satker Dokumen RAB</span>
+                              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide block">B. Parameter Program &amp; Identitas Satker Dokumen TOR dan RAB</span>
 
-                              {/* Urutan Sesuai Ketentuan:
-                          1. Diawali Program
-                          2. Kegiatan
-                          3. KRO / RO
-                          4. Satker & Unit Eselon (Setara)
-                      */}
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                                {/* 1. Program */}
-                                <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                                  <span className="text-xs text-slate-400 uppercase font-bold block">1. Program:</span>
-                                  <span className="text-sm font-bold text-slate-900 dark:text-white block mt-0.5">{selectedSubmission.program}</span>
-                                </div>
-
-                                {/* 2. Kegiatan */}
-                                <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                                  <span className="text-xs text-slate-400 uppercase font-bold block">2. Kegiatan:</span>
-                                  <span className="text-sm font-semibold text-slate-900 dark:text-slate-200 block mt-0.5">{selectedSubmission.kegiatan}</span>
-                                </div>
-
-                                {/* 3. KRO / RO */}
-                                <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                                  <span className="text-xs text-slate-400 uppercase font-bold block">3. KRO / RO:</span>
-                                  <span className="text-sm font-semibold text-slate-900 dark:text-slate-200 block mt-0.5">
-                                    {selectedSubmission.kro} &bull; {selectedSubmission.ro}
-                                  </span>
-                                </div>
-
-                                {/* 4. Satker & Unit Eselon Setara */}
-                                <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                                  <span className="text-xs text-slate-400 uppercase font-bold block">4. Satker &amp; Unit Eselon:</span>
-                                  <span className="text-sm font-bold text-cyan-700 dark:text-cyan-300 block mt-0.5">{selectedSubmission.satkerUserName}</span>
-                                  <span className="text-xs text-slate-500 dark:text-slate-400 block mt-0.5">
-                                    {selectedSubmission.unitEselon1} &bull; {selectedSubmission.prioritas}
-                                  </span>
-                                </div>
+                              {/* Satker tetap menonjol di atas grid konteks program */}
+                              <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <span className="text-xs text-slate-400 uppercase font-bold block">Satuan Kerja Pengusul</span>
+                                <span className="text-sm font-bold text-cyan-700 dark:text-cyan-300 block mt-0.5">{orDash(selectedSubmission.satkerUserName)}</span>
                               </div>
 
-                              {/* Dasar Regulasi Acuan AI */}
-                              <div className="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex flex-wrap items-center gap-2 text-xs">
-                                <span className="text-xs text-slate-400 uppercase font-bold">Dasar Regulasi Acuan AI:</span>
-                                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 flex items-center gap-1.5 shadow-2xs">
+                              <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+                                <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                                  <dt className="text-xs text-slate-400 uppercase font-bold">Program</dt>
+                                  <dd className="text-sm font-bold text-slate-900 dark:text-white mt-0.5">{orDash(selectedSubmission.program)}</dd>
+                                </div>
+                                <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                                  <dt className="text-xs text-slate-400 uppercase font-bold">Kegiatan</dt>
+                                  <dd className="text-sm font-semibold text-slate-900 dark:text-slate-200 mt-0.5">{orDash(selectedSubmission.kegiatan)}</dd>
+                                </div>
+                                <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                                  <dt className="text-xs text-slate-400 uppercase font-bold">KRO</dt>
+                                  <dd className="text-sm font-semibold text-slate-900 dark:text-slate-200 mt-0.5">{orDash(selectedSubmission.kro)}</dd>
+                                </div>
+                                <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                                  <dt className="text-xs text-slate-400 uppercase font-bold">RO</dt>
+                                  <dd className="text-sm font-semibold text-slate-900 dark:text-slate-200 mt-0.5">{orDash(selectedSubmission.ro)}</dd>
+                                </div>
+                                <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                                  <dt className="text-xs text-slate-400 uppercase font-bold">Unit Eselon I</dt>
+                                  <dd className="text-sm font-semibold text-slate-900 dark:text-slate-200 mt-0.5">{orDash(selectedSubmission.unitEselon1)}</dd>
+                                </div>
+                                <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                                  <dt className="text-xs text-slate-400 uppercase font-bold">Unit Eselon II</dt>
+                                  <dd className="text-sm font-semibold text-slate-900 dark:text-slate-200 mt-0.5">{orDash(selectedSubmission.unitEselon2)}</dd>
+                                </div>
+                                <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                                  <dt className="text-xs text-slate-400 uppercase font-bold">Tahun Anggaran</dt>
+                                  <dd className="text-sm font-semibold text-slate-900 dark:text-slate-200 mt-0.5">{orDash(selectedSubmission.tahunAnggaran)}</dd>
+                                </div>
+                                <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                                  <dt className="text-xs text-slate-400 uppercase font-bold">Prioritas</dt>
+                                  <dd className="text-sm font-semibold text-slate-900 dark:text-slate-200 mt-0.5">{orDash(selectedSubmission.prioritas)}</dd>
+                                </div>
+                                <div className="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 sm:col-span-2 lg:col-span-3">
+                                  <dt className="text-xs text-slate-400 uppercase font-bold">Deskripsi</dt>
+                                  <dd className="text-sm font-semibold text-slate-900 dark:text-slate-200 mt-0.5 leading-relaxed">{orDash(selectedSubmission.deskripsi)}</dd>
+                                </div>
+                              </dl>
+
+                              {/* Dokumen Acuan Aktif (Item 10) */}
+                              <div className="pt-3 border-t border-slate-200/60 dark:border-slate-700/60 space-y-2">
+                                <span className="text-xs text-slate-400 uppercase font-bold flex items-center gap-1.5">
                                   <Scale className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                                  {selectedSubmission.activeRegulationTitle || "PMK Standar Biaya Masukan (SBM)"}
+                                  Dokumen Acuan Aktif (Dasar Reviu AI)
                                 </span>
+                                <div className="flex flex-wrap items-center gap-2 text-xs">
+                                  {activeRegulations.length > 0 ? (
+                                    activeRegulations.map((reg) => (
+                                      <span
+                                        key={reg.id}
+                                        className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 flex items-center gap-1.5 shadow-2xs"
+                                        title={reg.category ? `${reg.title} — ${reg.category}` : reg.title}
+                                      >
+                                        <BookOpen className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                                        <span>{reg.title}</span>
+                                        {reg.category && <span className="text-emerald-600/80 dark:text-emerald-400/80">&bull; {reg.category}</span>}
+                                      </span>
+                                    ))
+                                  ) : (
+                                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 flex items-center gap-1.5 shadow-2xs">
+                                      <Scale className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                                      {selectedSubmission.activeRegulationTitle || "PMK Standar Biaya Masukan (SBM)"}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
                             </div>
 
-                            {/* BAGIAN 2: SCREENING 1 — KANDIDAT AI & EVALUASI ROCAN */}
+                            {/* BAGIAN C: SCREENING 1 — KANDIDAT AI & EVALUASI ROCAN */}
                             <div className="space-y-4">
                               <div className="flex items-center justify-between pb-2">
                                 <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide">
-                                  B. Kandidat Penapisan AI &amp; Evaluasi ROCAN Baris per Baris ({totalRows} Kriteria Screening 1)
+                                  C. Kandidat Penapisan AI &amp; Evaluasi ROCAN Baris per Baris ({totalRows} Kriteria Screening 1)
                                 </span>
 
                                 <div className="flex items-center gap-2">
@@ -542,6 +582,15 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                                 </p>
                               )}
 
+                              {/* Legenda rujukan dokumen (Item 10): kriteria bertanda TOR / RAB / REFERENCE
+                                  dicek terhadap dokumen tersebut; REFERENCE merujuk ke Dokumen Acuan Aktif di atas. */}
+                              <p className="text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 leading-relaxed">
+                                <strong className="text-slate-800 dark:text-slate-200">Legenda rujukan: </strong>
+                                Setiap kriteria menandai sumber bukti wajibnya — <span className="font-mono font-bold">TOR</span>, <span className="font-mono font-bold">RAB</span>, atau{" "}
+                                <span className="font-mono font-bold">REFERENCE</span>. Kriteria bertanda <span className="font-mono font-bold">REFERENCE</span> dinilai terhadap{" "}
+                                <strong className="text-slate-800 dark:text-slate-200">Dokumen Acuan Aktif</strong> pada parameter di atas.
+                              </p>
+
                               <VerificationCriteriaTable
                                 criteria={editableCriteria}
                                 isEditable={isEditable}
@@ -553,11 +602,11 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                                 onNotesChange={handleRowNotesChange}
                               />
 
-                              {/* BAGIAN 3: SCREENING 2 — KATEGORISASI PRIORITAS RO */}
+                              {/* BAGIAN D: SCREENING 2 — KATEGORISASI PRIORITAS RO */}
                               <div className="mt-6 p-5 bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl space-y-4">
                                 <div className="flex flex-wrap items-center justify-between gap-3">
                                   <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide">
-                                    C. Screening 2 — Kategorisasi Prioritas RO ({screening2Results.length} Pertanyaan)
+                                    D. Screening 2 — Kategorisasi Prioritas RO ({screening2Results.length} Pertanyaan)
                                   </span>
                                   <span
                                     className={`px-3 py-1 rounded-full text-xs font-black ${
@@ -1265,6 +1314,30 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
             s1Pass: selectedSubmission.s1Summary?.pass,
             s1Total: selectedSubmission.s1Summary?.total,
             roCategoryLabel: roCategoryLabel(selectedSubmission.roCategory ?? 0),
+            submittedAt: selectedSubmission.submittedAt,
+          }}
+        />
+      )}
+
+      {/* PDF Preview Modal for TOR — reuses the `tor:`-prefixed IndexedDB key
+          convention (same as SatkerView) so TOR and RAB blobs never collide. */}
+      {torPreviewOpen && selectedSubmission?.torFileName && (
+        <PdfPreviewModal
+          isOpen={torPreviewOpen}
+          onClose={() => setTorPreviewOpen(false)}
+          fileName={selectedSubmission.torFileName || "Dokumen_TOR.pdf"}
+          fileDataUrl={selectedSubmission.torPdfDataUrl}
+          ticketNumber={`tor:${selectedSubmission.ticketNumber}`}
+          submissionId={`tor:${selectedSubmission.id}`}
+          title={`Dokumen TOR: ${selectedSubmission.ticketNumber}`}
+          metadata={{
+            program: selectedSubmission.program,
+            kegiatan: selectedSubmission.kegiatan,
+            kro: selectedSubmission.kro,
+            ro: selectedSubmission.ro,
+            unit: selectedSubmission.unitEselon1,
+            satkerName: selectedSubmission.satkerUserName,
+            prioritas: selectedSubmission.prioritas,
             submittedAt: selectedSubmission.submittedAt,
           }}
         />
