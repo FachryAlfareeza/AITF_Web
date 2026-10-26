@@ -7,6 +7,8 @@ export interface SubmissionFilters {
   tahun: string;
   startDate: string;
   endDate: string;
+  screeningResult: "all" | "all_pass" | "has_not_pass" | "has_insufficient";
+  roKategori: "all" | "0" | "1" | "2" | "3" | "4";
 }
 
 export function filterSubmissions(
@@ -46,6 +48,18 @@ export function filterSubmissions(
       if (submittedDate && filters.startDate && submittedDate < filters.startDate) return false;
       if (submittedDate && filters.endDate && submittedDate > filters.endDate) return false;
     }
+
+    if (filters.screeningResult !== "all") {
+      const s1 = Array.isArray(submission.screening1Results) ? submission.screening1Results : [];
+      const hasNotPass = s1.some((c) => c.status === "NOT_PASS");
+      const hasInsufficient = s1.some((c) => c.status === "INSUFFICIENT_EVIDENCE");
+      const allPass = s1.length > 0 && s1.every((c) => c.status === "PASS");
+      if (filters.screeningResult === "has_not_pass" && !hasNotPass) return false;
+      if (filters.screeningResult === "has_insufficient" && !hasInsufficient) return false;
+      if (filters.screeningResult === "all_pass" && !allPass) return false;
+    }
+
+    if (filters.roKategori !== "all" && String(submission.roCategory ?? 0) !== filters.roKategori) return false;
 
     return true;
   });
@@ -100,10 +114,11 @@ export function getHistoricalSubmission(
     verifiedBy: entry.verifiedBy ?? (canUseSubmissionReviewDetails ? submission.verifiedBy : undefined),
     verifiedByNip: entry.verifiedByNip ?? (canUseSubmissionReviewDetails ? submission.verifiedByNip : undefined),
     verifikatorNotes: entry.verifikatorNotes ?? (canUseSubmissionReviewDetails ? submission.verifikatorNotes : ""),
-    aiStatus: entry.aiStatus || submission.aiStatus,
-    aiScore: entry.aiScore ?? submission.aiScore,
+    s1Summary: entry.s1Summary ?? submission.s1Summary,
     aiReason: entry.aiReason || submission.aiReason,
     aiRecommendation: entry.aiRecommendation || submission.aiRecommendation,
-    criteriaResults: entry.criteriaResults ?? (canUseSubmissionReviewDetails ? submission.criteriaResults : []),
+    screening1Results: entry.screening1Results ?? (canUseSubmissionReviewDetails ? submission.screening1Results : []),
+    screening2Results: entry.screening2Results ?? (canUseSubmissionReviewDetails ? submission.screening2Results : []),
+    roCategory: entry.roCategory ?? submission.roCategory,
   };
 }

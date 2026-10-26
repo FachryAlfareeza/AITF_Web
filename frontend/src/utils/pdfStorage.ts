@@ -111,8 +111,9 @@ export interface FallbackPdfParams {
   kro?: string;
   ro?: string;
   fileName?: string;
-  aiStatus?: string;
-  aiScore?: number;
+  s1Pass?: number;
+  s1Total?: number;
+  roCategoryLabel?: string;
   submittedAt?: string;
   prioritas?: string;
 }
@@ -143,11 +144,10 @@ export function generateFallbackRabPdf(params: FallbackPdfParams): Blob {
     `3. Klasifikasi Output : KRO ${sanitize(params.kro)}`,
     `4. Rincian Output     : RO ${sanitize(params.ro)}`,
     "",
-    "HASIL PENELAAHAN & EVALUASI SISTEM KECERDASAN BUATAN (AI):",
-    `Status Kelayakan      : ${sanitize(params.aiStatus || "LOLOS")}`,
-    `Skor Kelayakan Anggaran: ${params.aiScore !== undefined ? params.aiScore : 100} / 100`,
-    "Evaluasi 20 Kriteria  : 20 Kriteria Kelayakan SBM PMK No. 49/PMK.02/2023 Terpenuhi",
-    "Kesesuaian Akun BAS   : Akun 522111, 521211, dan 524111 Terverifikasi",
+    "HASIL PENAPISAN DEMO (MODE DEMO) SISTEM ULASAN TOR DAN RAB:",
+    `Screening 1 (Substansi): ${params.s1Pass !== undefined ? params.s1Pass : 6} dari ${params.s1Total !== undefined ? params.s1Total : 6} kriteria PASS`,
+    `Kategori Prioritas RO : ${sanitize(params.roCategoryLabel || "Kategori 1")}`,
+    "Catatan               : Keluaran demo prototipe, bukan ulasan AI final.",
     "",
     "CATATAN VERIFIKASI & LEGALITAS DIGITAL:",
     "Dokumen ini diterbitkan secara otomatis oleh Aplikasi OptiMa Verifikasi RAB Kementerian",

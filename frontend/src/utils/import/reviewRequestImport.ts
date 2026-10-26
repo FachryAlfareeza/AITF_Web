@@ -17,8 +17,9 @@
 //   - prioritas: no priority concept in the JSON -> "".
 //   - rabFileSize / torFileSize: byte size is not in the JSON -> "" (display code
 //     tolerates strings; we do not fabricate a size).
-//   - AI result fields (aiStatus/aiScore/aiReason/aiRecommendation/criteriaResults):
-//     NO review-result artifact exists in the contract -> neutral placeholders.
+//   - Screening result fields (screening1Results/s1Summary/screening2Results/
+//     roCategory/aiReason/aiRecommendation): NO review-result artifact exists in
+//     the contract -> neutral placeholders.
 //   - verificationStatus/verifikatorNotes: not yet reviewed -> "Menunggu"/"".
 
 import type { SubmissionData } from "../../types";
@@ -67,12 +68,13 @@ export function mapReviewRequestToSubmission(
 
     tahunAnggaran: String(ctx.fiscal_year),
 
-    // No AI review-result artifact exists in the contract: neutral placeholders.
-    aiStatus: "TIDAK LOLOS",
-    aiScore: 0,
+    // No screening-result artifact exists in the contract: neutral placeholders.
+    screening1Results: [],
+    s1Summary: { pass: 0, notPass: 0, insufficient: 0, technicalFailures: 0, total: 0 },
     aiReason: UNKNOWN,
     aiRecommendation: UNKNOWN,
-    criteriaResults: [],
+    screening2Results: [],
+    roCategory: 0,
 
     // Not yet verified.
     verificationStatus: "Menunggu",

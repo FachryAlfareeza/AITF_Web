@@ -92,7 +92,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
       key: "menu_checklist",
       label: "Input Checklist",
       icon: ListChecks,
-      badgeCount: counts.criteria ?? 20,
+      badgeCount: counts.criteria ?? 18,
     },
     {
       key: "menu_master_ro",

@@ -1,12 +1,11 @@
-import { UserAccount, SubmissionData } from "../types";
-import { runAiRabAnalysis } from "./defaultCriteria";
+import { UserAccount, SubmissionData, ScreeningCriterion, ScreeningQuestion } from "../types";
+import { buildScreening1Results, buildScreening2Results, computeRoCategory, summarizeS1 } from "./defaultCriteria";
 
 /**
  * Seed data pengguna dengan ID tepat 8 karakter:
  * - Super Admin (ID 8 karakter: "19850115")
  * - SatKer (ID 8 karakter: "19890422")
  * - Verifikator (ID 8 karakter: "19910718")
- * - Multi-Role (ID 8 karakter: "19871212", memegang role SatKer & Verifikator)
  */
 export const INITIAL_USERS: UserAccount[] = [
   {
@@ -44,14 +43,40 @@ export const INITIAL_USERS: UserAccount[] = [
   },
 ];
 
-// Initial mock submission for instant demonstration
-const sampleAiResult = runAiRabAnalysis(
-  "059.01.GG Program Dukungan Manajemen",
-  "2133 Layanan Manajemen Kinerja Internal",
-  "2133.EBA Layanan Dukungan Manajemen Internal",
-  "2133.EBA.994 Layanan Perkantoran",
-  "RAB_Layanan_Perkantoran_2026.pdf",
-);
+/** Bangun hasil Screening 1 "semua PASS" untuk seed yang disetujui penuh. */
+function allPassS1(): ScreeningCriterion[] {
+  return buildScreening1Results({ verdict: {} });
+}
+
+/** Hasil Screening 2 dengan satu MATCH pada kode tertentu (sisanya NO_MATCH). */
+function matchS2(code: string): ScreeningQuestion[] {
+  return buildScreening2Results({ [code]: { status: "MATCH", notes: "Terpilih sebagai kategori prioritas RO." } });
+}
+
+// --- Seed 1: Kategori 1 (C01 MATCH), semua S1 PASS, Diterima ---
+const s1_001 = allPassS1();
+const s2_001 = matchS2("C01");
+// --- Seed 2: Kategori 2 (C04 MATCH), S1 PASS, Diterima ---
+const s1_002 = allPassS1();
+const s2_002 = matchS2("C04");
+// --- Seed 3: Kategori 1 (C02 MATCH), satu INSUFFICIENT di S1, Menunggu ---
+const s1_003 = buildScreening1Results({
+  verdict: { "II.C.2": { status: "INSUFFICIENT_EVIDENCE", notes: "Manajemen risiko belum terdeteksi eksplisit pada TOR." } },
+});
+const s2_003 = matchS2("C02");
+// --- Seed 4: Kategori 0 (perlu reviu manual) — tanpa MATCH + ada INSUFFICIENT, Ditolak ---
+const s1_004 = buildScreening1Results({
+  verdict: {
+    "IV.C.1": { status: "NOT_PASS", notes: "Harga satuan narasumber melebihi batas SBM. Rekomendasi: sesuaikan ke tarif maksimal." },
+    "IV.B.1": { status: "INSUFFICIENT_EVIDENCE", notes: "Kesesuaian kode akun BAS belum dapat dipastikan." },
+  },
+});
+const s2_004 = buildScreening2Results({
+  C01: { status: "INSUFFICIENT_EVIDENCE", notes: "Keselarasan prioritas belum dapat dipastikan dari dokumen." },
+});
+// --- Seed 5: Kategori 3 (C11 MATCH), semua S1 PASS, Diterima ---
+const s1_005 = allPassS1();
+const s2_005 = matchS2("C11");
 
 export const INITIAL_SUBMISSIONS: SubmissionData[] = [
   {
@@ -93,16 +118,12 @@ export const INITIAL_SUBMISSIONS: SubmissionData[] = [
       "Petunjuk Teknis Penyusunan RKA-K/L Kementerian Komunikasi dan Digital RI",
       "Bagan Akun Standar (BAS) Perbendaharaan Kemenkeu RI",
     ],
-    aiStatus: "LOLOS",
-    aiScore: 98,
-    aiReason: "Akun belanja BAS 522111 & 521211 telah sesuai standar biaya masukan PMK 49/PMK.02/2023 dan alokasi pagu DIPA.",
-    aiRecommendation: "Usulan memenuhi 20 kriteria wajib kelayakan anggaran.",
-    criteriaResults: sampleAiResult.criteriaResults.map((c) => ({
-      ...c,
-      status: "passed",
-      verifierStatus: "Lolos",
-      verifierNotes: "Sesuai regulasi SBM dan pagu operasional.",
-    })),
+    screening1Results: s1_001.map((c) => ({ ...c, verifierStatus: "PASS", verifierNotes: "Sesuai regulasi SBM dan pagu operasional." })),
+    s1Summary: summarizeS1(s1_001),
+    aiReason: "[Mode Demo] Seluruh kriteria substansi Screening 1 terpenuhi (PASS). RO selaras Prioritas Nasional (Kategori 1).",
+    aiRecommendation: "Dokumen memenuhi kriteria substansi dan siap diverifikasi ROCAN. (Keluaran demo.)",
+    screening2Results: s2_001,
+    roCategory: computeRoCategory(s2_001),
     verificationStatus: "Diterima",
     verifikatorNotes: "Dokumen telah disinkronkan dengan SPAN & SIMPONI Kementerian Keuangan.",
     verifiedBy: "Ahmad Fauzi, S.E., Ak., CA",
@@ -147,15 +168,12 @@ export const INITIAL_SUBMISSIONS: SubmissionData[] = [
       },
     ],
     referenceDocuments: ["Peraturan Menteri Keuangan No. 49/PMK.02/2023 tentang Standar Biaya Masukan", "Pedoman Pengadaan Jasa Media Informasi Publik Komdigi"],
-    aiStatus: "LOLOS",
-    aiScore: 95,
-    aiReason: "Komponen konsumsi rapat koordinasi lintas kementerian dan transportasi lokal sesuai tarif SBM.",
-    aiRecommendation: "Dapat diproses verifikasi administratif lanjutan.",
-    criteriaResults: sampleAiResult.criteriaResults.map((c) => ({
-      ...c,
-      verifierStatus: "Lolos",
-      verifierNotes: "Disetujui sesuai batas pagu.",
-    })),
+    screening1Results: s1_002.map((c) => ({ ...c, verifierStatus: "PASS", verifierNotes: "Disetujui sesuai batas pagu." })),
+    s1Summary: summarizeS1(s1_002),
+    aiReason: "[Mode Demo] Kriteria substansi Screening 1 terpenuhi. RO masuk kelompok operasional (Kategori 2).",
+    aiRecommendation: "Dapat diproses verifikasi administratif lanjutan. (Keluaran demo.)",
+    screening2Results: s2_002,
+    roCategory: computeRoCategory(s2_002),
     verificationStatus: "Diterima",
     verifikatorNotes: "Koordinasi antar kementerian telah memiliki dasar MoA yang sah.",
     verifiedBy: "Ahmad Fauzi, S.E., Ak., CA",
@@ -187,11 +205,12 @@ export const INITIAL_SUBMISSIONS: SubmissionData[] = [
     kategori: "Kategori 1",
     deskripsi: "Pelatihan & Sertifikasi Digital Talent",
     kategori1: "Kategori 1",
-    aiStatus: "LOLOS",
-    aiScore: 92,
-    aiReason: "Honor narasumber dan uang harian peserta bimtek sesuai PMK SBM 2026.",
-    aiRecommendation: "Usulan telah memenuhi kriteria dan siap diverifikasi baris per baris.",
-    criteriaResults: sampleAiResult.criteriaResults,
+    screening1Results: s1_003,
+    s1Summary: summarizeS1(s1_003),
+    aiReason: "[Mode Demo] Mayoritas kriteria PASS; manajemen risiko (II.C.2) butuh konfirmasi. RO selaras Prioritas Nasional (Kategori 1).",
+    aiRecommendation: "Usulan siap diverifikasi baris per baris; konfirmasi bukti manajemen risiko. (Keluaran demo.)",
+    screening2Results: s2_003,
+    roCategory: computeRoCategory(s2_003),
     verificationStatus: "Menunggu",
     verifikatorNotes: "",
     reviewHistory: [
@@ -215,24 +234,25 @@ export const INITIAL_SUBMISSIONS: SubmissionData[] = [
     unitEselon1: "Badan Pengembangan SDM & Infrastruktur Digital",
     unitEselon2: "Balai Riset & Pelatihan",
     prioritas: "Bukan Prioritas Nasional",
-    rabFileName: "RAB_Pendidikan_Penelitian_Pengabdian_2026.pdf",
+    rabFileName: "RAB_Pendidikan_Penelitian_Pengabdian_2026_revisi.pdf",
     rabFileSize: "1.7 MB",
     activeRegulationTitle: "Peraturan Menteri Keuangan No. 49/PMK.02/2023 tentang Standar Biaya Masukan",
-    kategori: "Kategori 3",
+    kategori: "Perlu Reviu Manual",
     deskripsi: "Kerja Sama Perguruan Tinggi Negeri Kampus Merdeka",
-    kategori1: "Kategori 3",
-    aiStatus: "TIDAK LOLOS",
-    aiScore: 68,
-    aiReason: "Terdapat tarif honor narasumber (522151) sebesar Rp 2.500.000/jam yang melebihi batas SBM PMK 49 (maksimal Rp 1.400.000/jam).",
-    aiRecommendation: "Satker wajib melakukan penyesuaian tarif honor narasumber mengacu pada PMK 49/PMK.02/2023.",
-    criteriaResults: sampleAiResult.criteriaResults.map((c) =>
-      c.id === 5
-        ? { ...c, status: "failed", verifierStatus: "Ditolak", notes: "Tarif narasumber Rp 2.500.000 melebihi standar SBM (maksimal Rp 1.400.000/jam).", verifierNotes: "Melebihi batas SBM PMK 49." }
-        : { ...c, verifierStatus: "Lolos" },
+    kategori1: "Perlu Reviu Manual",
+    screening1Results: s1_004.map((c) =>
+      c.code === "IV.C.1"
+        ? { ...c, verifierStatus: "NOT_PASS", verifierNotes: "Melebihi batas SBM PMK 49." }
+        : { ...c, verifierStatus: c.status === "PASS" ? "PASS" : "INSUFFICIENT_EVIDENCE" },
     ),
+    s1Summary: summarizeS1(s1_004),
+    aiReason: "[Mode Demo] Ditemukan NOT_PASS pada harga satuan (IV.C.1) dan bukti tidak cukup pada kode akun (IV.B.1). Tanpa MATCH Screening 2 → Perlu Reviu Manual (Kategori 0).",
+    aiRecommendation: "Satker wajib menyesuaikan tarif honor narasumber dan melengkapi kesesuaian kode akun BAS. (Keluaran demo.)",
+    screening2Results: s2_004,
+    roCategory: computeRoCategory(s2_004),
     verificationStatus: "Ditolak",
     verifikatorNotes:
-      "Ditolak: Tarif honorarium narasumber pada akun 522151 melebihi batas SBM PMK No. 49/PMK.02/2023 (maksimal Rp 1.400.000/jam). Harap lakukan penyesuaian tarif dan unggah kembali berkas PDF revisi.",
+      "Ditolak: Tarif honorarium narasumber melebihi batas SBM PMK No. 49/PMK.02/2023. Kategori prioritas RO perlu ditinjau manual. Harap perbaiki dan unggah kembali berkas revisi.",
     verifiedBy: "Ahmad Fauzi, S.E., Ak., CA",
     verifiedByNip: "19910718",
     verifiedAt: "24/09/2026 11:15 WIB",
@@ -259,19 +279,15 @@ export const INITIAL_SUBMISSIONS: SubmissionData[] = [
     rabFileName: "RAB_Sinergitas_Fungsi_Siber_Kepolisian_2026.pdf",
     rabFileSize: "3.1 MB",
     activeRegulationTitle: "Peraturan Menteri Keuangan No. 49/PMK.02/2023 tentang Standar Biaya Masukan",
-    kategori: "Kategori 2",
+    kategori: "Kategori 3",
     deskripsi: "Patroli Siber Terpadu Bersama POLRI",
-    kategori1: "Kategori 2",
-    aiStatus: "LOLOS",
-    aiScore: 100,
-    aiReason: "Seluruh pos belanja operasional patroli siber terpadu telah sesuai batas SBM dan pagu alokasi.",
-    aiRecommendation: "Usulan disetujui penuh untuk implementasi sinergitas lintas instansi.",
-    criteriaResults: sampleAiResult.criteriaResults.map((c) => ({
-      ...c,
-      status: "passed",
-      verifierStatus: "Lolos",
-      verifierNotes: "Sesuai nota kesepahaman dan regulasi anggaran.",
-    })),
+    kategori1: "Kategori 3",
+    screening1Results: s1_005.map((c) => ({ ...c, verifierStatus: "PASS", verifierNotes: "Sesuai nota kesepahaman dan regulasi anggaran." })),
+    s1Summary: summarizeS1(s1_005),
+    aiReason: "[Mode Demo] Seluruh kriteria substansi terpenuhi. RO masuk program prioritas kementerian (Kategori 3).",
+    aiRecommendation: "Usulan disetujui penuh untuk implementasi sinergitas lintas instansi. (Keluaran demo.)",
+    screening2Results: s2_005,
+    roCategory: computeRoCategory(s2_005),
     verificationStatus: "Diterima",
     verifikatorNotes: "Disetujui. Sesuai perjanjian kerja sama operasional POLRI - Komdigi.",
     verifiedBy: "Ahmad Fauzi, S.E., Ak., CA",

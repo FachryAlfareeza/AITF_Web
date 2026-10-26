@@ -10,7 +10,34 @@ const STORAGE_KEYS = {
   submissions: "rab_app_submissions",
   currentUser: "rab_app_current_user",
   theme: "rab_app_theme",
+  masterCriteria: "rab_app_master_criteria",
+  schemaVersion: "rab_app_schema_version",
 } as const;
+
+/** P2 two-screening model. Bump whenever the persisted model shape changes. */
+const CURRENT_SCHEMA_VERSION = "2";
+
+/**
+ * Jalankan sekali saat modul dimuat (sebelum load* dipanggil). Membersihkan data
+ * model-lama (LOLOS / criteriaResults 20 kriteria) ketika versi skema berbeda,
+ * lalu menandai versi saat ini. Akun pengguna, sesi, dan tema TIDAK dibersihkan.
+ */
+export function ensureSchemaVersion(): void {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEYS.schemaVersion);
+    if (stored === CURRENT_SCHEMA_VERSION) return;
+    localStorage.removeItem(STORAGE_KEYS.submissions);
+    localStorage.removeItem(STORAGE_KEYS.regulations);
+    localStorage.removeItem(STORAGE_KEYS.masterRo);
+    localStorage.removeItem(STORAGE_KEYS.masterCriteria);
+    localStorage.setItem(STORAGE_KEYS.schemaVersion, CURRENT_SCHEMA_VERSION);
+  } catch (error) {
+    console.warn("Schema version check failed:", error);
+  }
+}
+
+// Clear stale old-model data as early as possible (module load, before any load*).
+ensureSchemaVersion();
 
 function readStoredJson<T>(key: string): T | null {
   try {
@@ -85,6 +112,11 @@ export function loadSubmissions(): SubmissionData[] {
       return submission;
     });
     const hydrated = cleaned.map((submission) => {
+      // Defense in depth: tolerate absent screening fields on hand-edited/partial stores.
+      if (!Array.isArray(submission.screening1Results)) submission.screening1Results = [];
+      if (!Array.isArray(submission.screening2Results)) submission.screening2Results = [];
+      if (typeof submission.roCategory !== "number") submission.roCategory = 0;
+      if (!submission.s1Summary) submission.s1Summary = { pass: 0, notPass: 0, insufficient: 0, technicalFailures: 0, total: submission.screening1Results.length };
       const mockHistory = INITIAL_SUBMISSIONS.find((mock) => mock.id === submission.id)?.reviewHistory;
       const reviewHistory = submission.reviewHistory?.length ? submission.reviewHistory : mockHistory || [];
 

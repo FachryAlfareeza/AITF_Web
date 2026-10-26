@@ -1,12 +1,13 @@
-import { ChecklistCriterion, RegulationDocument } from "../types";
-import { DEFAULT_RAB_CRITERIA } from "../data/defaultCriteria";
+import { RegulationDocument, RoCategory, ScreeningCriterion, ScreeningQuestion, ScreeningSummary } from "../types";
+import { buildScreening1Results, buildScreening2Results, computeRoCategory, roCategoryLabel, summarizeS1 } from "../data/defaultCriteria";
 
 export interface PdfInspectionResult {
-  aiStatus: "LOLOS" | "TIDAK LOLOS";
-  aiScore: number;
+  screening1Results: ScreeningCriterion[];
+  s1Summary: ScreeningSummary;
+  screening2Results: ScreeningQuestion[];
+  roCategory: RoCategory;
   aiReason: string;
   aiRecommendation: string;
-  criteriaResults: ChecklistCriterion[];
   activeRegulationTitle: string;
   extractedSummary: {
     fileName: string;
@@ -88,8 +89,9 @@ async function extractPdfContent(file: File | Blob): Promise<{
 }
 
 /**
- * Memeriksa dokumen PDF RAB yang diinput pada Poin 2 secara komprehensif
- * terhadap 20 Kriteria Wajib dan Dokumen Regulasi Acuan (SBM/Juknis).
+ * Memeriksa dokumen PDF RAB (Mode Demo) terhadap model dua penapisan:
+ * Screening 1 (6 kriteria substansi) + Screening 2 (kategori prioritas RO).
+ * Verdict ditentukan dari deteksi isi berkas yang sebenarnya + heuristik nama berkas.
  */
 export async function inspectUploadedRabDocument(
   file: File | null,
@@ -120,7 +122,6 @@ export async function inspectUploadedRabDocument(
   }
 
   // 2. Analisis pola konten yang terdeteksi di dalam berkas
-  // Cek kode BAS 6 digit (contoh: 521211, 521213, 521219, 522111, 522141, 522151, 524111, dll)
   const basPatterns = [
     { code: "521211", label: "Belanja Bahan" },
     { code: "521213", label: "Honor Output Kegiatan" },
@@ -139,7 +140,6 @@ export async function inspectUploadedRabDocument(
     }
   }
 
-  // Cek kata kunci RAB penting
   const keywords = [
     "rincian anggaran biaya",
     "rab",
@@ -160,151 +160,100 @@ export async function inspectUploadedRabDocument(
 
   const detectedKeywords: string[] = keywords.filter((kw) => rawContent.includes(kw));
 
-  // Cek tanda tangan PPK dan NIP
   const hasPpkSignature = rawContent.includes("pejabat pembuat komitmen") || rawContent.includes("ppk") || rawContent.includes("tanda tangan") || rawContent.includes("mengetahui");
 
   const nipMatch = rawContent.match(/\b(19\d{16}|20\d{16})\b/);
   const hasNip = !!nipMatch || rawContent.includes("nip");
   const detectedNip = nipMatch ? nipMatch[0] : undefined;
 
-  // Cek apakah berkas memiliki ciri-ciri dokumen RAB
-  // Dokumen dikategorikan RAB jika memuat minimal BAS atau kata kunci anggaran
   const isRecognizedRab =
     detectedBasCodes.length > 0 || detectedKeywords.length >= 3 || fileName.toLowerCase().includes("rab") || fileName.toLowerCase().includes("anggaran") || fileName.toLowerCase().includes("biaya");
 
-  // Cek apakah berkas mengandung indikasi revisi / tolak pada nama atau teks
   const isRejectedFlag = fileName.toLowerCase().includes("revisi") || fileName.toLowerCase().includes("draft") || fileName.toLowerCase().includes("tolak");
 
-  // 3. Evaluasi 20 Kriteria Wajib secara rinci berdasarkan isi dokumen riil
-  const criteriaResults: ChecklistCriterion[] = DEFAULT_RAB_CRITERIA.map((criterion) => {
-    let passed = true;
-    let notes = "";
+  // 3. Tentukan verdict Screening 1 (6 kriteria) berdasarkan deteksi isi dokumen.
+  let screening1Results: ScreeningCriterion[];
+  let screening2Results: ScreeningQuestion[];
 
-    if (!isRecognizedRab) {
-      // Jika dokumen yang diupload BUKAN berkas RAB (contohnya file teks umum / PDF lain yang dinamai Gemini.pdf)
-      switch (criterion.id) {
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-          passed = false;
-          notes = `Tidak ditemukan nomenklatur program/kegiatan/KRO/RO standar APBN pada berkas "${fileName}".`;
-          break;
-        case 6:
-          passed = false;
-          notes = `Tidak ditemukan Bagan Akun Standar (BAS 6 digit) pada berkas "${fileName}".`;
-          break;
-        case 7:
-        case 8:
-        case 9:
-          passed = false;
-          notes = `Rincian akun belanja operasional/jasa/perjadin tidak tercantum dalam isi berkas "${fileName}".`;
-          break;
-        case 10:
-          passed = false;
-          notes = `Tidak dapat memverifikasi tarif SBM karena berkas "${fileName}" tidak memuat tabel rincian biaya satuan.`;
-          break;
-        case 11:
-        case 12:
-        case 13:
-        case 14:
-        case 15:
-        case 16:
-        case 17:
-        case 18:
-          passed = false;
-          notes = `Komponen perhitungan dan spesifikasi anggaran tidak ditemukan pada dokumen "${fileName}".`;
-          break;
-        case 19:
-          passed = false;
-          notes = `Lembar pengesahan resmi bertanda tangan PPK tidak terdeteksi pada berkas "${fileName}".`;
-          break;
-        case 20:
-          passed = false;
-          notes = `NIP Pejabat Pembuat Komitmen (18 digit) tidak ditemukan pada berkas "${fileName}".`;
-          break;
-        default:
-          passed = false;
-          notes = `Kriteria kelayakan belum terpenuhi pada dokumen "${fileName}".`;
-      }
-    } else if (isRejectedFlag) {
-      // Berkas memiliki indikasi perbaikan / revisi
-      if (criterion.id === 10) {
-        passed = false;
-        notes = `Pada berkas "${fileName}", satuan honorarium narasumber melebihi batas tarif SBM pada regulasi ${activeRegLabel} (maksimal Rp 1.400.000/OJ).`;
-      } else if (criterion.id === 12) {
-        passed = false;
-        notes = `Ditemukan selisih perkalian volume x harga satuan pada komponen belanja bahan di berkas "${fileName}".`;
-      } else if (criterion.id === 13) {
-        passed = false;
-        notes = `Kalkulasi pemotongan PPh 21 (5%) dan PPN 12% belum dicantumkan secara transparan pada dokumen "${fileName}".`;
-      } else if (criterion.id === 19) {
-        passed = false;
-        notes = `Lembar pengesahan RAB pada berkas "${fileName}" belum dibubuhi tanda tangan elektronik PPK.`;
-      } else {
-        notes = `Komponen terverifikasi pada berkas "${fileName}" mengacu pada ${activeRegLabel}.`;
-      }
-    } else {
-      // Berkas RAB valid dan memenuhi ketentuan
-      if (criterion.id === 1) {
-        notes = `Tercantum Program "${program}" selaras dengan referensi anggaran pada berkas "${fileName}".`;
-      } else if (criterion.id === 2) {
-        notes = `Tercantum Kegiatan "${kegiatan}" terverifikasi dalam berkas "${fileName}".`;
-      } else if (criterion.id === 3 || criterion.id === 4) {
-        notes = `Nomenklatur KRO "${kro}" dan RO "${ro}" terinci dengan target volume jelas pada berkas "${fileName}".`;
-      } else if (criterion.id === 6) {
-        notes =
-          detectedBasCodes.length > 0
-            ? `Terdeteksi struktur BAS 6 digit pada berkas "${fileName}": ${detectedBasCodes.slice(0, 3).join(", ")}.`
-            : `Menggunakan struktur BAS 6 digit akun belanja standar Kemenkeu pada berkas "${fileName}".`;
-      } else if (criterion.id === 10) {
-        notes = `Batas tarif honorarium, konsumsi, dan sewa mematuhi standar biaya pada ${activeRegLabel}.`;
-      } else if (criterion.id === 12) {
-        notes = `Kalkulasi perkalian volume x frekuensi x tarif satuan pada berkas "${fileName}" presisi tanpa selisih.`;
-      } else if (criterion.id === 19) {
-        notes = hasPpkSignature ? `Terdapat lembar pengesahan resmi bertanda tangan PPK pada berkas "${fileName}".` : `Lembar pengesahan PPK terverifikasi sah pada dokumen "${fileName}".`;
-      } else if (criterion.id === 20) {
-        notes = detectedNip ? `Tercantum NIP resmi PPK: ${detectedNip} pada berkas "${fileName}".` : `Tercantum NIP 18 digit resmi dan identitas Pejabat Pembuat Komitmen pada berkas "${fileName}".`;
-      } else {
-        notes = `Memenuhi ketentuan dan persyaratan administratif pada berkas "${fileName}" berdasarkan ${activeRegLabel}.`;
-      }
-    }
+  if (!isRecognizedRab) {
+    // Berkas tidak dikenali sebagai RAB → kriteria bergantung RAB jadi INSUFFICIENT dengan PARSE_FAILED.
+    screening1Results = buildScreening1Results({
+      verdict: {
+        "II.C.1": { status: "INSUFFICIENT_EVIDENCE", notes: `Struktur Rincian Output tidak dapat dibaca dari berkas "${fileName}".` },
+        "II.C.2": { status: "INSUFFICIENT_EVIDENCE", notes: "Bagian manajemen risiko tidak terdeteksi." },
+        "IV.A.1": { status: "INSUFFICIENT_EVIDENCE", technicalStatus: "PARSE_FAILED", notes: `Dokumen tidak dikenali sebagai RAB; bukti tidak dapat diekstraksi dari "${fileName}".` },
+        "IV.B.1": { status: "INSUFFICIENT_EVIDENCE", technicalStatus: "PARSE_FAILED", notes: `Kode akun BAS tidak dapat diekstraksi dari "${fileName}".` },
+        "IV.C.1": { status: "INSUFFICIENT_EVIDENCE", technicalStatus: "PARSE_FAILED", notes: `Tabel harga satuan tidak dapat diekstraksi dari "${fileName}".` },
+      },
+    });
+    // Bukti tidak cukup tanpa MATCH → Kategori 0 (reviu manual).
+    screening2Results = buildScreening2Results({
+      C01: { status: "INSUFFICIENT_EVIDENCE", technicalStatus: "PARSE_FAILED", notes: `Keselarasan prioritas tidak dapat dinilai dari "${fileName}".` },
+    });
+  } else if (isRejectedFlag) {
+    screening1Results = buildScreening1Results({
+      verdict: {
+        "II.C.2": {
+          status: "NOT_PASS",
+          notes: `Pada berkas "${fileName}" tidak ditemukan matriks manajemen risiko. Rekomendasi: lengkapi identifikasi risiko dan mitigasinya.`,
+        },
+        "IV.B.1": {
+          status: "INSUFFICIENT_EVIDENCE",
+          notes: `Kesesuaian kode akun BAS pada "${fileName}" belum dapat dipastikan dari rincian yang tersedia.`,
+        },
+        "IV.C.1": {
+          status: "NOT_PASS",
+          notes: `Harga satuan narasumber pada "${fileName}" melebihi batas SBM (${activeRegLabel}). Rekomendasi: turunkan ke tarif maksimal.`,
+        },
+      },
+    });
+    screening2Results = buildScreening2Results({
+      C01: { status: "INSUFFICIENT_EVIDENCE", notes: `Keselarasan Prioritas Nasional pada "${fileName}" belum dapat dipastikan.` },
+    });
+  } else {
+    // Dokumen RAB valid: gunakan deteksi untuk memperkaya catatan.
+    screening1Results = buildScreening1Results({
+      verdict: {
+        "II.A.1": { status: "PASS", notes: `Program "${program}" dan RO "${ro}" dinilai selaras dengan referensi prioritas pada "${fileName}".` },
+        "II.C.1": { status: "PASS", notes: `Rincian Output kegiatan "${kegiatan}" teruraikan pada "${fileName}".` },
+        "II.C.2": { status: "INSUFFICIENT_EVIDENCE", notes: "Bagian manajemen risiko belum terdeteksi eksplisit; mohon konfirmasi." },
+        "IV.A.1": { status: "PASS", notes: `RAB "${fileName}" menjabarkan kebutuhan KRO "${kro}".` },
+        "IV.B.1": {
+          status: "PASS",
+          notes: detectedBasCodes.length > 0 ? `Terdeteksi kode akun BAS: ${detectedBasCodes.slice(0, 3).join(", ")}.` : `Struktur BAS 6 digit terverifikasi pada "${fileName}".`,
+        },
+        "IV.C.1": { status: "PASS", notes: `Harga satuan pada "${fileName}" mematuhi batas SBM (${activeRegLabel}).` },
+      },
+    });
+    screening2Results = buildScreening2Results({
+      C01: { status: "MATCH", notes: `RO "${ro}" dinilai mendukung Prioritas Nasional.` },
+    });
+  }
 
-    return {
-      id: criterion.id,
-      text: criterion.text,
-      category: criterion.category,
-      status: passed ? "passed" : "failed",
-      notes,
-      verifierStatus: passed ? "Lolos" : "Ditolak",
-      verifierNotes: "",
-    };
-  });
-
-  const passedCount = criteriaResults.filter((c) => c.status === "passed").length;
-  const score = Math.round((passedCount / 20) * 100);
-  const aiStatus: "LOLOS" | "TIDAK LOLOS" = score === 100 ? "LOLOS" : "TIDAK LOLOS";
+  const s1Summary = summarizeS1(screening1Results);
+  const roCategory = computeRoCategory(screening2Results);
 
   let aiReason = "";
   let aiRecommendation = "";
 
   if (!isRecognizedRab) {
-    aiReason = `Pemeriksaan AI terhadap berkas "${fileName}" (${fileSize}, ${pageCount} halaman) mendeteksi bahwa berkas yang diunggah pada Poin 2 tidak memiliki format Rincian Anggaran Biaya (RAB) standar. Tidak ditemukan akun belanja Bagan Akun Standar (BAS 6 digit), rincian volume x harga satuan, maupun pengesahan PPK.`;
-    aiRecommendation = `1. Pastikan Anda mengunggah dokumen format Rincian Anggaran Biaya (RAB) resmi Kementerian/Lembaga pada kolom input Poin 2.\n2. Sertakan tabel akun belanja BAS 6 digit (521xxx/522xxx/524xxx) beserta volume dan tarif satuan.\n3. Cantumkan lembar pengesahan lengkap dengan tanda tangan dan NIP Pejabat Pembuat Komitmen.`;
-  } else if (aiStatus === "LOLOS") {
-    aiReason = `Penelaahan berkas RAB "${fileName}" (${fileSize}, ${pageCount} halaman) memenuhi seluruh 20 kriteria kelayakan. Seluruh komponen biaya terverifikasi mematuhi ketentuan ${activeRegLabel}. Struktur akun BAS 6 digit, batas pagu SBM, perkalian matematis, dan pengesahan PPK terverifikasi lengkap.`;
-    aiRecommendation = `Dokumen RAB "${fileName}" telah memenuhi seluruh ketentuan teknis dan standar tarif SBM. Berkas siap diverifikasi oleh Verifikator Anggaran untuk penetapan Berita Acara Verifikasi Akhir.`;
+    aiReason = `[Mode Demo] Pemeriksaan berkas "${fileName}" (${fileSize}, ${pageCount} halaman) tidak mengenali format RAB standar. ${s1Summary.technicalFailures} kriteria mengalami kegagalan ekstraksi (PARSE_FAILED). Kategori prioritas RO diarahkan ke ${roCategoryLabel(roCategory)}.`;
+    aiRecommendation = "1. Unggah dokumen RAB resmi dengan tabel akun belanja BAS.\n2. Sertakan volume dan tarif satuan.\n3. Lampirkan pengesahan PPK. (Keluaran demo, bukan ulasan AI final.)";
+  } else if (isRejectedFlag) {
+    aiReason = `[Mode Demo] Penelaahan berkas "${fileName}" (${fileSize}, ${pageCount} halaman) menemukan ${s1Summary.notPass} kriteria NOT_PASS pada Screening 1. Kategori prioritas RO: ${roCategoryLabel(roCategory)}. Acuan: ${activeRegLabel}.`;
+    aiRecommendation = "1. Lengkapi manajemen risiko pada TOR.\n2. Pastikan kode akun sesuai BAS.\n3. Sesuaikan harga satuan ke batas SBM. (Keluaran demo, bukan ulasan AI final.)";
   } else {
-    aiReason = `Penelaahan berkas RAB "${fileName}" (${fileSize}) menemukan beberapa ketidaksesuaian terhadap regulasi acuan (${activeRegLabel}). Ditemukan kelemahan pada standar tarif satuan SBM, kalkulasi matematis, atau pengesahan pejabat yang memerlukan revisi.`;
-    aiRecommendation = `1. Sesuaikan satuan honorarium dan konsumsi agar tidak melampaui batas tarif maksimal pada ${activeRegLabel}.\n2. Lakukan rekalkulasi perkalian pada sub-komponen akun belanja di "${fileName}" agar tidak terjadi selisih.\n3. Lengkapi lembar pengesahan RAB dengan tanda tangan dan NIP Pejabat Pembuat Komitmen.`;
+    aiReason = `[Mode Demo] Penelaahan berkas "${fileName}" (${fileSize}, ${pageCount} halaman) menghasilkan ${s1Summary.pass} PASS dan ${s1Summary.insufficient} bukti tidak cukup pada Screening 1. Kategori prioritas RO: ${roCategoryLabel(roCategory)}. Acuan: ${activeRegLabel}.`;
+    aiRecommendation = "Dokumen memenuhi sebagian besar kriteria substansi. Lengkapi bukti manajemen risiko bila diperlukan. (Keluaran demo, bukan ulasan AI final.)";
   }
 
   return {
-    aiStatus,
-    aiScore: score,
+    screening1Results,
+    s1Summary,
+    screening2Results,
+    roCategory,
     aiReason,
     aiRecommendation,
-    criteriaResults,
     activeRegulationTitle: activeRegLabel,
     extractedSummary: {
       fileName,

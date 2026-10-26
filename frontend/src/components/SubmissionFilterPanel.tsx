@@ -18,7 +18,7 @@ export function SubmissionFilterPanel({ filters, resultCount, totalCount, onChan
           <Filter className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
           <span>Form Filter Pencarian Ulasan TOR & RAB</span>
         </div>
-        <span className="text-xs text-slate-400 dark:text-slate-500 font-mono">5 Parameter Penapisan</span>
+        <span className="text-xs text-slate-400 dark:text-slate-500 font-mono">7 Parameter Penapisan</span>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
@@ -92,6 +92,38 @@ export function SubmissionFilterPanel({ filters, resultCount, totalCount, onChan
               className="w-full h-10 px-2 sm:px-2.5 text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 font-medium shadow-2xs cursor-pointer"
             />
           </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">5. Hasil Screening 1</label>
+          <select
+            id="filter-screening-dropdown"
+            value={filters.screeningResult}
+            onChange={(event) => onChange("screeningResult", event.target.value as SubmissionFilters["screeningResult"])}
+            className="w-full h-10 px-3 text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 font-medium shadow-2xs cursor-pointer"
+          >
+            <option value="all">Semua Hasil Penapisan 1</option>
+            <option value="all_pass">Seluruh Kriteria PASS</option>
+            <option value="has_not_pass">Ada NOT_PASS</option>
+            <option value="has_insufficient">Ada Bukti Tidak Cukup</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">6. Kategori Prioritas RO</label>
+          <select
+            id="filter-ro-kategori-dropdown"
+            value={filters.roKategori}
+            onChange={(event) => onChange("roKategori", event.target.value as SubmissionFilters["roKategori"])}
+            className="w-full h-10 px-3 text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 font-medium shadow-2xs cursor-pointer"
+          >
+            <option value="all">Semua Kategori RO</option>
+            <option value="1">Kategori 1</option>
+            <option value="2">Kategori 2</option>
+            <option value="3">Kategori 3</option>
+            <option value="4">Kategori 4</option>
+            <option value="0">Perlu Reviu Manual (0)</option>
+          </select>
         </div>
       </div>
 

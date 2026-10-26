@@ -46,11 +46,13 @@ export function mapChecklistToMasterCriteria(
     ...(src.screening_1_items ?? []),
     ...(src.screening_2_items ?? []),
   ];
+  const screening1Count = (src.screening_1_items ?? []).length;
   return items.map((item, index) => ({
     id: index + 1,
     text: extractItemText(item),
     description: "",
     isActive: src.is_active,
+    screening: index < screening1Count ? (1 as const) : (2 as const),
   }));
 }
 
@@ -66,22 +68,23 @@ export function mapChecklistToCriteria(
   const screening2 = src.screening_2_items ?? [];
   const build = (
     items: Array<Record<string, unknown>>,
-    category: string,
     startId: number,
   ): ChecklistCriterion[] =>
     items.map((item, index) => ({
       id: startId + index,
+      code: "",
       text: extractItemText(item),
-      status: "failed",
+      requiredRoles: [],
+      status: "INSUFFICIENT_EVIDENCE",
+      technicalStatus: "",
       notes: "",
-      category,
-      verifierStatus: "Ditolak",
+      verifierStatus: "UNREVIEWED",
       verifierNotes: "",
     }));
 
   return [
-    ...build(screening1, "screening_1", 1),
-    ...build(screening2, "screening_2", screening1.length + 1),
+    ...build(screening1, 1),
+    ...build(screening2, screening1.length + 1),
   ];
 }
 

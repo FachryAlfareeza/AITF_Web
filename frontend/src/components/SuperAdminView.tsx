@@ -764,7 +764,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                                 ? "Hak kelola penuh akun, penetapan regulasi acuan AI, dan konfigurasi master sistem."
                                 : r === "satker"
                                   ? "Mengajukan usulan berkas RAB PDF baru, melihat riwayat evaluasi, dan revisi reupload."
-                                  : "Melakukan verifikasi, telaah baris per baris 20 kriteria AI, dan penetapan Berita Acara."}
+                                  : "Melakukan verifikasi, telaah baris per baris kriteria penapisan AI, dan penetapan Berita Acara."}
                             </p>
                           </button>
                         );

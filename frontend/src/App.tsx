@@ -20,6 +20,7 @@ import {
   saveUsers,
 } from "./utils/appStorage";
 import { getDefaultMenuForRole, toStandardMenuKey } from "./utils/navigation";
+import { INITIAL_MASTER_CRITERIA } from "./data/defaultCriteria";
 
 const SuperAdminView = lazy(() => import("./components/SuperAdminView").then((module) => ({ default: module.SuperAdminView })));
 const SatkerView = lazy(() => import("./components/SatkerView").then((module) => ({ default: module.SatkerView })));
@@ -241,7 +242,7 @@ export default function App() {
             users: users.length,
             regulations: regulations.filter((r) => r.isActive).length,
             submissions: submissions.length,
-            criteria: 20,
+            criteria: INITIAL_MASTER_CRITERIA.length,
             masterRo: masterRoList.length,
           }}
         />
@@ -301,7 +302,7 @@ export default function App() {
                   />
                 )}
 
-                {/* 3. INPUT CHECKLIST (MASTER 20 KRITERIA) */}
+                {/* 3. INPUT CHECKLIST (MASTER KRITERIA PENAPISAN) */}
                 {stdKey === "menu_checklist" && (
                   <VerifikatorView
                     currentUser={currentUser}

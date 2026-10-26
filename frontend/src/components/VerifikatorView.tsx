@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { UserAccount, SubmissionData, ChecklistCriterion, ActiveMenuKey, MasterCriterion, RegulationDocument, AccessPermission, VerificationHistoryEntry } from "../types";
-import { INITIAL_MASTER_CRITERIA } from "../data/defaultCriteria";
+import { UserAccount, SubmissionData, ChecklistCriterion, ActiveMenuKey, MasterCriterion, RegulationDocument, AccessPermission, VerificationHistoryEntry, VerifierVerdict } from "../types";
+import { INITIAL_MASTER_CRITERIA, roCategoryLabel } from "../data/defaultCriteria";
 import {
   CheckCircle2,
   XCircle,
@@ -38,7 +38,7 @@ interface VerifikatorViewProps {
   onHistoricalReviewChange?: (review: {
     verificationStatus: "Diterima" | "Ditolak" | "Menunggu";
     verifikatorNotes: string;
-    criteriaResults: ChecklistCriterion[];
+    screening1Results: ChecklistCriterion[];
   }) => void;
   activeMenu?: ActiveMenuKey;
   permission?: AccessPermission;
@@ -85,11 +85,11 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
     if (selectedSubmission) {
       setCurrentDecision(selectedSubmission.verificationStatus);
       setCurrentNotes(selectedSubmission.verifikatorNotes || "");
-      const cList = Array.isArray(selectedSubmission?.criteriaResults) ? selectedSubmission.criteriaResults : [];
+      const cList = Array.isArray(selectedSubmission?.screening1Results) ? selectedSubmission.screening1Results : [];
       setEditableCriteria(
         cList.map((c) => ({
           ...c,
-          verifierStatus: c.verifierStatus || (c.status === "passed" ? "Lolos" : "Ditolak"),
+          verifierStatus: c.verifierStatus || "UNREVIEWED",
           verifierNotes: c.verifierNotes || "",
         })),
       );
@@ -97,7 +97,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
     }
   }, [selectedSubmission]);
 
-  const handleRowStatusChange = (criterionId: number, newStatus: "Lolos" | "Ditolak") => {
+  const handleRowStatusChange = (criterionId: number, newStatus: VerifierVerdict) => {
     if (isHistoricalReviewLocked) return;
     const updatedCriteria = editableCriteria.map((item) => (item.id === criterionId ? { ...item, verifierStatus: newStatus } : item));
     setEditableCriteria(updatedCriteria);
@@ -117,7 +117,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
     onHistoricalReviewChange({
       verificationStatus: currentDecision,
       verifikatorNotes: currentNotes,
-      criteriaResults: editableCriteria.map((criterion) => ({ ...criterion })),
+      screening1Results: editableCriteria.map((criterion) => ({ ...criterion })),
     });
     setCriteriaSaveSuccess(true);
   };
@@ -135,11 +135,12 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
             verifiedBy: selectedSubmission.verifiedBy,
             verifiedByNip: selectedSubmission.verifiedByNip,
             verifikatorNotes: selectedSubmission.verifikatorNotes,
-            aiStatus: selectedSubmission.aiStatus,
-            aiScore: selectedSubmission.aiScore,
+            s1Summary: selectedSubmission.s1Summary,
             aiReason: selectedSubmission.aiReason,
             aiRecommendation: selectedSubmission.aiRecommendation,
-            criteriaResults: selectedSubmission.criteriaResults.map((criterion) => ({ ...criterion })),
+            screening1Results: selectedSubmission.screening1Results.map((criterion) => ({ ...criterion })),
+            screening2Results: selectedSubmission.screening2Results,
+            roCategory: selectedSubmission.roCategory,
           }]
         : [];
 
@@ -150,16 +151,17 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
       verifiedBy: currentUser.name,
       verifiedByNip: currentUser.id,
       verifikatorNotes: currentNotes,
-      aiStatus: selectedSubmission.aiStatus,
-      aiScore: selectedSubmission.aiScore,
+      s1Summary: selectedSubmission.s1Summary,
       aiReason: selectedSubmission.aiReason,
       aiRecommendation: selectedSubmission.aiRecommendation,
-      criteriaResults: editableCriteria.map((criterion) => ({ ...criterion })),
+      screening1Results: editableCriteria.map((criterion) => ({ ...criterion })),
+      screening2Results: selectedSubmission.screening2Results,
+      roCategory: selectedSubmission.roCategory,
     };
 
     const updated: SubmissionData = {
       ...selectedSubmission,
-      criteriaResults: editableCriteria,
+      screening1Results: editableCriteria,
       verificationStatus: currentDecision,
       verifikatorNotes: currentNotes,
       verifiedBy: currentUser.name,
@@ -175,12 +177,16 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
     setTimeout(() => setSaveSuccess(false), 2500);
   };
 
-  const totalRows = editableCriteria.length > 0 ? editableCriteria.length : 20;
+  const totalRows = editableCriteria.length > 0 ? editableCriteria.length : selectedSubmission?.screening1Results?.length ?? 0;
   const aiPassedRows = editableCriteria.length > 0
-    ? editableCriteria.filter((c) => c.status === "passed").length
-    : (selectedSubmission?.aiScore !== undefined ? Math.round((selectedSubmission.aiScore / 100) * totalRows) : (selectedSubmission?.aiStatus === "LOLOS" ? 20 : 0));
-  const verifierPassedRows = editableCriteria.filter((c) => c.verifierStatus === "Lolos").length;
-  const verifierRejectedRows = editableCriteria.filter((c) => c.verifierStatus === "Ditolak").length;
+    ? editableCriteria.filter((c) => c.status === "PASS").length
+    : selectedSubmission?.s1Summary?.pass ?? 0;
+  const verifierPassedRows = editableCriteria.filter((c) => (c.verifierStatus === "UNREVIEWED" ? c.status : c.verifierStatus) === "PASS").length;
+  const verifierRejectedRows = editableCriteria.filter((c) => (c.verifierStatus === "UNREVIEWED" ? c.status : c.verifierStatus) === "NOT_PASS").length;
+  const roCategory = selectedSubmission?.roCategory ?? 0;
+  const screening2Results = Array.isArray(selectedSubmission?.screening2Results) ? selectedSubmission.screening2Results : [];
+  // Deciding question: first MATCH (category chosen), else the INSUFFICIENT that forced manual review.
+  const decidingQuestion = screening2Results.find((q) => q.status === "MATCH") ?? screening2Results.find((q) => q.status === "INSUFFICIENT_EVIDENCE");
 
   // -------------------------------------------------------------
   // MASTER CHECKLIST STATES (activeMenu === "verifikator_checklist")
@@ -332,8 +338,8 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
             <span className="font-bold uppercase tracking-wider block text-xs text-sky-800 dark:text-sky-300">Mode Akses: Hanya Lihat (View Only)</span>
             <p className="mt-0.5 text-slate-600 dark:text-slate-300 leading-relaxed">
               {isChecklistMenu
-                ? "Sesuai peran Satker, Anda memiliki hak akses View (V) untuk membaca 20 kriteria kepatuhan AI dan verifikator sebagai panduan penyusunan berkas RAB. Tambah kriteria baru, edit, dan hapus hanya dapat dilakukan oleh Super Admin dan ROCAN (Verifikator)."
-                : "Sesuai peran Satker, Anda memiliki hak akses View (V) untuk melihat rincian evaluasi AI 20 kriteria dokumen RAB secara transparan. Penetapan status verifikasi akhir hanya dapat diproses oleh Tim Verifikator ROCAN dan Super Admin."}
+                ? "Sesuai peran Satker, Anda memiliki hak akses View (V) untuk membaca kriteria penapisan AI dan verifikator sebagai panduan penyusunan berkas TOR dan RAB. Tambah kriteria baru, edit, dan hapus hanya dapat dilakukan oleh Super Admin dan ROCAN (Verifikator)."
+                : "Sesuai peran Satker, Anda memiliki hak akses View (V) untuk melihat rincian penapisan AI dokumen TOR dan RAB secara transparan. Penetapan status verifikasi akhir hanya dapat diproses oleh Tim Verifikator ROCAN dan Super Admin."}
             </p>
           </div>
         </div>
@@ -354,7 +360,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 max-w-2xl leading-relaxed">
                 {isChecklistMenu
                   ? "Atur master kriteria pertanyaan telaah RAB yang digunakan oleh mesin AI dan pejabat verifikator. Tambahkan kriteria baru melalui formulir khusus serta kelola status aktif dan aksi CRUD pada tabel."
-                  : "Periksa hasil telaah AI atas dokumen RAB dalam satu kesatuan parameter dan evaluasi kriteria terpadu, tentukan status kelayakan (Lolos/Ditolak) beserta catatan evaluasi, dan tetapkan Berita Acara digital."}
+                  : "Periksa hasil penapisan AI atas dokumen TOR dan RAB dalam satu kesatuan parameter dan evaluasi Screening 1, tentukan verdict per kriteria (PASS/NOT_PASS/Bukti Tidak Cukup) beserta catatan evaluasi, dan tetapkan Berita Acara digital."}
               </p>
             </div>
 
@@ -402,13 +408,13 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                       {/* ============================================================= */}
                       {/* INSTRUKSI KHUSUS: PEMBAHASAN 1 & PEMBAHASAN 2 DISATUKAN        */}
                       {/* "Pembahasan 1 Parameter Hierarki & satker dan pembahasan 2     */}
-                      {/*  Evaluasi AI & Verifikator 20 kriteria agar disatukan"         */}
+                      {/*  Penapisan Screening 1 & 2 agar disatukan"                    */}
                       {/* ============================================================= */}
                       <div className={`relative bg-white dark:bg-slate-900 border-2 border-blue-500 dark:border-blue-500 ${isCombinedReviewDetail ? "rounded-t-2xl border-b-0 p-6 sm:p-8 pt-8 sm:pt-9 pb-0 sm:pb-0" : "rounded-2xl p-6 sm:p-8 pt-8 sm:pt-9"} shadow-sm transition-all space-y-6 sm:space-y-7`}>
                         {/* Outline Label Badge Terpadu */}
                         <div className="absolute -top-3.5 left-5 sm:left-6 z-10 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-sm border bg-blue-600 text-white border-blue-400 select-none">
                           <Sparkles className="w-3.5 h-3.5" />
-                          <span>PEMBAHASAN TERPADU &bull; PARAMETER HIERARKI &amp; EVALUASI AI 20 KRITERIA</span>
+                          <span>PEMBAHASAN TERPADU &bull; PARAMETER HIERARKI &amp; PENAPISAN TOR DAN RAB</span>
                         </div>
 
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
@@ -419,7 +425,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                             </div>
                             <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider mt-1 flex items-center gap-2">
                               <FileSpreadsheet className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                              <span>Parameter Hierarki Anggaran &amp; Evaluasi Kepatuhan 20 Kriteria</span>
+                              <span>Parameter Hierarki Anggaran &amp; Penapisan Substansi (Screening 1)</span>
                             </h3>
                           </div>
 
@@ -498,28 +504,22 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                               </div>
                             </div>
 
-                            {/* BAGIAN 2: EVALUASI AI & VERIFIKATOR 20 KRITERIA */}
+                            {/* BAGIAN 2: SCREENING 1 — KANDIDAT AI & EVALUASI ROCAN */}
                             <div className="space-y-4">
                               <div className="flex items-center justify-between pb-2">
                                 <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide">
-                                  B. Kandidat Penelaahan AI &amp; Evaluasi ROCAN Baris per Baris ({totalRows} Kriteria)
+                                  B. Kandidat Penapisan AI &amp; Evaluasi ROCAN Baris per Baris ({totalRows} Kriteria Screening 1)
                                 </span>
 
                                 <div className="flex items-center gap-2">
                                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
                                     Mode Demo
                                   </span>
-                                  <span
-                                    className={`px-3 py-1 rounded-full text-xs font-bold ${
-                                      selectedSubmission.aiStatus === "LOLOS"
-                                        ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
-                                        : "bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800"
-                                    }`}
-                                  >
-                                    Kandidat AI: {selectedSubmission.aiStatus} ({aiPassedRows}/{totalRows})
+                                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                                    Kandidat AI: {aiPassedRows}/{totalRows} PASS
                                   </span>
                                   <span className="px-3 py-1 rounded-full text-xs font-bold bg-cyan-100 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
-                                    Verifikator: {verifierPassedRows} Lolos / {verifierRejectedRows} Ditolak
+                                    Verifikator: {verifierPassedRows} PASS / {verifierRejectedRows} NOT_PASS
                                   </span>
                                 </div>
                               </div>
@@ -552,6 +552,71 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                                 onStatusChange={handleRowStatusChange}
                                 onNotesChange={handleRowNotesChange}
                               />
+
+                              {/* BAGIAN 3: SCREENING 2 — KATEGORISASI PRIORITAS RO */}
+                              <div className="mt-6 p-5 bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl space-y-4">
+                                <div className="flex flex-wrap items-center justify-between gap-3">
+                                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide">
+                                    C. Screening 2 — Kategorisasi Prioritas RO ({screening2Results.length} Pertanyaan)
+                                  </span>
+                                  <span
+                                    className={`px-3 py-1 rounded-full text-xs font-black ${
+                                      roCategory === 0
+                                        ? "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600"
+                                        : "bg-cyan-100 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800"
+                                    }`}
+                                  >
+                                    {roCategory === 0 ? "Kategori 0 — Perlu Reviu Manual" : roCategoryLabel(roCategory)}
+                                  </span>
+                                </div>
+
+                                {decidingQuestion ? (
+                                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                                    <strong className="text-slate-800 dark:text-slate-200">Pertanyaan penentu: </strong>
+                                    <span className="font-mono">{decidingQuestion.code}</span> — {decidingQuestion.text}{" "}
+                                    <span className="font-bold">({decidingQuestion.status === "MATCH" ? "MATCH" : "BUKTI TIDAK CUKUP"})</span>
+                                  </p>
+                                ) : (
+                                  <p className="text-xs text-slate-600 dark:text-slate-400">Tidak ada pertanyaan MATCH; kategori jatuh ke fallback (Kategori 4).</p>
+                                )}
+
+                                {screening2Results.length > 0 && (
+                                  <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden max-h-72 overflow-y-auto">
+                                    <table className="w-full text-left text-xs">
+                                      <thead className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold sticky top-0">
+                                        <tr>
+                                          <th className="px-3 py-2 w-16 text-center">Kode</th>
+                                          <th className="px-3 py-2 w-20 text-center">Kategori</th>
+                                          <th className="px-3 py-2">Pertanyaan</th>
+                                          <th className="px-3 py-2 w-28 text-center">Status</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                                        {screening2Results.map((q) => (
+                                          <tr key={q.id} className={q.status === "MATCH" ? "bg-emerald-50/50 dark:bg-emerald-950/20" : ""}>
+                                            <td className="px-3 py-2 text-center font-mono text-slate-500">{q.code}</td>
+                                            <td className="px-3 py-2 text-center text-slate-500">{q.categoryGroup}</td>
+                                            <td className="px-3 py-2 text-slate-700 dark:text-slate-300">{q.text}</td>
+                                            <td className="px-3 py-2 text-center">
+                                              <span
+                                                className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                                                  q.status === "MATCH"
+                                                    ? "bg-emerald-100 text-emerald-800"
+                                                    : q.status === "INSUFFICIENT_EVIDENCE"
+                                                      ? "bg-amber-100 text-amber-800"
+                                                      : "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300"
+                                                }`}
+                                              >
+                                                {q.status === "MATCH" ? "MATCH" : q.status === "INSUFFICIENT_EVIDENCE" ? "BUKTI TIDAK CUKUP" : "NO_MATCH"}
+                                              </span>
+                                            </td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
                         )}
@@ -577,7 +642,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                               <Award className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                               <span>Keputusan Akhir (ROCAN)</span>
                             </h4>
-                            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Tetapkan keputusan akhir (final, otoritatif) berkas RAB oleh ROCAN berdasarkan kandidat penelaahan AI 20 kriteria di atas.</p>
+                            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Tetapkan keputusan akhir (final, otoritatif) berkas TOR dan RAB oleh ROCAN berdasarkan kandidat penapisan AI (Screening 1 &amp; kategori RO) di atas.</p>
                           </div>
                           <div className="flex items-center gap-2.5 self-start sm:self-auto">
                             {saveSuccess && (
@@ -675,7 +740,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                                       setCurrentNotes(e.target.value);
                                       if (allowHistoricalStatusEdit) setCriteriaSaveSuccess(false);
                                     }}
-                                    placeholder="Contoh: Dokumen RAB telah disetujui penuh dengan pemenuhan 20 kriteria kepatuhan SBM..."
+                                    placeholder="Contoh: Dokumen TOR dan RAB memenuhi kriteria substansi Screening 1 dan RO masuk Kategori 1..."
                                     className="w-full p-3.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-cyan-500 resize-none leading-relaxed shadow-2xs"
                                   />
                                 ) : (
@@ -1197,8 +1262,9 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
             unit: selectedSubmission.unitEselon1,
             satkerName: selectedSubmission.satkerUserName,
             prioritas: selectedSubmission.prioritas,
-            aiStatus: selectedSubmission.aiStatus,
-            aiScore: selectedSubmission.aiScore,
+            s1Pass: selectedSubmission.s1Summary?.pass,
+            s1Total: selectedSubmission.s1Summary?.total,
+            roCategoryLabel: roCategoryLabel(selectedSubmission.roCategory ?? 0),
             submittedAt: selectedSubmission.submittedAt,
           }}
         />

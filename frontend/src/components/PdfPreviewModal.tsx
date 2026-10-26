@@ -38,8 +38,9 @@ interface PdfPreviewModalProps {
     unit?: string;
     satkerName?: string;
     prioritas?: string;
-    aiStatus?: string;
-    aiScore?: number;
+    s1Pass?: number;
+    s1Total?: number;
+    roCategoryLabel?: string;
     submittedAt?: string;
   };
   onUploadFile?: (file: File) => void;
@@ -165,8 +166,9 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
         kro: metadata?.kro,
         ro: metadata?.ro,
         fileName: fileName,
-        aiStatus: metadata?.aiStatus,
-        aiScore: metadata?.aiScore,
+        s1Pass: metadata?.s1Pass,
+        s1Total: metadata?.s1Total,
+        roCategoryLabel: metadata?.roCategoryLabel,
         submittedAt: metadata?.submittedAt,
         prioritas: metadata?.prioritas,
       });
@@ -508,40 +510,36 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
                 <div>
                   <h4 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-1.5 border-b border-slate-200 dark:border-slate-800 pb-2">
                     <Sparkles className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
-                    <span>II. Hasil Evaluasi Otomatis AI (20 Kriteria Kelayakan)</span>
+                    <span>II. Hasil Penapisan Demo (Screening 1 &amp; Kategori RO)</span>
                   </h4>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div className="p-4 rounded-xl bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-800 flex flex-col justify-between">
-                      <span className="text-xs uppercase font-bold text-cyan-800 dark:text-cyan-300">Status Kelayakan AI</span>
+                      <span className="text-xs uppercase font-bold text-cyan-800 dark:text-cyan-300">Ringkasan Screening 1</span>
                       <div className="my-2">
-                        <span
-                          className={`inline-block px-3 py-1 rounded-full text-xs font-extrabold ${
-                            (metadata?.aiStatus || "LOLOS") === "LOLOS" ? "bg-emerald-500 text-white" : "bg-rose-500 text-white"
-                          }`}
-                        >
-                          {metadata?.aiStatus || "LOLOS"}
+                        <span className="text-2xl font-black text-cyan-600 dark:text-cyan-400">
+                          {metadata?.s1Pass ?? 0}/{metadata?.s1Total ?? 6}
                         </span>
+                        <span className="text-xs text-slate-400"> PASS</span>
                       </div>
-                      <span className="text-xs text-cyan-700 dark:text-cyan-400">Evaluasi SBM PMK No. 49/PMK.02/2023</span>
+                      <span className="text-xs text-cyan-700 dark:text-cyan-400">Kandidat penapisan substansi (Mode Demo)</span>
                     </div>
 
                     <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
-                      <span className="text-xs uppercase font-bold text-slate-400">Skor Kelayakan Anggaran</span>
+                      <span className="text-xs uppercase font-bold text-slate-400">Kategori Prioritas RO</span>
                       <div className="my-2">
-                        <span className="text-2xl font-black text-cyan-600 dark:text-cyan-400">{metadata?.aiScore ?? 98}</span>
-                        <span className="text-xs text-slate-400"> / 100</span>
+                        <span className="inline-block px-3 py-1 rounded-full text-xs font-extrabold bg-cyan-600 text-white">{metadata?.roCategoryLabel || "Kategori 1"}</span>
                       </div>
-                      <span className="text-xs text-slate-500">20 Parameter Terpenuhi</span>
+                      <span className="text-xs text-slate-500">Hasil Screening 2 (kategorisasi RO)</span>
                     </div>
 
                     <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
-                      <span className="text-xs uppercase font-bold text-slate-400">Status Validasi BAS</span>
-                      <div className="my-2 flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                        <CheckCircle2 className="w-4 h-4" />
-                        <span>Akun 522 & 521 Valid</span>
+                      <span className="text-xs uppercase font-bold text-slate-400">Catatan Mode Demo</span>
+                      <div className="my-2 flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-amber-400">
+                        <Info className="w-4 h-4" />
+                        <span>Keluaran Prototipe</span>
                       </div>
-                      <span className="text-xs text-slate-500">Sesuai Bagan Akun Standar Kemenkeu</span>
+                      <span className="text-xs text-slate-500">Bukan ulasan AI final</span>
                     </div>
                   </div>
                 </div>

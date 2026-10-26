@@ -1,4 +1,5 @@
 import type { SubmissionData } from "../types";
+import { roCategoryLabel } from "../data/defaultCriteria";
 import { CheckCircle2, Clock, ExternalLink, Eye, FileSpreadsheet, History, Pencil, Trash2, XCircle } from "lucide-react";
 
 interface SubmissionTableProps {
@@ -51,7 +52,7 @@ export function SubmissionTable({
               <th className="px-4 py-4">Dokumen PDF RAB &amp; Kategori</th>
               <th className="px-4 py-4">Hierarki Anggaran RKA-K/L</th>
               <th className="px-4 py-4 w-48">User Logging (Create &amp; Update)</th>
-              <th className="px-4 py-4 w-28 text-center">Hasil AI (Kandidat)</th>
+              <th className="px-4 py-4 w-40 text-center">Penapisan (Kandidat)</th>
               <th className="px-4 py-4 w-44">Status Verifikasi</th>
               <th className="px-4 py-4 w-44 text-center">Aksi (CRUD)</th>
             </tr>
@@ -156,10 +157,36 @@ export function SubmissionTable({
                       </div>
                     </td>
                     <td className="px-4 py-4 text-center">
-                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${submission.aiStatus === "LOLOS" ? "bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" : "bg-rose-50 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800"}`}>
-                        {submission.aiStatus === "LOLOS" ? <CheckCircle2 className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
-                        {submission.aiScore}%
-                      </span>
+                      {(() => {
+                        const summary = submission.s1Summary || { pass: 0, total: Array.isArray(submission.screening1Results) ? submission.screening1Results.length : 0 };
+                        const hasIssue = summary.pass < summary.total;
+                        const roCat = submission.roCategory ?? 0;
+                        return (
+                          <div className="flex flex-col items-center gap-1">
+                            <span
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
+                                hasIssue
+                                  ? "bg-amber-50 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800"
+                                  : "bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
+                              }`}
+                              title="Ringkasan Screening 1 (PASS / total kriteria)"
+                            >
+                              {hasIssue ? <XCircle className="w-3.5 h-3.5" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                              S1: {summary.pass}/{summary.total} PASS
+                            </span>
+                            <span
+                              className={`inline-block px-2.5 py-1 rounded-full text-xs font-bold ${
+                                roCat === 0
+                                  ? "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700"
+                                  : "bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800"
+                              }`}
+                              title="Kategori prioritas RO (Screening 2)"
+                            >
+                              {roCategoryLabel(roCat)}
+                            </span>
+                          </div>
+                        );
+                      })()}
                     </td>
                     <td className="px-4 py-4">
                       <button

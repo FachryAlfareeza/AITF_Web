@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { UserAccount, UserRole, SubmissionData, ActiveMenuKey, RegulationDocument, ChecklistCriterion, ROLE_PERMISSIONS_MATRIX } from "../types";
 import { getUniquePrograms, getKegiatansForProgram, getKrosForKegiatan, getRosForKro, HIERARCHY_DATA } from "../data/budgetData";
-import { runAiRabAnalysis } from "../data/defaultCriteria";
+import { runAiRabAnalysis, summarizeS1, roCategoryLabel } from "../data/defaultCriteria";
 import {
   FileSpreadsheet,
   Upload,
@@ -50,7 +50,7 @@ interface SatkerViewProps {
   onSelectMenu?: (menu: ActiveMenuKey) => void;
 }
 
-type RabAnalysisResult = Pick<SubmissionData, "aiStatus" | "aiScore" | "aiReason" | "aiRecommendation" | "criteriaResults"> & {
+type RabAnalysisResult = Pick<SubmissionData, "screening1Results" | "s1Summary" | "screening2Results" | "roCategory" | "aiReason" | "aiRecommendation"> & {
   activeRegulationTitle?: string;
   ticketNumber?: string;
 };
@@ -61,6 +61,8 @@ const EMPTY_SUBMISSION_FILTERS: SubmissionFilters = {
   tahun: "all",
   startDate: "",
   endDate: "",
+  screeningResult: "all",
+  roKategori: "all",
 };
 
 export const SatkerView: React.FC<SatkerViewProps> = ({
@@ -82,7 +84,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
   });
 
   // -------------------------------------------------------------
-  // DETAIL EVALUASI AI 20 KRITERIA & REUPLOAD STATES
+  // DETAIL EVALUASI PENAPISAN & REUPLOAD STATES
   // -------------------------------------------------------------
   const [reviewHistorySubmission, setReviewHistorySubmission] = useState<SubmissionData | null>(null);
   const [reviewHistoryDetailIndex, setReviewHistoryDetailIndex] = useState<number | null>(null);
@@ -129,13 +131,13 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
   const handleHistoricalReviewChange = (review: {
     verificationStatus: "Diterima" | "Ditolak" | "Menunggu";
     verifikatorNotes: string;
-    criteriaResults: ChecklistCriterion[];
+    screening1Results: ChecklistCriterion[];
   }) => {
     if (!reviewHistorySubmission || reviewHistoryDetailIndex === null || !onUpdateSubmission) return;
 
     const history = getReviewHistory(reviewHistorySubmission);
     if (!history[reviewHistoryDetailIndex]) return;
-    const criteriaResults = review.criteriaResults.map((criterion) => ({ ...criterion }));
+    const screening1Results = review.screening1Results.map((criterion) => ({ ...criterion }));
 
     const updatedHistory = history.map((entry, index) =>
       index === reviewHistoryDetailIndex
@@ -143,7 +145,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
             ...entry,
             verificationStatus: review.verificationStatus,
             verifikatorNotes: review.verifikatorNotes,
-            criteriaResults,
+            screening1Results,
           }
         : entry,
     );
@@ -154,7 +156,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
         ? {
             verificationStatus: review.verificationStatus,
             verifikatorNotes: review.verifikatorNotes,
-            criteriaResults,
+            screening1Results,
           }
         : {}),
     };
@@ -202,14 +204,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
       const regulationLabel = activeRegulations.length > 0
         ? activeRegulations.map((regulation) => regulation.title).join(" & ")
         : "PMK Standar Biaya Masukan (SBM)";
-      let analysis: {
-        aiStatus: "LOLOS" | "TIDAK LOLOS";
-        aiScore: number;
-        aiReason: string;
-        aiRecommendation: string;
-        criteriaResults: ChecklistCriterion[];
-        activeRegulationTitle?: string;
-      } | null = null;
+      let analysis: RabAnalysisResult | null = null;
 
       if (!analysis) {
         setReuploadProgressText(`Memeriksa isi PDF "${reuploadFile.name}"...`);
@@ -239,8 +234,8 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
 
       if (!analysis) throw new Error("Hasil pemeriksaan AI tidak tersedia.");
 
-      let criteriaResults = Array.isArray(analysis.criteriaResults) ? analysis.criteriaResults : [];
-      if (criteriaResults.length === 0) {
+      let screening1Results = Array.isArray(analysis.screening1Results) ? analysis.screening1Results : [];
+      if (screening1Results.length === 0) {
         const fallbackAnalysis = runAiRabAnalysis(
           reuploadSubmission.program,
           reuploadSubmission.kegiatan,
@@ -250,7 +245,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
           regulations,
         );
         analysis = fallbackAnalysis;
-        criteriaResults = fallbackAnalysis.criteriaResults;
+        screening1Results = fallbackAnalysis.screening1Results;
       }
 
       setReuploadProgressText("Menyimpan hasil pemeriksaan dan mengirim RAB untuk reviu ulang...");
@@ -267,12 +262,13 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
         rabFileSize: formatFileSize(reuploadFile.size),
         pdfDataUrl: pdfUrl,
         updatedBy: userLabel,
-        aiStatus: analysis.aiStatus,
-        aiScore: analysis.aiScore,
+        screening1Results,
+        s1Summary: analysis.s1Summary,
         aiReason: analysis.aiReason,
         aiRecommendation: analysis.aiRecommendation,
+        screening2Results: analysis.screening2Results,
+        roCategory: analysis.roCategory,
         activeRegulationTitle: analysis.activeRegulationTitle || regulationLabel,
-        criteriaResults,
         verificationStatus: "Menunggu",
         verifikatorNotes: "",
         verifiedBy: undefined,
@@ -284,11 +280,12 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
             verifiedAt: nowFormatted,
             verificationStatus: "Menunggu",
             rabFileName: reuploadFile.name,
-            aiStatus: analysis.aiStatus,
-            aiScore: analysis.aiScore,
+            s1Summary: analysis.s1Summary,
             aiReason: analysis.aiReason,
             aiRecommendation: analysis.aiRecommendation,
-            criteriaResults,
+            screening1Results,
+            screening2Results: analysis.screening2Results,
+            roCategory: analysis.roCategory,
           },
         ],
         auditTrail: [
@@ -675,7 +672,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
     await new Promise((r) => setTimeout(r, 350));
     setAnalysisProgressText(`Mengekstraksi konten tabel biaya, kode BAS, dan pagu dari "${rabFileName}"...`);
     await new Promise((r) => setTimeout(r, 450));
-    setAnalysisProgressText(`Memvalidasi kepatuhan 20 Kriteria Wajib terhadap ${activeRegulations[0]?.title || "PMK SBM"}...`);
+    setAnalysisProgressText(`Menjalankan Screening 1 (6 kriteria substansi) terhadap ${activeRegulations[0]?.title || "PMK SBM"}...`);
     await new Promise((r) => setTimeout(r, 550));
     setAnalysisProgressText(`Menghasilkan laporan telaah cerdas dokumen "${rabFileName}"...`);
 
@@ -699,10 +696,10 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
       }
     }
 
-    let finalCriteria = Array.isArray(analysis?.criteriaResults) ? analysis.criteriaResults : [];
+    let finalCriteria = Array.isArray(analysis?.screening1Results) ? analysis.screening1Results : [];
     if (finalCriteria.length === 0) {
       const fallbackAnalysis = runAiRabAnalysis(selectedProgram, selectedKegiatan, selectedKro, selectedRo, rabFileName, regulations);
-      finalCriteria = fallbackAnalysis.criteriaResults;
+      finalCriteria = fallbackAnalysis.screening1Results;
       if (!analysis) {
         analysis = fallbackAnalysis;
       }
@@ -764,11 +761,12 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
       // Related Reference Documents Trigger
       referenceDocuments: refDocs,
 
-      aiStatus: analysis?.aiStatus || "LOLOS",
-      aiScore: typeof analysis?.aiScore === "number" ? analysis.aiScore : 100,
-      aiReason: analysis?.aiReason || "Penelaahan dokumen RAB berhasil diselesaikan.",
-      aiRecommendation: analysis?.aiRecommendation || "Patuhi seluruh standar biaya SBM yang berlaku.",
-      criteriaResults: finalCriteria,
+      screening1Results: finalCriteria,
+      s1Summary: analysis?.s1Summary || summarizeS1(finalCriteria),
+      aiReason: analysis?.aiReason || "[Mode Demo] Penelaahan dokumen RAB berhasil diselesaikan.",
+      aiRecommendation: analysis?.aiRecommendation || "Patuhi seluruh standar biaya SBM yang berlaku. (Keluaran demo.)",
+      screening2Results: analysis?.screening2Results || [],
+      roCategory: analysis?.roCategory ?? 0,
       verificationStatus: "Menunggu",
       verifikatorNotes: "",
       reviewHistory: [{ verifiedAt: nowFormatted, verificationStatus: "Menunggu", rabFileName }],
@@ -1715,7 +1713,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
               {/* Outline Label Badge */}
               <div className="absolute -top-3.5 left-5 sm:left-6 z-10 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-sm border bg-amber-600 text-white border-amber-400 select-none">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>HASIL ANALISIS DEMO (PROTOTIPE) &bull; 20 KRITERIA KEPATUHAN SBM</span>
+                <span>HASIL ANALISIS DEMO (PROTOTIPE) &bull; PENAPISAN TOR DAN RAB</span>
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
@@ -1725,7 +1723,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                     <span>Laporan Analisis Demo Penapisan Dokumen RAB (Hasil Sementara Prototipe)</span>
                   </h4>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    Tiket: {currentSubmission.ticketNumber} &bull; Skor: {currentSubmission.aiScore}% ({currentSubmission.aiStatus})
+                    Tiket: {currentSubmission.ticketNumber} &bull; Screening 1: {currentSubmission.s1Summary.pass}/{currentSubmission.s1Summary.total} PASS &bull; {roCategoryLabel(currentSubmission.roCategory)}
                   </p>
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 mt-1.5 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
                     Mode Demo — bukan ulasan AI final
@@ -1759,27 +1757,32 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                     )}
                   </div>
 
-                  {/* 20 Criteria Preview List */}
+                  {/* Screening 1 Preview List (6 criteria) */}
                   <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden max-h-96 overflow-y-auto">
                     <table className="w-full text-left text-xs">
                       <thead className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold sticky top-0">
                         <tr>
-                          <th className="px-4 py-3 w-12 text-center">No</th>
-                          <th className="px-4 py-3">Kriteria Wajib SBM</th>
-                          <th className="px-4 py-3 w-28 text-center">Hasil AI (Kandidat)</th>
+                          <th className="px-4 py-3 w-20 text-center">Kode</th>
+                          <th className="px-4 py-3">Kriteria Penapisan 1 (Substansi)</th>
+                          <th className="px-4 py-3 w-36 text-center">Hasil AI (Kandidat)</th>
                           <th className="px-4 py-3">Catatan Bukti AI</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                        {currentSubmission.criteriaResults.map((c) => (
+                        {currentSubmission.screening1Results.map((c) => (
                           <tr key={c.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/60">
-                            <td className="px-4 py-2.5 text-center font-mono text-slate-400">{c.id}</td>
-                            <td className="px-4 py-2.5 font-medium text-slate-900 dark:text-white">{c.text}</td>
+                            <td className="px-4 py-2.5 text-center font-mono text-slate-400">{c.code}</td>
+                            <td className="px-4 py-2.5 font-medium text-slate-900 dark:text-white">
+                              {c.text}
+                              <span className="block mt-0.5 text-xs text-cyan-700 dark:text-cyan-400 font-mono">{c.requiredRoles.join(" + ")}</span>
+                            </td>
                             <td className="px-4 py-2.5 text-center">
-                              {c.status === "passed" ? (
-                                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold">Lolos</span>
+                              {c.status === "PASS" ? (
+                                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold">PASS</span>
+                              ) : c.status === "NOT_PASS" ? (
+                                <span className="px-2 py-0.5 bg-rose-100 text-rose-800 rounded-full text-xs font-bold">NOT_PASS</span>
                               ) : (
-                                <span className="px-2 py-0.5 bg-rose-100 text-rose-800 rounded-full text-xs font-bold">Ditolak</span>
+                                <span className="px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full text-xs font-bold">BUKTI TIDAK CUKUP</span>
                               )}
                             </td>
                             <td className="px-4 py-2.5 text-slate-600 dark:text-slate-400">{c.notes}</td>
@@ -1787,6 +1790,23 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                         ))}
                       </tbody>
                     </table>
+                  </div>
+
+                  {/* Screening 2: computed RO category */}
+                  <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-xs flex items-center justify-between gap-3">
+                    <div>
+                      <span className="font-bold text-slate-900 dark:text-white block">Screening 2 — Kategorisasi Prioritas RO</span>
+                      <span className="text-slate-500 dark:text-slate-400">Dihitung otomatis dari 12 pertanyaan (C01–C12).</span>
+                    </div>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-bold ${
+                        currentSubmission.roCategory === 0
+                          ? "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600"
+                          : "bg-cyan-100 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800"
+                      }`}
+                    >
+                      {roCategoryLabel(currentSubmission.roCategory)}
+                    </span>
                   </div>
                 </div>
               )}
@@ -1836,21 +1856,31 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                   {selectedDetailSubmission.verifikatorNotes && <p className="text-slate-600 dark:text-slate-300 mt-1">Catatan: {selectedDetailSubmission.verifikatorNotes}</p>}
                 </div>
                 {(() => {
-                  const detailCriteria = Array.isArray(selectedDetailSubmission.criteriaResults) ? selectedDetailSubmission.criteriaResults : [];
-                  const detailTotal = detailCriteria.length > 0 ? detailCriteria.length : 20;
-                  const detailPassed = detailCriteria.length > 0
-                    ? detailCriteria.filter((c) => c.status === "passed").length
-                    : (selectedDetailSubmission.aiScore !== undefined ? Math.round((selectedDetailSubmission.aiScore / 100) * detailTotal) : (selectedDetailSubmission.aiStatus === "LOLOS" ? 20 : 0));
+                  const detailCriteria = Array.isArray(selectedDetailSubmission.screening1Results) ? selectedDetailSubmission.screening1Results : [];
+                  const summary = selectedDetailSubmission.s1Summary || summarizeS1(detailCriteria);
+                  const roCat = selectedDetailSubmission.roCategory ?? 0;
+                  const hasIssue = summary.pass < summary.total;
                   return (
-                    <span
-                      className={`px-3 py-1 rounded-full font-bold text-xs ${
-                        selectedDetailSubmission.aiStatus === "LOLOS"
-                          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
-                          : "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300"
-                      }`}
-                    >
-                      AI: {selectedDetailSubmission.aiStatus} ({detailPassed}/{detailTotal})
-                    </span>
+                    <div className="flex flex-col items-end gap-1">
+                      <span
+                        className={`px-3 py-1 rounded-full font-bold text-xs ${
+                          hasIssue
+                            ? "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+                            : "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+                        }`}
+                      >
+                        Screening 1: {summary.pass}/{summary.total} PASS
+                      </span>
+                      <span
+                        className={`px-3 py-1 rounded-full font-bold text-xs ${
+                          roCat === 0
+                            ? "bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200"
+                            : "bg-cyan-100 text-cyan-800 dark:bg-cyan-950 dark:text-cyan-300"
+                        }`}
+                      >
+                        {roCategoryLabel(roCat)}
+                      </span>
+                    </div>
                   );
                 })()}
               </div>
@@ -2173,8 +2203,9 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
             unit: historyPreviewItem.unitEselon1,
             satkerName: historyPreviewItem.satkerUserName,
             prioritas: historyPreviewItem.prioritas,
-            aiStatus: historyPreviewItem.aiStatus,
-            aiScore: historyPreviewItem.aiScore,
+            s1Pass: historyPreviewItem.s1Summary?.pass,
+            s1Total: historyPreviewItem.s1Summary?.total,
+            roCategoryLabel: roCategoryLabel(historyPreviewItem.roCategory ?? 0),
             submittedAt: historyPreviewItem.submittedAt,
           }}
           onUploadFile={async (file) => {
