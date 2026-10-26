@@ -1727,6 +1727,9 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     Tiket: {currentSubmission.ticketNumber} &bull; Skor: {currentSubmission.aiScore}% ({currentSubmission.aiStatus})
                   </p>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 mt-1.5 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                    Mode Demo — bukan ulasan AI final
+                  </span>
                 </div>
 
                 <div className="flex items-center gap-2.5">
@@ -1763,7 +1766,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                         <tr>
                           <th className="px-4 py-3 w-12 text-center">No</th>
                           <th className="px-4 py-3">Kriteria Wajib SBM</th>
-                          <th className="px-4 py-3 w-28 text-center">Hasil AI</th>
+                          <th className="px-4 py-3 w-28 text-center">Hasil AI (Kandidat)</th>
                           <th className="px-4 py-3">Catatan Bukti AI</th>
                         </tr>
                       </thead>

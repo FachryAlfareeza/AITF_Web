@@ -33,9 +33,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
         };
       case "verifikator":
         return {
-          title: "ROCAN (verif)",
+          title: "ROCAN (Verifikator)",
           color: "bg-emerald-600 text-white",
-          sub: "Biro Perencanaan & Verifikasi RAB",
+          sub: "Biro Perencanaan • Ulasan TOR & RAB",
           activeBg: "bg-emerald-600 text-white shadow-md shadow-emerald-600/30 ring-1 ring-emerald-500",
           iconColor: "text-emerald-600 dark:text-emerald-400",
         };
@@ -43,7 +43,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
         return {
           title: "Satker",
           color: "bg-blue-600 text-white",
-          sub: "Pengusul & Pembuat Dokumen RAB",
+          sub: "Pengusul Dokumen TOR & RAB",
           activeBg: "bg-blue-600 text-white shadow-md shadow-blue-600/30 ring-1 ring-blue-500",
           iconColor: "text-blue-600 dark:text-blue-400",
         };
@@ -102,7 +102,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
     },
     {
       key: "menu_rab_list",
-      label: "Daftar RAB",
+      label: "Daftar Ulasan TOR & RAB",
       icon: FileSpreadsheet,
       badgeCount: counts.submissions ?? 0,
     },
@@ -110,8 +110,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
 
   // Specific ordering per role:
   // - Super Admin: 1 to 5
-  // - ROCAN (verif): Daftar RAB, Input Acuan, Input Checklist, Input Master RO
-  // - Satker: Daftar RAB, Input Acuan, Input Checklist, Input Master RO
+  // - ROCAN (Verifikator): Daftar Ulasan TOR & RAB, Input Acuan, Input Checklist, Input Master RO
+  // - Satker: Daftar Ulasan TOR & RAB, Input Acuan, Input Checklist, Input Master RO
   const getOrderedMenuKeysForRole = (role: UserRole): StandardMenuKey[] => {
     switch (role) {
       case "superadmin":

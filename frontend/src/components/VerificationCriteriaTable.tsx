@@ -21,7 +21,7 @@ export function VerificationCriteriaTable({ criteria, isEditable, isStatusEditab
             <tr>
               <th className="px-4 py-3.5 w-12 text-center">No</th>
               <th className="px-4 py-3.5 min-w-50">Kriteria Wajib RAB</th>
-              <th className="px-4 py-3.5 w-28 text-center">Status AI</th>
+              <th className="px-4 py-3.5 w-28 text-center">Status AI (Kandidat)</th>
               <th className="px-4 py-3.5 min-w-45">Catatan Bukti AI</th>
               <th className="px-4 py-3.5 min-w-37.5 text-center bg-cyan-100/60 dark:bg-cyan-950/60 border-l border-r border-cyan-200 dark:border-cyan-800">
                 Kolom Verifikator

@@ -101,7 +101,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ users, theme = "light", on
           </div>
 
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">Selamat Datang</h1>
-          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Sistem Verifikasi &amp; Telaah Dokumen Anggaran (RAB) Komdigi RI</p>
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Sistem Ulasan TOR dan RAB Komdigi RI</p>
         </div>
 
         {/* Clean Card matching Sky Blue Theme */}
@@ -214,7 +214,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ users, theme = "light", on
                 onClick={() => handleQuickLogin("19910718", "password123")}
                 className="p-2.5 bg-sky-50/60 dark:bg-slate-800 hover:bg-sky-100/70 dark:hover:bg-slate-700/80 border border-sky-200/70 dark:border-slate-700 rounded-xl text-center text-xs transition-colors cursor-pointer group shadow-2xs"
               >
-                <div className="font-bold text-slate-800 dark:text-slate-200 group-hover:text-cyan-700 dark:group-hover:text-cyan-400 text-xs">ROCAN (verif)</div>
+                <div className="font-bold text-slate-800 dark:text-slate-200 group-hover:text-cyan-700 dark:group-hover:text-cyan-400 text-xs">ROCAN (Verifikator)</div>
                 <div className="font-mono text-xs text-slate-500 dark:text-slate-400">19910718</div>
               </button>
             </div>

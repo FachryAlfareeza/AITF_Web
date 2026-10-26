@@ -757,7 +757,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                           >
                             <div className="flex items-center gap-2 mb-1">
                               <Shield className={`w-4 h-4 ${isChecked ? "text-cyan-600" : "text-slate-400"}`} />
-                              <span className="text-xs font-bold">{r === "superadmin" ? "Super Admin" : r === "satker" ? "Satuan Kerja (Satker)" : "Verifikator (ROCAN)"}</span>
+                              <span className="text-xs font-bold">{r === "superadmin" ? "Super Admin" : r === "satker" ? "Satuan Kerja (Satker)" : "ROCAN (Verifikator)"}</span>
                             </div>
                             <p className="text-sm text-slate-500 dark:text-slate-400">
                               {r === "superadmin"
@@ -1127,7 +1127,7 @@ export const SuperAdminView: React.FC<SuperAdminViewProps> = ({
                     <span className="font-bold uppercase tracking-wider block text-xs text-sky-800 dark:text-sky-300">Mode Akses: Hanya Lihat (View Only)</span>
                     <p className="mt-0.5 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                       Sesuai peran <strong>Satker</strong>, Anda memiliki hak akses <strong>View (V)</strong> untuk membaca regulasi acuan AI, ketentuan, dan berkas PDF sebagai standar acuan
-                      penyusunan RAB. Unggah peraturan baru, edit, hapus, dan perubahan status hanya dapat dilakukan oleh <strong>Super Admin</strong> dan <strong>ROCAN (verif)</strong>.
+                      penyusunan RAB. Unggah peraturan baru, edit, hapus, dan perubahan status hanya dapat dilakukan oleh <strong>Super Admin</strong> dan <strong>ROCAN (Verifikator)</strong>.
                     </p>
                   </div>
                 </div>

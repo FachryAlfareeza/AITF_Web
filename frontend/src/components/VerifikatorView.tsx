@@ -332,7 +332,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
             <span className="font-bold uppercase tracking-wider block text-xs text-sky-800 dark:text-sky-300">Mode Akses: Hanya Lihat (View Only)</span>
             <p className="mt-0.5 text-slate-600 dark:text-slate-300 leading-relaxed">
               {isChecklistMenu
-                ? "Sesuai peran Satker, Anda memiliki hak akses View (V) untuk membaca 20 kriteria kepatuhan AI dan verifikator sebagai panduan penyusunan berkas RAB. Tambah kriteria baru, edit, dan hapus hanya dapat dilakukan oleh Super Admin dan ROCAN (verif)."
+                ? "Sesuai peran Satker, Anda memiliki hak akses View (V) untuk membaca 20 kriteria kepatuhan AI dan verifikator sebagai panduan penyusunan berkas RAB. Tambah kriteria baru, edit, dan hapus hanya dapat dilakukan oleh Super Admin dan ROCAN (Verifikator)."
                 : "Sesuai peran Satker, Anda memiliki hak akses View (V) untuk melihat rincian evaluasi AI 20 kriteria dokumen RAB secara transparan. Penetapan status verifikasi akhir hanya dapat diproses oleh Tim Verifikator ROCAN dan Super Admin."}
             </p>
           </div>
@@ -502,10 +502,13 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                             <div className="space-y-4">
                               <div className="flex items-center justify-between pb-2">
                                 <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide">
-                                  B. Hasil Penelaahan AI &amp; Evaluasi Verifikator Baris per Baris ({totalRows} Kriteria)
+                                  B. Kandidat Penelaahan AI &amp; Evaluasi ROCAN Baris per Baris ({totalRows} Kriteria)
                                 </span>
 
                                 <div className="flex items-center gap-2">
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                                    Mode Demo
+                                  </span>
                                   <span
                                     className={`px-3 py-1 rounded-full text-xs font-bold ${
                                       selectedSubmission.aiStatus === "LOLOS"
@@ -513,7 +516,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                                         : "bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800"
                                     }`}
                                   >
-                                    AI: {selectedSubmission.aiStatus} ({aiPassedRows}/{totalRows})
+                                    Kandidat AI: {selectedSubmission.aiStatus} ({aiPassedRows}/{totalRows})
                                   </span>
                                   <span className="px-3 py-1 rounded-full text-xs font-bold bg-cyan-100 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
                                     Verifikator: {verifierPassedRows} Lolos / {verifierRejectedRows} Ditolak
@@ -572,9 +575,9 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                           <div>
                             <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
                               <Award className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                              <span>Keputusan Akhir Verifikasi</span>
+                              <span>Keputusan Akhir (ROCAN)</span>
                             </h4>
-                            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Tetapkan keputusan akhir berkas RAB secara komprehensif berdasarkan penelaahan 20 kriteria di atas.</p>
+                            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Tetapkan keputusan akhir (final, otoritatif) berkas RAB oleh ROCAN berdasarkan kandidat penelaahan AI 20 kriteria di atas.</p>
                           </div>
                           <div className="flex items-center gap-2.5 self-start sm:self-auto">
                             {saveSuccess && (
@@ -714,7 +717,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                                 </button>
                               ) : !allowHistoricalStatusEdit ? (
                                 <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 italic">
-                                  Mode View Only: Penetapan status keputusan telaah hanya dapat disimpan oleh Super Admin dan ROCAN (verif).
+                                  Mode View Only: Penetapan status keputusan telaah hanya dapat disimpan oleh Super Admin dan ROCAN (Verifikator).
                                 </span>
                               ) : null}
                             </div>

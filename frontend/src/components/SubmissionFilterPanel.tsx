@@ -16,7 +16,7 @@ export function SubmissionFilterPanel({ filters, resultCount, totalCount, onChan
       <div className="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-700/60">
         <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide">
           <Filter className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
-          <span>Form Filter Pencarian Dokumen RAB</span>
+          <span>Form Filter Pencarian Ulasan TOR & RAB</span>
         </div>
         <span className="text-xs text-slate-400 dark:text-slate-500 font-mono">5 Parameter Penapisan</span>
       </div>

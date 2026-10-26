@@ -431,7 +431,7 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
                 <span className="font-bold uppercase tracking-wider block text-xs text-sky-800 dark:text-sky-300">Mode Akses: Hanya Lihat (View Only)</span>
                 <p className="mt-0.5 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                   Sesuai peran <strong>Satker</strong>, Anda memiliki hak akses <strong>View (V)</strong> untuk meninjau katalog Master RO, Program, Kegiatan, dan KRO resmi Kementerian Komunikasi dan
-                  Digital sebagai panduan pengisian formulir RAB. Modifikasi dan penambahan Master RO hanya dapat dilakukan oleh <strong>Super Admin</strong> dan <strong>ROCAN (verif)</strong>.
+                  Digital sebagai panduan pengisian formulir RAB. Modifikasi dan penambahan Master RO hanya dapat dilakukan oleh <strong>Super Admin</strong> dan <strong>ROCAN (Verifikator)</strong>.
                 </p>
               </div>
             </div>

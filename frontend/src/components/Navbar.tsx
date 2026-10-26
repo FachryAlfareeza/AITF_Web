@@ -31,7 +31,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentUser, activeRole, theme, 
       case "satker":
         return "Satker";
       case "verifikator":
-        return "ROCAN (verif)";
+        return "ROCAN (Verifikator)";
     }
   };
 
@@ -52,7 +52,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentUser, activeRole, theme, 
           <img src={`${import.meta.env.BASE_URL}logo-komdigi-emblem.svg`} alt="Logo Kementerian Komunikasi dan Digital RI" className="w-8 h-8 sm:w-10 sm:h-10 object-contain drop-shadow-xs shrink-0" />
           <div className="min-w-0 flex-1">
             <div className="flex min-w-0 items-center gap-2">
-              <h1 className="min-w-0 truncate text-xs sm:text-base font-extrabold text-slate-900 dark:text-white tracking-tight">Sistem Pengecekan File RAB AI</h1>
+              <h1 className="min-w-0 truncate text-xs sm:text-base font-extrabold text-slate-900 dark:text-white tracking-tight">Sistem Ulasan TOR dan RAB</h1>
               <span className="hidden sm:inline-block px-2 py-0.5 rounded text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">v2.6</span>
             </div>
           </div>

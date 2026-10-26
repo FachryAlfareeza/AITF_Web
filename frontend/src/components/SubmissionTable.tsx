@@ -51,7 +51,7 @@ export function SubmissionTable({
               <th className="px-4 py-4">Dokumen PDF RAB &amp; Kategori</th>
               <th className="px-4 py-4">Hierarki Anggaran RKA-K/L</th>
               <th className="px-4 py-4 w-48">User Logging (Create &amp; Update)</th>
-              <th className="px-4 py-4 w-28 text-center">Hasil AI</th>
+              <th className="px-4 py-4 w-28 text-center">Hasil AI (Kandidat)</th>
               <th className="px-4 py-4 w-44">Status Verifikasi</th>
               <th className="px-4 py-4 w-44 text-center">Aksi (CRUD)</th>
             </tr>

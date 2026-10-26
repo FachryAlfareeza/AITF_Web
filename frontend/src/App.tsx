@@ -326,7 +326,7 @@ export default function App() {
                   />
                 )}
 
-                {/* 5. DAFTAR RAB (PENGAJUAN & RIWAYAT) */}
+                {/* 5. DAFTAR ULASAN TOR & RAB (PENGAJUAN & RIWAYAT) */}
                 {stdKey === "menu_rab_list" && (
                   <SatkerView
                     currentUser={currentUser}
@@ -348,7 +348,7 @@ export default function App() {
 
           {/* Clean Minimalist Footer */}
           <footer className="border-t border-sky-200/80 dark:border-slate-800/80 py-4 text-center text-xs text-slate-600 dark:text-slate-400 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xs transition-colors">
-            Sistem Verifikasi &amp; Telaah Otomatis File RAB Berbasis AI &bull; Kementerian Komunikasi dan Digital Republik Indonesia &bull; 2026
+            Sistem Ulasan TOR dan RAB Berbasis AI &bull; Kementerian Komunikasi dan Digital Republik Indonesia &bull; 2026
           </footer>
         </div>
       </div>
