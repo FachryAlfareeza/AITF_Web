@@ -28,6 +28,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { PdfPreviewModal } from "./PdfPreviewModal";
+import { JsonImportModal } from "./JsonImportModal";
 import { DocumentPair } from "./DocumentPair";
 import { inspectUploadedRabDocument } from "../utils/pdfInspector";
 import { VerifikatorView } from "./VerifikatorView";
@@ -79,6 +80,8 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
 }) => {
   const activeRegulations = regulations.filter((r) => r.isActive);
   const isReadOnly = ROLE_PERMISSIONS_MATRIX.menu_rab_list[activeRole] !== "E";
+  // JSON import modal (review-request artifacts) — gated like "Pengajuan Baru".
+  const [isImportOpen, setIsImportOpen] = useState(false);
   // Sub Tab state for Daftar RAB vs Form Pengajuan vs Detail Evaluasi & Reupload
   const [activeRabSubTab, setActiveRabSubTab] = useState<"list" | "form" | "history" | "history_detail" | "reupload">(() => {
     return activeMenu === "satker_form" ? "form" : "list";
@@ -965,6 +968,17 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                   >
                     <Upload className="w-4 h-4" />
                     <span>Pengajuan Baru</span>
+                  </button>
+                )}
+                {!isReadOnly && (
+                  <button
+                    type="button"
+                    onClick={() => setIsImportOpen(true)}
+                    className="h-9 px-3 rounded-lg bg-white dark:bg-slate-800 border border-blue-300 dark:border-blue-800 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/40 transition-colors cursor-pointer inline-flex items-center gap-2 text-xs font-bold"
+                    title="Impor permintaan ulasan dari berkas/teks JSON"
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span>Unggah JSON</span>
                   </button>
                 )}
                 <button
@@ -2265,6 +2279,16 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
           }}
         />
       )}
+
+      {/* IMPOR JSON PERMINTAAN ULASAN TOR/RAB */}
+      <JsonImportModal
+        isOpen={isImportOpen}
+        onClose={() => setIsImportOpen(false)}
+        allowedTypes={["review"]}
+        onImportReview={(submission) => {
+          onAddSubmission(submission);
+        }}
+      />
 
     </div>
   );

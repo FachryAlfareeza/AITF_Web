@@ -25,8 +25,10 @@ import {
   X,
   Info,
   Clock,
+  Upload,
 } from "lucide-react";
 import { PdfPreviewModal } from "./PdfPreviewModal";
+import { JsonImportModal } from "./JsonImportModal";
 import { VerificationCriteriaTable } from "./VerificationCriteriaTable";
 import { DocumentPair } from "./DocumentPair";
 import { formatIndonesianDateTime } from "../utils/formatUtils";
@@ -63,6 +65,9 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
 
   const [previewOpen, setPreviewOpen] = useState(false);
   const [torPreviewOpen, setTorPreviewOpen] = useState(false);
+
+  // JSON import modal (checklist = pratinjau saja, tidak diterapkan ke master kriteria).
+  const [isImportOpen, setIsImportOpen] = useState(false);
 
   // Section Minimize States
   const [isUnifiedSectionCollapsed, setIsUnifiedSectionCollapsed] = useState(false);
@@ -666,6 +671,47 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                                   </div>
                                 )}
                               </div>
+
+                              {/* BAGIAN E: HASIL ULASAN (PRATINJAU) — placeholder design-ahead (Item 13) */}
+                              <div className="mt-6 p-5 bg-slate-50/80 dark:bg-slate-800/50 border border-dashed border-slate-300 dark:border-slate-600 rounded-2xl space-y-3">
+                                <div className="flex flex-wrap items-center justify-between gap-3">
+                                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide">
+                                    E. Hasil Ulasan (Pratinjau)
+                                  </span>
+                                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                                    Pratinjau / Rancangan
+                                  </span>
+                                </div>
+                                {(selectedSubmission?.screening1Results?.length ?? 0) > 0 || screening2Results.length > 0 || roCategory !== 0 ? (
+                                  <div className="space-y-2">
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                      Rekap hasil penapisan yang tersimpan pada pengajuan ini (hanya-baca).
+                                    </p>
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3">
+                                        <span className="block text-xs text-slate-500 dark:text-slate-400">Screening 1 (Lolos)</span>
+                                        <span className="block text-sm font-bold text-slate-900 dark:text-white mt-0.5">
+                                          {selectedSubmission?.s1Summary?.pass ?? 0} / {selectedSubmission?.s1Summary?.total ?? (selectedSubmission?.screening1Results?.length ?? 0)}
+                                        </span>
+                                      </div>
+                                      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3">
+                                        <span className="block text-xs text-slate-500 dark:text-slate-400">Screening 2 (Pertanyaan)</span>
+                                        <span className="block text-sm font-bold text-slate-900 dark:text-white mt-0.5">{screening2Results.length}</span>
+                                      </div>
+                                      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3">
+                                        <span className="block text-xs text-slate-500 dark:text-slate-400">Kategori RO</span>
+                                        <span className="block text-sm font-bold text-slate-900 dark:text-white mt-0.5">
+                                          {roCategory === 0 ? "Kategori 0 — Perlu Reviu Manual" : roCategoryLabel(roCategory)}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                                    Hasil ulasan dari sistem utama belum tersedia (kontrak hasil masih draf).
+                                  </p>
+                                )}
+                              </div>
                             </div>
                           </div>
                         )}
@@ -878,22 +924,34 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                   <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Halaman ini bertujuan untuk mengelola list pertanyaan yang akan diperiksa oleh mesin AI dan pejabat verifikator.</p>
                 </div>
 
-                {/* Tombol Masukkan Checklist Baru */}
+                {/* Tombol Masukkan Checklist Baru + Unggah JSON (pratinjau) */}
                 {isEditable && (
-                  <button
-                    id="btn-tambah-checklist-baru"
-                    type="button"
-                    onClick={() => {
-                      setInputKriteriaText("");
-                      setInputDeskripsiText("");
-                      setFormChecklistError(null);
-                      setChecklistSubView("form");
-                    }}
-                    className="h-10 px-5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-xs transition-all cursor-pointer ring-1 ring-cyan-500 self-start sm:self-auto shrink-0"
-                  >
-                    <PlusCircle className="w-4 h-4" />
-                    <span>Masukkan Checklist Baru</span>
-                  </button>
+                  <div className="flex items-center gap-2.5 self-start sm:self-auto shrink-0">
+                    <button
+                      id="btn-tambah-checklist-baru"
+                      type="button"
+                      onClick={() => {
+                        setInputKriteriaText("");
+                        setInputDeskripsiText("");
+                        setFormChecklistError(null);
+                        setChecklistSubView("form");
+                      }}
+                      className="h-10 px-5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-xs transition-all cursor-pointer ring-1 ring-cyan-500"
+                    >
+                      <PlusCircle className="w-4 h-4" />
+                      <span>Masukkan Checklist Baru</span>
+                    </button>
+                    <button
+                      id="btn-import-checklist"
+                      type="button"
+                      onClick={() => setIsImportOpen(true)}
+                      className="h-10 px-4 bg-white dark:bg-slate-800 border border-cyan-300 dark:border-cyan-800 text-cyan-700 dark:text-cyan-300 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-cyan-50 dark:hover:bg-cyan-950/40 transition-all cursor-pointer"
+                      title="Pratinjau versi checklist dari berkas/teks JSON"
+                    >
+                      <Upload className="w-4 h-4" />
+                      <span>Unggah JSON (pratinjau)</span>
+                    </button>
+                  </div>
                 )}
               </div>
 
@@ -1342,6 +1400,13 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
           }}
         />
       )}
+
+      {/* IMPOR JSON CHECKLIST — pratinjau saja (tanpa callback penerapan) */}
+      <JsonImportModal
+        isOpen={isImportOpen}
+        onClose={() => setIsImportOpen(false)}
+        allowedTypes={["checklist"]}
+      />
 
     </div>
   );

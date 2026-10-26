@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { HierarchyItem, AccessPermission, UserAccount, ActiveMenuKey } from "../types";
+import { JsonImportModal } from "./JsonImportModal";
 import {
   Layers,
   Search,
@@ -68,6 +69,9 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
 
   // Delete Confirmation State
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
+  // JSON import modal (master-RO + checklist preview) — gated by edit rights.
+  const [isImportOpen, setIsImportOpen] = useState(false);
 
   // Unique programs for filter dropdown
   const uniquePrograms = useMemo(() => {
@@ -520,6 +524,19 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
                   </button>
                 )}
 
+                {isEditable && (
+                  <button
+                    type="button"
+                    id="btn-import-master-ro"
+                    onClick={() => setIsImportOpen(true)}
+                    className="h-10 px-4 bg-white dark:bg-slate-800 border border-cyan-300 dark:border-cyan-800 rounded-xl text-cyan-700 dark:text-cyan-300 text-xs font-bold flex items-center gap-2 hover:bg-cyan-50 dark:hover:bg-cyan-950/40 transition-all cursor-pointer"
+                    title="Impor Master RO atau pratinjau checklist dari berkas/teks JSON"
+                  >
+                    <FolderGit2 className="w-4 h-4" />
+                    <span>Unggah JSON</span>
+                  </button>
+                )}
+
                 <button
                   type="button"
                   onClick={() => setIsCatalogCollapsed(!isCatalogCollapsed)}
@@ -778,6 +795,16 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
           </div>
         </div>
       )}
+
+      {/* IMPOR JSON MASTER RO (checklist = pratinjau saja) */}
+      <JsonImportModal
+        isOpen={isImportOpen}
+        onClose={() => setIsImportOpen(false)}
+        allowedTypes={["masterRo", "checklist"]}
+        onImportMasterRo={(item) => {
+          onAddMasterRo?.(item);
+        }}
+      />
     </div>
   );
 };
