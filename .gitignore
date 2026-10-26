@@ -38,3 +38,6 @@ backend/uploads/
 .DS_Store
 Thumbs.db
 *.log
+
+# Kiro IDE
+.kiro/
