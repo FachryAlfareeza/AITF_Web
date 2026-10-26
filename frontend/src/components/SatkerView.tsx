@@ -211,37 +211,6 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
         activeRegulationTitle?: string;
       } | null = null;
 
-      try {
-        const formData = new FormData();
-        formData.append("rab_file", reuploadFile);
-        const apiBaseUrl = import.meta.env.VITE_API_URL?.replace(/\/+$/, "") || "http://localhost:8000";
-        const response = await fetch(`${apiBaseUrl}/api/submissions/check-rab`, { method: "POST", body: formData });
-
-        if (response.ok) {
-          const data = await response.json();
-          let criteriaResults = data.criteriaResults;
-          if (typeof criteriaResults === "string") {
-            try {
-              criteriaResults = JSON.parse(criteriaResults);
-            } catch {
-              criteriaResults = null;
-            }
-          }
-          if (Array.isArray(criteriaResults) && criteriaResults.length > 0) {
-            analysis = {
-              aiStatus: data.aiStatus,
-              aiScore: data.aiScore,
-              aiReason: data.aiReason,
-              aiRecommendation: data.aiRecommendation,
-              criteriaResults,
-              activeRegulationTitle: data.activeRegulationTitle || regulationLabel,
-            };
-          }
-        }
-      } catch (error) {
-        console.info("Backend AI belum aktif, beralih ke inspeksi PDF langsung di browser.", error);
-      }
-
       if (!analysis) {
         setReuploadProgressText(`Memeriksa isi PDF "${reuploadFile.name}"...`);
         try {
@@ -649,53 +618,6 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
     setAnalysisProgressText(`Menghasilkan laporan telaah cerdas dokumen "${rabFileName}"...`);
 
     let analysis: RabAnalysisResult | null = null;
-
-    if (rabFile) {
-      try {
-        const formData = new FormData();
-        formData.append("rab_file", rabFile);
-        formData.append("program", selectedProgram);
-        formData.append("kegiatan", selectedKegiatan);
-        formData.append("kro", selectedKro);
-        formData.append("ro", selectedRo);
-        formData.append("tahun_anggaran", selectedTahunAnggaran);
-        formData.append("unit_eselon1", currentUnitEselon1 || "Direktorat Jenderal Komunikasi Publik dan Media");
-        formData.append("unit_eselon2", currentUnitEselon2 || "Direktorat Informasi Publik");
-        formData.append("prioritas", currentPrioritas || "Prioritas Nasional");
-        formData.append("satker_user_id", currentUser.id);
-
-        const apiBaseUrl = import.meta.env.VITE_API_URL?.replace(/\/+$/, "") || "http://localhost:8000";
-        const resp = await fetch(`${apiBaseUrl}/api/submissions/upload-and-check`, {
-          method: "POST",
-          body: formData,
-        });
-
-        if (resp.ok) {
-          const data = await resp.json();
-          let cResults = data.ai_criteria_results;
-          if (typeof cResults === "string") {
-            try {
-              cResults = JSON.parse(cResults);
-            } catch {
-              cResults = null;
-            }
-          }
-          if (Array.isArray(cResults) && cResults.length > 0) {
-            analysis = {
-              aiStatus: data.ai_status,
-              aiScore: data.ai_score,
-              aiReason: data.ai_reason,
-              aiRecommendation: data.ai_recommendation,
-              criteriaResults: cResults,
-              activeRegulationTitle: data.activeRegulationTitle || regLabel,
-              ticketNumber: data.ticket_number,
-            };
-          }
-        }
-      } catch (e) {
-        console.info("Backend API belum aktif, beralih ke inspeksi dokumen cerdas langsung dari berkas...");
-      }
-    }
 
     if (!analysis) {
       try {

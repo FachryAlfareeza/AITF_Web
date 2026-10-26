@@ -13,22 +13,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Python environments and generated files
-venv/
-.venv/
-env/
-__pycache__/
-*.py[cod]
-*.egg-info/
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.tox/
-.coverage*
-htmlcov/
-
 # Uploaded documents and local databases
-backend/uploads/
 *.sqlite
 *.sqlite3
 
@@ -39,5 +24,6 @@ backend/uploads/
 Thumbs.db
 *.log
 
-# Kiro IDE
+# Kiro IDE & additional context
 .kiro/
+.Context/
