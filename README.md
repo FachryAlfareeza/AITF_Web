@@ -36,6 +36,10 @@ disimpan di peramban.
   sungguhan — ulasan sebenarnya berjalan di sistem utama.
 - **Lapisan impor JSON:** tipe, validasi, dan adapter untuk memetakan artefak JSON dari
   sistem utama ke model frontend (lihat bagian di bawah).
+- **Status & aksesibilitas:** status ditandai dengan teks + ikon (bukan warna saja), tersedia
+  empty/loading/error state yang jelas dalam Bahasa Indonesia, serta semantik dialog (Escape,
+  fokus) pada modal. Ini peningkatan pragmatis untuk prototipe, bukan klaim konformansi WCAG penuh
+  (audit penuh memerlukan pengujian manual dengan teknologi bantu dan tinjauan ahli).
 
 ## Alur data
 
