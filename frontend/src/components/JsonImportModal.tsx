@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { X, UploadCloud, AlertCircle, CheckCircle2, FileJson, FlaskConical } from "lucide-react";
 import type { HierarchyItem, MasterCriterion, SubmissionData } from "../types";
 import {
@@ -82,7 +82,21 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
   const [failedStage, setFailedStage] = useState<FailedStage | null>(null);
   const [success, setSuccess] = useState<SuccessState | null>(null);
   const [applied, setApplied] = useState(false);
+  const [isReadingFile, setIsReadingFile] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  // Pragmatic dialog semantics: close on Escape and move focus into the panel on
+  // open. Not a full focus-trap library — enough for a wireframe pass.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    dialogRef.current?.focus();
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -97,6 +111,7 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
     setRawText("");
     setSelectedType("auto");
     setFileName(null);
+    setIsReadingFile(false);
     resetOutcome();
     onClose();
   };
@@ -114,18 +129,21 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
     // Allow re-selecting the same file later.
     e.target.value = "";
     if (!file) return;
+    setIsReadingFile(true);
     const reader = new FileReader();
     reader.onload = () => {
       const text = typeof reader.result === "string" ? reader.result : "";
       setRawText(text);
       setFileName(file.name);
       resetOutcome();
+      setIsReadingFile(false);
     };
     reader.onerror = () => {
       setFileName(file.name);
       setFailedStage("parse");
       setErrors(["Gagal membaca berkas. Pastikan berkas berupa teks .json yang valid."]);
       setSuccess(null);
+      setIsReadingFile(false);
     };
     reader.readAsText(file);
   };
@@ -188,7 +206,14 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 animate-fadeIn">
-      <div className="w-full max-w-2xl max-h-[90vh] flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden transition-colors">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="json-import-dialog-title"
+        tabIndex={-1}
+        className="w-full max-w-2xl max-h-[90vh] flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden transition-colors outline-none"
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60">
           <div className="flex items-center gap-3">
@@ -196,7 +221,7 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
               <FileJson className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">Unggah JSON</h3>
+              <h3 id="json-import-dialog-title" className="text-base font-bold text-slate-900 dark:text-white">Unggah JSON</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">Impor artefak JSON (tempel teks atau pilih berkas .json)</p>
             </div>
           </div>
@@ -204,6 +229,8 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
             type="button"
             onClick={handleClose}
             className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+            title="Tutup dialog"
+            aria-label="Tutup dialog"
           >
             <X className="w-5 h-5" />
           </button>
@@ -252,13 +279,20 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition-colors cursor-pointer"
+              disabled={isReadingFile}
+              className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <UploadCloud className="w-4 h-4" />
               <span>Pilih berkas .json</span>
             </button>
-            <input ref={fileInputRef} type="file" accept=".json,application/json" onChange={handleFileChange} className="hidden" />
-            {fileName && <span className="text-xs text-slate-500 dark:text-slate-400 font-mono truncate max-w-[12rem]">{fileName}</span>}
+            <input ref={fileInputRef} type="file" accept=".json,application/json" onChange={handleFileChange} className="hidden" aria-label="Pilih berkas JSON untuk diimpor" />
+            {isReadingFile && (
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-700 dark:text-cyan-300">
+                <UploadCloud className="w-3.5 h-3.5 animate-pulse" />
+                Membaca berkas...
+              </span>
+            )}
+            {!isReadingFile && fileName && <span className="text-xs text-slate-500 dark:text-slate-400 font-mono truncate max-w-[12rem]">{fileName}</span>}
 
             <span className="text-xs text-slate-400 dark:text-slate-500">|</span>
             <span className="text-xs text-slate-500 dark:text-slate-400">Muat contoh:</span>
@@ -369,9 +403,10 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
             <button
               type="button"
               onClick={handleProcess}
-              className="px-4 py-2 text-xs font-bold bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl shadow-xs transition-colors cursor-pointer"
+              disabled={isReadingFile}
+              className="px-4 py-2 text-xs font-bold bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl shadow-xs transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Proses
+              {isReadingFile ? "Membaca..." : "Proses"}
             </button>
           )}
         </div>

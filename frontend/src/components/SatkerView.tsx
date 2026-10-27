@@ -880,7 +880,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                   <FileCheck className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                   <span>1. Ringkasan Status Verifikasi Berkas Dokumen PDF RAB</span>
                 </h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Statistik keseluruhan dokumen RAB yang diajukan beserta status kelolosan telaah verifikator</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Statistik keseluruhan dokumen RAB yang diajukan beserta status verifikasi telaah ROCAN (Verifikator)</p>
               </div>
 
               <button
@@ -1007,6 +1007,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                 <SubmissionTable
                   submissions={filteredSubmissions}
                   isReadOnly={isReadOnly}
+                  hasAnySubmissions={relevantSubmissions.length > 0}
                   onOpenCrudHistory={setHistoryLogItem}
                   onOpenReviewHistory={handleOpenReviewHistory}
                   onOpenDetails={setSelectedDetailSubmission}
@@ -1081,11 +1082,11 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                 <table className="w-full text-left text-xs">
                   <thead className="bg-slate-100/95 dark:bg-slate-800/95 border-b-2 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 uppercase font-black tracking-wider text-xs">
                     <tr>
-                      <th className="px-4 py-4 w-16 text-center">No</th>
-                      <th className="px-4 py-4">File RAB</th>
-                      <th className="px-4 py-4">Tanggal Verifikasi</th>
-                      <th className="px-4 py-4">Status Verifikasi</th>
-                      <th className="px-4 py-4 text-center">Detail</th>
+                      <th scope="col" className="px-4 py-4 w-16 text-center">No</th>
+                      <th scope="col" className="px-4 py-4">File RAB</th>
+                      <th scope="col" className="px-4 py-4">Tanggal Verifikasi</th>
+                      <th scope="col" className="px-4 py-4">Status Verifikasi</th>
+                      <th scope="col" className="px-4 py-4 text-center">Detail</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800">

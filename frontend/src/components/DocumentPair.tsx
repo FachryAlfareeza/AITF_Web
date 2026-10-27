@@ -26,6 +26,7 @@ interface DocumentPairProps {
  */
 export function DocumentPair({ rabFileName, rabFileSize, torFileName, torFileSize, onPreviewRab, onPreviewTor, variant = "card" }: DocumentPairProps) {
   const hasTor = Boolean(torFileName && torFileName.trim());
+  const hasRab = Boolean(rabFileName && rabFileName.trim());
 
   if (variant === "table") {
     return (
@@ -37,19 +38,26 @@ export function DocumentPair({ rabFileName, rabFileSize, torFileName, torFileSiz
           </div>
           <div className="min-w-0">
             <span className="text-xs text-rose-500 dark:text-rose-400 font-bold uppercase tracking-wide block">RAB</span>
-            <span className="font-bold text-slate-900 dark:text-white block truncate max-w-xs" title={rabFileName}>
-              {rabFileName}
-            </span>
-            <span className="text-xs text-slate-400 dark:text-slate-500 font-mono block">{rabFileSize || "2.1 MB"} &bull; Format PDF</span>
-            <button
-              type="button"
-              onClick={onPreviewRab}
-              className="mt-0.5 inline-flex items-center gap-1 text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline cursor-pointer"
-              title={`Pratinjau Dokumen RAB: ${rabFileName}`}
-            >
-              <Eye className="w-3 h-3" />
-              <span>Pratinjau RAB</span>
-            </button>
+            {hasRab ? (
+              <>
+                <span className="font-bold text-slate-900 dark:text-white block truncate max-w-xs" title={rabFileName}>
+                  {rabFileName}
+                </span>
+                <span className="text-xs text-slate-400 dark:text-slate-500 font-mono block">{rabFileSize || "2.1 MB"} &bull; Format PDF</span>
+                <button
+                  type="button"
+                  onClick={onPreviewRab}
+                  className="mt-0.5 inline-flex items-center gap-1 text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline cursor-pointer"
+                  title={`Pratinjau Dokumen RAB: ${rabFileName}`}
+                  aria-label={`Pratinjau Dokumen RAB: ${rabFileName}`}
+                >
+                  <Eye className="w-3 h-3" />
+                  <span>Pratinjau RAB</span>
+                </button>
+              </>
+            ) : (
+              <span className="text-xs text-slate-400 dark:text-slate-500 italic block">Belum ada Dokumen RAB</span>
+            )}
           </div>
         </div>
 
@@ -71,6 +79,7 @@ export function DocumentPair({ rabFileName, rabFileSize, torFileName, torFileSiz
                   onClick={onPreviewTor}
                   className="mt-0.5 inline-flex items-center gap-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
                   title={`Pratinjau Dokumen TOR: ${torFileName}`}
+                  aria-label={`Pratinjau Dokumen TOR: ${torFileName}`}
                 >
                   <Eye className="w-3 h-3" />
                   <span>Pratinjau TOR</span>
@@ -108,6 +117,7 @@ export function DocumentPair({ rabFileName, rabFileSize, torFileName, torFileSiz
             onClick={onPreviewTor}
             className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-bold cursor-pointer"
             title={`Pratinjau Dokumen TOR: ${torFileName}`}
+            aria-label={`Pratinjau Dokumen TOR: ${torFileName}`}
           >
             <Eye className="w-3.5 h-3.5" /> Pratinjau
           </button>
@@ -122,20 +132,23 @@ export function DocumentPair({ rabFileName, rabFileSize, torFileName, torFileSiz
           </div>
           <div className="min-w-0">
             <span className="text-xs text-slate-400 uppercase font-semibold block">Dokumen RAB:</span>
-            <span className="font-semibold text-slate-800 dark:text-slate-200 block truncate" title={rabFileName}>
-              {rabFileName}
+            <span className="font-semibold text-slate-800 dark:text-slate-200 block truncate" title={hasRab ? rabFileName : "Belum ada Dokumen RAB"}>
+              {hasRab ? rabFileName : "Belum ada Dokumen RAB"}
             </span>
-            {rabFileSize && <span className="text-xs text-slate-400 dark:text-slate-500 font-mono block mt-0.5">{rabFileSize} &bull; Format PDF</span>}
+            {hasRab && rabFileSize && <span className="text-xs text-slate-400 dark:text-slate-500 font-mono block mt-0.5">{rabFileSize} &bull; Format PDF</span>}
           </div>
         </div>
-        <button
-          type="button"
-          onClick={onPreviewRab}
-          className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-50 hover:bg-cyan-100 dark:bg-cyan-950/60 dark:hover:bg-cyan-900/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800 text-xs font-bold cursor-pointer"
-          title={`Pratinjau Dokumen RAB: ${rabFileName}`}
-        >
-          <Eye className="w-3.5 h-3.5" /> Pratinjau
-        </button>
+        {hasRab && (
+          <button
+            type="button"
+            onClick={onPreviewRab}
+            className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-50 hover:bg-cyan-100 dark:bg-cyan-950/60 dark:hover:bg-cyan-900/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800 text-xs font-bold cursor-pointer"
+            title={`Pratinjau Dokumen RAB: ${rabFileName}`}
+            aria-label={`Pratinjau Dokumen RAB: ${rabFileName}`}
+          >
+            <Eye className="w-3.5 h-3.5" /> Pratinjau
+          </button>
+        )}
       </div>
     </div>
   );

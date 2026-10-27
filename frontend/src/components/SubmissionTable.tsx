@@ -1,11 +1,15 @@
 import type { SubmissionData } from "../types";
 import { roCategoryLabel } from "../data/defaultCriteria";
-import { CheckCircle2, Clock, ExternalLink, Eye, FileSpreadsheet, History, Pencil, Trash2, XCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Clock, ExternalLink, Eye, FileSpreadsheet, HelpCircle, History, Pencil, Trash2, XCircle } from "lucide-react";
 import { DocumentPair } from "./DocumentPair";
+import { EmptyState } from "./statusDisplay";
 
 interface SubmissionTableProps {
   submissions: SubmissionData[];
   isReadOnly: boolean;
+  /** Whether ANY submission exists before filtering, so the empty row can tell
+   *  "nothing submitted yet" (first-use) apart from "no filter matches". */
+  hasAnySubmissions?: boolean;
   onOpenCrudHistory: (submission: SubmissionData) => void;
   onOpenReviewHistory: (submission: SubmissionData) => void;
   onOpenDetails: (submission: SubmissionData) => void;
@@ -33,6 +37,7 @@ const statusStyles: Record<SubmissionData["verificationStatus"], { badge: string
 export function SubmissionTable({
   submissions,
   isReadOnly,
+  hasAnySubmissions = true,
   onOpenCrudHistory,
   onOpenReviewHistory,
   onOpenDetails,
@@ -47,24 +52,30 @@ export function SubmissionTable({
         <table className="w-full text-left text-xs">
           <thead className="bg-slate-100/95 dark:bg-slate-800/95 border-b-2 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 uppercase font-black tracking-wider text-xs">
             <tr>
-              <th className="px-4 py-4 w-12 text-center">No</th>
-              <th className="px-4 py-4 w-44">Kode</th>
-              <th className="px-4 py-4 w-36">Tanggal</th>
-              <th className="px-4 py-4">Dokumen TOR &amp; RAB &amp; Kategori</th>
-              <th className="px-4 py-4">Hierarki Anggaran RKA-K/L</th>
-              <th className="px-4 py-4 w-48">User Logging (Create &amp; Update)</th>
-              <th className="px-4 py-4 w-40 text-center">Penapisan (Kandidat)</th>
-              <th className="px-4 py-4 w-44">Status Verifikasi</th>
-              <th className="px-4 py-4 w-44 text-center">Aksi (CRUD)</th>
+              <th scope="col" className="px-4 py-4 w-12 text-center">No</th>
+              <th scope="col" className="px-4 py-4 w-44">Kode</th>
+              <th scope="col" className="px-4 py-4 w-36">Tanggal</th>
+              <th scope="col" className="px-4 py-4">Dokumen TOR &amp; RAB &amp; Kategori</th>
+              <th scope="col" className="px-4 py-4">Hierarki Anggaran RKA-K/L</th>
+              <th scope="col" className="px-4 py-4 w-48">User Logging (Create &amp; Update)</th>
+              <th scope="col" className="px-4 py-4 w-40 text-center">Penapisan (Kandidat)</th>
+              <th scope="col" className="px-4 py-4 w-44">Status Verifikasi</th>
+              <th scope="col" className="px-4 py-4 w-44 text-center">Aksi (CRUD)</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {submissions.length === 0 ? (
               <tr>
-                <td colSpan={9} className="text-center py-14 text-slate-400 dark:text-slate-500">
-                  <FileSpreadsheet className="w-9 h-9 mx-auto mb-2.5 opacity-50" />
-                  <p className="font-bold text-xs">Tidak ada dokumen PDF RAB yang sesuai dengan filter.</p>
-                  <p className="text-sm mt-1 text-slate-400">Silakan sesuaikan parameter pencarian atau gunakan menu "Form Pengajuan RAB Baru".</p>
+                <td colSpan={9} className="py-14">
+                  <EmptyState
+                    icon={FileSpreadsheet}
+                    title={hasAnySubmissions ? "Tidak ada dokumen yang cocok dengan filter." : "Belum ada dokumen TOR & RAB yang diajukan."}
+                    description={
+                      hasAnySubmissions
+                        ? 'Coba sesuaikan parameter pencarian atau atur ulang filter.'
+                        : 'Gunakan menu "Pengajuan Baru" untuk mengajukan dokumen TOR & RAB pertama.'
+                    }
+                  />
                 </td>
               </tr>
             ) : (
@@ -146,22 +157,48 @@ export function SubmissionTable({
                     </td>
                     <td className="px-4 py-4 text-center">
                       {(() => {
-                        const summary = submission.s1Summary || { pass: 0, total: Array.isArray(submission.screening1Results) ? submission.screening1Results.length : 0 };
-                        const hasIssue = summary.pass < summary.total;
+                        const summary = submission.s1Summary || {
+                          pass: 0,
+                          notPass: 0,
+                          insufficient: 0,
+                          technicalFailures: 0,
+                          total: Array.isArray(submission.screening1Results) ? submission.screening1Results.length : 0,
+                        };
+                        const notPass = summary.notPass ?? 0;
+                        const insufficient = summary.insufficient ?? 0;
+                        const technicalFailures = summary.technicalFailures ?? 0;
+                        // Hard-fail (rose) only when a substance criterion is NOT_PASS. An
+                        // insufficient-only result is a calm informational state (amber),
+                        // never styled like a failure.
+                        const isHardFail = notPass > 0;
+                        const isInformational = !isHardFail && insufficient > 0;
                         const roCat = submission.roCategory ?? 0;
+                        const S1Icon = isHardFail ? XCircle : isInformational ? HelpCircle : CheckCircle2;
+                        const s1Badge = isHardFail
+                          ? "bg-rose-50 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800"
+                          : isInformational
+                            ? "bg-amber-50 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800"
+                            : "bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800";
+                        const s1Title = isHardFail
+                          ? "Screening 1: ada kriteria NOT_PASS"
+                          : isInformational
+                            ? "Screening 1: ada bukti tidak cukup (perlu dilengkapi)"
+                            : "Screening 1: seluruh kriteria PASS";
                         return (
                           <div className="flex flex-col items-center gap-1">
-                            <span
-                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
-                                hasIssue
-                                  ? "bg-amber-50 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800"
-                                  : "bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
-                              }`}
-                              title="Ringkasan Screening 1 (PASS / total kriteria)"
-                            >
-                              {hasIssue ? <XCircle className="w-3.5 h-3.5" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${s1Badge}`} title={s1Title}>
+                              <S1Icon className="w-3.5 h-3.5" />
                               S1: {summary.pass}/{summary.total} PASS
                             </span>
+                            {technicalFailures > 0 && (
+                              <span
+                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700"
+                                title="Sebagian kriteria gagal diproses sistem — perlu dicek manual"
+                              >
+                                <AlertTriangle className="w-3.5 h-3.5" />
+                                Sistem gagal — perlu dicek
+                              </span>
+                            )}
                             <span
                               className={`inline-block px-2.5 py-1 rounded-full text-xs font-bold ${
                                 roCat === 0
@@ -190,18 +227,18 @@ export function SubmissionTable({
                     </td>
                     <td className="px-4 py-4 text-center">
                       <div className="flex items-center justify-center gap-1.5">
-                        <button type="button" onClick={() => onOpenDetails(submission)} className="h-8 w-8 inline-flex items-center justify-center rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer border border-slate-200 dark:border-slate-700" title="Read: Lihat Detail Lengkap">
+                        <button type="button" onClick={() => onOpenDetails(submission)} className="h-8 w-8 inline-flex items-center justify-center rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer border border-slate-200 dark:border-slate-700" title="Read: Lihat Detail Lengkap" aria-label="Lihat detail lengkap dokumen">
                           <Eye className="w-4 h-4" />
                         </button>
-                        <button type="button" onClick={() => onPreview(submission)} className="h-8 w-8 inline-flex items-center justify-center rounded-lg bg-cyan-50 hover:bg-cyan-100 dark:bg-cyan-950/60 dark:hover:bg-cyan-900/60 text-cyan-700 dark:text-cyan-300 transition-colors cursor-pointer border border-cyan-200 dark:border-cyan-800" title="Read: Pratinjau Dokumen PDF Asli">
+                        <button type="button" onClick={() => onPreview(submission)} className="h-8 w-8 inline-flex items-center justify-center rounded-lg bg-cyan-50 hover:bg-cyan-100 dark:bg-cyan-950/60 dark:hover:bg-cyan-900/60 text-cyan-700 dark:text-cyan-300 transition-colors cursor-pointer border border-cyan-200 dark:border-cyan-800" title="Read: Pratinjau Dokumen PDF Asli" aria-label="Pratinjau dokumen PDF asli">
                           <ExternalLink className="w-4 h-4" />
                         </button>
                         {!isReadOnly && (
                           <>
-                            <button type="button" onClick={() => onEdit(submission)} className="h-8 w-8 inline-flex items-center justify-center rounded-lg bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-300 transition-colors cursor-pointer border border-amber-200 dark:border-amber-800" title="Update: Edit Nama & Kategori Berkas">
+                            <button type="button" onClick={() => onEdit(submission)} className="h-8 w-8 inline-flex items-center justify-center rounded-lg bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-300 transition-colors cursor-pointer border border-amber-200 dark:border-amber-800" title="Update: Edit Nama & Kategori Berkas" aria-label="Edit nama dan kategori berkas">
                               <Pencil className="w-3.5 h-3.5" />
                             </button>
-                            <button type="button" onClick={() => onDelete(submission)} className="h-8 w-8 inline-flex items-center justify-center rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 transition-colors cursor-pointer border border-rose-200 dark:border-rose-800" title="Delete: Hapus Dokumen dari Daftar">
+                            <button type="button" onClick={() => onDelete(submission)} className="h-8 w-8 inline-flex items-center justify-center rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 transition-colors cursor-pointer border border-rose-200 dark:border-rose-800" title="Delete: Hapus Dokumen dari Daftar" aria-label="Hapus dokumen dari daftar">
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
                           </>

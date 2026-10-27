@@ -79,8 +79,22 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
   const [isGeneratedFallback, setIsGeneratedFallback] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [uploadNotice, setUploadNotice] = useState<string | null>(null);
+  const [objectError, setObjectError] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  // Pragmatic dialog semantics: close on Escape and move focus into the panel on
+  // open. Not a full focus-trap library — enough for a wireframe pass.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    dialogRef.current?.focus();
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, onClose]);
 
   // Manage PDF resolution lifecycle
   useEffect(() => {
@@ -88,8 +102,10 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
       setDisplayUrl(null);
       setIsGeneratedFallback(false);
       setIsLoading(true);
+      setObjectError(false);
       return;
     }
+    setObjectError(false);
 
     let isMounted = true;
     let createdUrlToCleanup: string | null = null;
@@ -228,6 +244,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
     const newUrl = URL.createObjectURL(file);
     setDisplayUrl(newUrl);
     setIsGeneratedFallback(false);
+    setObjectError(false);
     setUploadNotice(`Berkas PDF baru "${file.name}" berhasil dimuat & disimpan.`);
 
     if (onUploadFile) {
@@ -239,7 +256,14 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden animate-fadeIn">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-6xl h-[94vh] flex flex-col shadow-2xl overflow-hidden transition-colors">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pdf-preview-dialog-title"
+        tabIndex={-1}
+        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-6xl h-[94vh] flex flex-col shadow-2xl overflow-hidden transition-colors outline-none"
+      >
         {/* Top Header & Navigation */}
         <div className="px-4 sm:px-6 py-3.5 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between text-slate-900 dark:text-white gap-3 shrink-0">
           <div className="flex items-center gap-3 min-w-0">
@@ -248,7 +272,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="text-sm font-bold truncate text-slate-900 dark:text-white">{title}</h3>
+                <h3 id="pdf-preview-dialog-title" className="text-sm font-bold truncate text-slate-900 dark:text-white">{title}</h3>
                 {isGeneratedFallback ? (
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 shrink-0">
                     <AlertCircle className="w-3 h-3" /> Lembar RAB Resmi Standar
@@ -298,7 +322,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
               <Upload className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Unggah PDF</span>
             </label>
-            <input ref={fileInputRef} id="pdf-modal-inline-upload" type="file" accept=".pdf" className="hidden" onChange={handleLocalFileUpload} />
+            <input ref={fileInputRef} id="pdf-modal-inline-upload" type="file" accept=".pdf" className="hidden" onChange={handleLocalFileUpload} aria-label="Unggah atau ganti berkas PDF" />
 
             {displayUrl && (
               <>
@@ -307,6 +331,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
                   onClick={handleOpenNewTab}
                   className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl transition-colors hidden sm:flex items-center gap-1.5 text-xs font-semibold border border-slate-200 dark:border-slate-700 cursor-pointer"
                   title="Buka Dokumen di Tab Baru"
+                  aria-label="Buka dokumen di tab baru"
                 >
                   <ExternalLink className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
                   <span>Tab Baru</span>
@@ -317,6 +342,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
                   onClick={handleDownload}
                   className="px-3 py-1.5 bg-cyan-50 dark:bg-cyan-950/50 hover:bg-cyan-100 dark:hover:bg-cyan-900/60 text-cyan-700 dark:text-cyan-300 rounded-xl transition-colors hidden sm:flex items-center gap-1.5 text-xs font-semibold border border-cyan-200 dark:border-cyan-800 cursor-pointer"
                   title="Unduh Berkas PDF"
+                  aria-label="Unduh berkas PDF"
                 >
                   <Download className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
                   <span>Unduh</span>
@@ -332,6 +358,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
                   onClick={() => setZoomLevel((prev) => Math.max(60, prev - 15))}
                   className="p-1 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
                   title="Perkecil Tampilan"
+                  aria-label="Perkecil tampilan"
                 >
                   <ZoomOut className="w-4 h-4" />
                 </button>
@@ -341,6 +368,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
                   onClick={() => setZoomLevel((prev) => Math.min(160, prev + 15))}
                   className="p-1 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
                   title="Perbesar Tampilan"
+                  aria-label="Perbesar tampilan"
                 >
                   <ZoomIn className="w-4 h-4" />
                 </button>
@@ -354,6 +382,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
                 onClick={() => setRotation((prev) => (prev + 90) % 360)}
                 className="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl transition-colors border border-slate-200 dark:border-slate-700 cursor-pointer"
                 title="Putar Dokumen 90 Derajat"
+                aria-label="Putar dokumen 90 derajat"
               >
                 <RotateCw className="w-4 h-4" />
               </button>
@@ -365,6 +394,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
               onClick={onClose}
               className="p-2 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-400 text-slate-400 rounded-xl transition-colors border border-transparent hover:border-rose-200 dark:hover:border-rose-900/60 ml-1 cursor-pointer"
               title="Tutup Pratinjau"
+              aria-label="Tutup dialog pratinjau"
             >
               <X className="w-5 h-5" />
             </button>
@@ -412,7 +442,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
             </div>
           ) : activeTab === "pdf" ? (
             /* TAB 1: PDF VIEWER */
-            displayUrl ? (
+            displayUrl && !objectError ? (
               <div
                 style={{
                   transform: `scale(${zoomLevel / 100}) rotate(${rotation}deg)`,
@@ -421,8 +451,8 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
                 }}
                 className="w-full max-w-4xl bg-white rounded-xl shadow-lg overflow-hidden min-h-[820px] border border-slate-300 dark:border-slate-800 flex flex-col"
               >
-                <object data={displayUrl} type="application/pdf" className="w-full h-[80vh] min-h-[750px] border-none bg-white">
-                  <iframe src={displayUrl} title={fileName || "Pratinjau Dokumen PDF RAB"} className="w-full h-[80vh] min-h-[750px] border-none bg-white">
+                <object data={displayUrl} type="application/pdf" className="w-full h-[80vh] min-h-[750px] border-none bg-white" onError={() => setObjectError(true)}>
+                  <iframe src={displayUrl} title={fileName || "Pratinjau Dokumen PDF RAB"} className="w-full h-[80vh] min-h-[750px] border-none bg-white" onError={() => setObjectError(true)}>
                     <div className="p-8 text-center bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 space-y-4">
                       <p className="font-semibold text-sm">Peramban Anda memerlukan penampil PDF eksternal.</p>
                       <button type="button" onClick={handleOpenNewTab} className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold">
@@ -431,6 +461,22 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({ isOpen, onClos
                     </div>
                   </iframe>
                 </object>
+              </div>
+            ) : displayUrl && objectError ? (
+              <div className="text-center my-auto p-8 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-md">
+                <AlertCircle className="w-10 h-10 mx-auto text-amber-500 mb-3" />
+                <p className="text-sm font-bold text-slate-800 dark:text-slate-200">Pratinjau PDF tidak tersedia</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 mb-4">Pratinjau PDF tidak dapat ditampilkan di peramban ini. Silakan buka di tab baru atau unggah ulang dokumen.</p>
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  <button type="button" onClick={handleOpenNewTab} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold cursor-pointer inline-flex items-center gap-1.5">
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Buka di Tab Baru</span>
+                  </button>
+                  <label htmlFor="pdf-modal-inline-upload" className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold cursor-pointer inline-flex items-center gap-1.5">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Unggah PDF</span>
+                  </label>
+                </div>
               </div>
             ) : (
               <div className="text-center my-auto p-8 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-md">

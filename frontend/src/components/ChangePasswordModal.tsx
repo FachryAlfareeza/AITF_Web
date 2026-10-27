@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { X, KeyRound, Check, AlertCircle } from "lucide-react";
 import { UserAccount } from "../types";
 
@@ -15,6 +15,19 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ isOpen
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  // Pragmatic dialog semantics: close on Escape and move focus into the panel on
+  // open. Not a full focus-trap library — enough for a wireframe pass.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    dialogRef.current?.focus();
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -50,14 +63,22 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ isOpen
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 animate-fadeIn">
-      <div id="change-password-dialog" className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden transition-colors">
+      <div
+        id="change-password-dialog"
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="change-password-dialog-title"
+        tabIndex={-1}
+        className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden transition-colors outline-none"
+      >
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-cyan-50 dark:bg-cyan-950/60 border border-cyan-200 dark:border-cyan-800 text-cyan-600 dark:text-cyan-400 rounded-xl">
               <KeyRound className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">Ganti Password Akun</h3>
+              <h3 id="change-password-dialog-title" className="text-base font-bold text-slate-900 dark:text-white">Ganti Password Akun</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">User ID: {currentUser.id}</p>
             </div>
           </div>
@@ -65,6 +86,8 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ isOpen
             type="button"
             onClick={onClose}
             className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+            title="Tutup dialog"
+            aria-label="Tutup dialog"
           >
             <X className="w-5 h-5" />
           </button>

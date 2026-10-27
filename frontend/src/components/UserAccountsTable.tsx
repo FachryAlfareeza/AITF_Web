@@ -1,5 +1,6 @@
 import type { UserAccount } from "../types";
-import { CheckCircle2, Edit3, Eye, Trash2 } from "lucide-react";
+import { CheckCircle2, Edit3, Eye, Trash2, Users } from "lucide-react";
+import { EmptyState } from "./statusDisplay";
 
 interface UserAccountsTableProps {
   users: UserAccount[];
@@ -14,20 +15,24 @@ export function UserAccountsTable({ users, currentUser, onEdit, onDelete }: User
       <table className="w-full text-left text-xs">
         <thead className="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-300 uppercase font-mono tracking-wider">
           <tr>
-            <th className="px-4 py-3.5">ID / NIP</th>
-            <th className="px-4 py-3.5">Nama &amp; Gelar</th>
-            <th className="px-4 py-3.5">Satuan Kerja / Unit</th>
-            <th className="px-4 py-3.5">Role Terdaftar</th>
-            <th className="px-4 py-3.5">Hak Akses Menu</th>
-            <th className="px-4 py-3.5">Status</th>
-            <th className="px-4 py-3.5 text-center">Aksi</th>
+            <th scope="col" className="px-4 py-3.5">ID / NIP</th>
+            <th scope="col" className="px-4 py-3.5">Nama &amp; Gelar</th>
+            <th scope="col" className="px-4 py-3.5">Satuan Kerja / Unit</th>
+            <th scope="col" className="px-4 py-3.5">Role Terdaftar</th>
+            <th scope="col" className="px-4 py-3.5">Hak Akses Menu</th>
+            <th scope="col" className="px-4 py-3.5">Status</th>
+            <th scope="col" className="px-4 py-3.5 text-center">Aksi</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
           {users.length === 0 ? (
             <tr>
-              <td colSpan={7} className="px-4 py-10 text-center text-slate-400 dark:text-slate-500">
-                Tidak ada akun yang cocok dengan kata kunci pencarian.
+              <td colSpan={7} className="px-4 py-12">
+                <EmptyState
+                  icon={Users}
+                  title="Tidak ada akun yang cocok dengan pencarian."
+                  description="Coba ubah atau kosongkan kata kunci pencarian."
+                />
               </td>
             </tr>
           ) : (

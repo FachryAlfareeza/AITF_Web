@@ -31,6 +31,7 @@ import { PdfPreviewModal } from "./PdfPreviewModal";
 import { JsonImportModal } from "./JsonImportModal";
 import { VerificationCriteriaTable } from "./VerificationCriteriaTable";
 import { DocumentPair } from "./DocumentPair";
+import { EmptyState, S2VerdictBadge } from "./statusDisplay";
 import { formatIndonesianDateTime } from "../utils/formatUtils";
 import { orDash } from "../utils/displayValue";
 
@@ -639,10 +640,10 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                                     <table className="w-full text-left text-xs">
                                       <thead className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold sticky top-0">
                                         <tr>
-                                          <th className="px-3 py-2 w-16 text-center">Kode</th>
-                                          <th className="px-3 py-2 w-20 text-center">Kategori</th>
-                                          <th className="px-3 py-2">Pertanyaan</th>
-                                          <th className="px-3 py-2 w-28 text-center">Status</th>
+                                          <th scope="col" className="px-3 py-2 w-16 text-center">Kode</th>
+                                          <th scope="col" className="px-3 py-2 w-20 text-center">Kategori</th>
+                                          <th scope="col" className="px-3 py-2">Pertanyaan</th>
+                                          <th scope="col" className="px-3 py-2 w-28 text-center">Status</th>
                                         </tr>
                                       </thead>
                                       <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -652,17 +653,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                                             <td className="px-3 py-2 text-center text-slate-500">{q.categoryGroup}</td>
                                             <td className="px-3 py-2 text-slate-700 dark:text-slate-300">{q.text}</td>
                                             <td className="px-3 py-2 text-center">
-                                              <span
-                                                className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-                                                  q.status === "MATCH"
-                                                    ? "bg-emerald-100 text-emerald-800"
-                                                    : q.status === "INSUFFICIENT_EVIDENCE"
-                                                      ? "bg-amber-100 text-amber-800"
-                                                      : "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300"
-                                                }`}
-                                              >
-                                                {q.status === "MATCH" ? "MATCH" : q.status === "INSUFFICIENT_EVIDENCE" ? "BUKTI TIDAK CUKUP" : "NO_MATCH"}
-                                              </span>
+                                              <S2VerdictBadge verdict={q.status} />
                                             </td>
                                           </tr>
                                         ))}
@@ -689,7 +680,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                                     </p>
                                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3">
-                                        <span className="block text-xs text-slate-500 dark:text-slate-400">Screening 1 (Lolos)</span>
+                                        <span className="block text-xs text-slate-500 dark:text-slate-400">Screening 1 (PASS)</span>
                                         <span className="block text-sm font-bold text-slate-900 dark:text-white mt-0.5">
                                           {selectedSubmission?.s1Summary?.pass ?? 0} / {selectedSubmission?.s1Summary?.total ?? (selectedSubmission?.screening1Results?.length ?? 0)}
                                         </span>
@@ -979,18 +970,22 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                   <table className="w-full text-left text-xs">
                     <thead className="bg-slate-100/95 dark:bg-slate-800/95 border-b-2 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 uppercase font-black tracking-wider text-xs">
                       <tr>
-                        <th className="px-4 py-4 w-14 text-center">No</th>
-                        <th className="px-5 py-4 min-w-[260px]">Kriteria</th>
-                        <th className="px-5 py-4 min-w-[320px]">Deskripsi</th>
-                        <th className="px-4 py-4 w-36 text-center">Aktif dan Tidak Aktif</th>
-                        <th className="px-4 py-4 w-36 text-center">Aksi (CRUD)</th>
+                        <th scope="col" className="px-4 py-4 w-14 text-center">No</th>
+                        <th scope="col" className="px-5 py-4 min-w-[260px]">Kriteria</th>
+                        <th scope="col" className="px-5 py-4 min-w-[320px]">Deskripsi</th>
+                        <th scope="col" className="px-4 py-4 w-36 text-center">Aktif dan Tidak Aktif</th>
+                        <th scope="col" className="px-4 py-4 w-36 text-center">Aksi (CRUD)</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                       {filteredCriteria.length === 0 ? (
                         <tr>
-                          <td colSpan={5} className="text-center py-12 text-slate-400 dark:text-slate-500">
-                            Tidak ada kriteria checklist yang sesuai pencarian.
+                          <td colSpan={5} className="py-12">
+                            <EmptyState
+                              icon={BookOpen}
+                              title={checklistCriteria.length === 0 ? "Belum ada kriteria checklist." : "Tidak ada kriteria yang cocok dengan pencarian."}
+                              description={checklistCriteria.length === 0 ? "Daftar kriteria penapisan akan muncul di sini setelah ditambahkan." : "Coba ubah atau kosongkan kata kunci pencarian."}
+                            />
                           </td>
                         </tr>
                       ) : (

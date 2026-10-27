@@ -18,6 +18,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react";
+import { EmptyState } from "./statusDisplay";
 
 interface MasterRoViewProps {
   permission: AccessPermission; // "E" or "V"
@@ -600,21 +601,24 @@ export const MasterRoView: React.FC<MasterRoViewProps> = ({
                   <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
                     <thead className="bg-slate-50 dark:bg-slate-800/80 text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
                       <tr>
-                        <th className="px-4 py-3.5 w-12 text-center">No</th>
-                        <th className="px-4 py-3.5 min-w-[220px]">Program &bull; Eselon I</th>
-                        <th className="px-4 py-3.5 min-w-[220px]">Kegiatan &bull; Eselon II</th>
-                        <th className="px-4 py-3.5 min-w-[200px]">Klasifikasi KRO</th>
-                        <th className="px-4 py-3.5 min-w-[220px]">Rincian Output (RO)</th>
-                        <th className="px-4 py-3.5 w-32 text-center">Prioritas</th>
-                        {isEditable && <th className="px-4 py-3.5 w-24 text-center">Aksi</th>}
+                        <th scope="col" className="px-4 py-3.5 w-12 text-center">No</th>
+                        <th scope="col" className="px-4 py-3.5 min-w-[220px]">Program &bull; Eselon I</th>
+                        <th scope="col" className="px-4 py-3.5 min-w-[220px]">Kegiatan &bull; Eselon II</th>
+                        <th scope="col" className="px-4 py-3.5 min-w-[200px]">Klasifikasi KRO</th>
+                        <th scope="col" className="px-4 py-3.5 min-w-[220px]">Rincian Output (RO)</th>
+                        <th scope="col" className="px-4 py-3.5 w-32 text-center">Prioritas</th>
+                        {isEditable && <th scope="col" className="px-4 py-3.5 w-24 text-center">Aksi</th>}
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 bg-white dark:bg-slate-900">
                       {filteredList.length === 0 ? (
                         <tr>
-                          <td colSpan={isEditable ? 7 : 6} className="py-12 text-center text-slate-400 dark:text-slate-500">
-                            <Layers className="w-8 h-8 mx-auto text-slate-300 dark:text-slate-600 mb-2" />
-                            <span className="text-xs">Tidak ada data Master RO yang cocok dengan pencarian/filter.</span>
+                          <td colSpan={isEditable ? 7 : 6} className="py-12">
+                            <EmptyState
+                              icon={Layers}
+                              title={hierarchyData.length === 0 ? "Belum ada data Master RO." : "Tidak ada Master RO yang cocok dengan pencarian/filter."}
+                              description={hierarchyData.length === 0 ? "Tambahkan data Master Rincian Output untuk mulai menampilkannya di sini." : "Coba ubah kata kunci atau atur ulang filter."}
+                            />
                           </td>
                         </tr>
                       ) : (
