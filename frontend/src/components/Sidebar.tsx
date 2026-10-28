@@ -84,19 +84,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
     },
     {
       key: "menu_acuan",
-      label: "Input Acuan",
+      label: "Acuan",
       icon: FolderArchive,
       badgeCount: counts.regulations ?? 2,
     },
     {
       key: "menu_checklist",
-      label: "Input Checklist",
+      label: "Checklist",
       icon: ListChecks,
       badgeCount: counts.criteria ?? 18,
     },
     {
       key: "menu_master_ro",
-      label: "Input Master RO",
+      label: "Master RO",
       icon: Layers,
       badgeCount: counts.masterRo ?? 58,
     },
