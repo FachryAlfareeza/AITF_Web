@@ -102,7 +102,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
     },
     {
       key: "menu_rab_list",
-      label: "Daftar Ulasan TOR & RAB",
+      label: "TOR & RAB",
       icon: FileSpreadsheet,
       badgeCount: counts.submissions ?? 0,
     },
@@ -243,7 +243,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
                           }`}
                           title={permission === "E" ? "Hak Akses: Edit (E)" : "Hak Akses: View Only (V)"}
                         >
-                          {permission === "E" ? "Edit" : "View Only"}
+                          {permission === "E" ? "Edit" : "View"}
                         </span>
 
                         {/* Numeric Count Pill if available */}
