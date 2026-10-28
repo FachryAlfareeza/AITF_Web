@@ -234,7 +234,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
                       <div className="flex items-center gap-1.5 shrink-0">
                         {/* E / V Permission Indicator Pill */}
                         <span
-                          className={`text-xs font-black uppercase px-1.5 py-0.5 rounded border select-none ${
+                          className={`text-xs font-black px-1.5 py-0.5 rounded border select-none ${
                             active
                               ? "bg-white/20 text-white border-white/30"
                               : permission === "E"
@@ -243,7 +243,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeRole, activeMenu, onSele
                           }`}
                           title={permission === "E" ? "Hak Akses: Edit (E)" : "Hak Akses: View Only (V)"}
                         >
-                          {permission === "E" ? "E" : "V"}
+                          {permission === "E" ? "Edit" : "View Only"}
                         </span>
 
                         {/* Numeric Count Pill if available */}
