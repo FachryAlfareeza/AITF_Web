@@ -12,9 +12,17 @@ disimpan di peramban.
 
 ## Fitur saat ini
 
-- **Pengajuan TOR + RAB (peran Satker):** Satker mengunggah dua dokumen PDF per pengajuan —
-  Dokumen TOR dan Dokumen RAB — dengan validasi berkas PDF. Keduanya dapat dipratinjau dan
-  tersimpan secara lokal.
+- **Pengajuan TOR + RAB (peran Satker):** setiap pengajuan membutuhkan Dokumen TOR dan
+  Dokumen RAB, dengan validasi berkas PDF. Toggle "Jenis berkas" pada formulir memilih cara
+  pengunggahan:
+  - **TOR & RAB Terpisah** (default) — dua berkas PDF, satu untuk TOR dan satu untuk RAB.
+  - **TOR & RAB Digabung** — satu berkas PDF yang memuat TOR dan RAB sekaligus.
+
+  Berkas gabungan diperlakukan sebagai jenis dokumen tersendiri (`documentMode: "combined"`),
+  bukan salinan ganda TOR dan RAB. Tabel dan detail menampilkannya sebagai satu entri
+  "TOR + RAB (Gabungan)" dengan satu tombol pratinjau; unggah perbaikan atas pengajuan yang
+  ditolak mengganti seluruh PDF gabungan. Semua berkas dapat dipratinjau dan tersimpan secara
+  lokal. Impor JSON saat ini hanya membentuk pengajuan berjenis terpisah.
 - **Manajemen dokumen acuan (peran Verifikator / Rocan):** Verifikator dapat menambah,
   melihat, mengaktifkan/menonaktifkan, dan menghapus dokumen acuan, sesuai matriks hak akses.
 - **Model dua penapisan (Screening 1 & 2):**
@@ -26,7 +34,7 @@ disimpan di peramban.
     Kategori 4 adalah fallback.
   - Verdict AI adalah **kandidat**; **ROCAN (Verifikator)** memegang keputusan akhir per baris.
 - **Tampilan ulasan terpadu (document-centric):** dokumen TOR dan RAB ditampilkan berpasangan
-  (dengan pratinjau) di tabel dan detail. Layar ulasan menyatukan: pasangan dokumen → konteks
+  (dengan pratinjau) di tabel dan detail; berkas gabungan tampil sebagai satu entri. Layar ulasan menyatukan: pasangan dokumen → konteks
   program (nilai kosong tampil sebagai "—") → hasil Screening 1 → kategori Screening 2 →
   formulir keputusan ROCAN. Dokumen acuan aktif ikut ditampilkan sebagai rujukan ulasan.
 - **Manajemen data master:** Master RO, master kriteria (Screening 1 & 2), dan akun pengguna
@@ -114,5 +122,5 @@ untuk Pages.
 
 Airen adalah fork dari repo lama yang dahulu memiliki backend FastAPI + Gemini; backend itu
 sudah dihapus karena ulasan AI kini menjadi tanggung jawab sistem utama. Beberapa konteks
-pengembangan lokal (mis. folder `Context/`, `.kiro/`, artefak workflow) sengaja di-ignore dan
+pengembangan lokal (mis. folder `Context/` dan artefak workflow) sengaja di-ignore dan
 tidak masuk repo.
