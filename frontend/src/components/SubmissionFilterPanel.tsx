@@ -79,7 +79,7 @@ export function SubmissionFilterPanel({ filters, resultCount, totalCount, onChan
               onChange={(event) => onChange("startDate", event.target.value)}
               title="Pilih Tanggal Mulai"
               aria-label="Tanggal Mulai"
-              className="w-full h-10 px-2 sm:px-2.5 text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 font-medium shadow-2xs cursor-pointer"
+              className="flex-1 min-w-0 h-10 px-2 sm:px-2.5 text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 font-medium shadow-2xs cursor-pointer"
             />
             <span className="text-xs font-bold text-slate-400 dark:text-slate-500 shrink-0">s/d</span>
             <input
@@ -89,7 +89,7 @@ export function SubmissionFilterPanel({ filters, resultCount, totalCount, onChan
               onChange={(event) => onChange("endDate", event.target.value)}
               title="Pilih Tanggal Akhir"
               aria-label="Tanggal Akhir"
-              className="w-full h-10 px-2 sm:px-2.5 text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 font-medium shadow-2xs cursor-pointer"
+              className="flex-1 min-w-0 h-10 px-2 sm:px-2.5 text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 font-medium shadow-2xs cursor-pointer"
             />
           </div>
         </div>
