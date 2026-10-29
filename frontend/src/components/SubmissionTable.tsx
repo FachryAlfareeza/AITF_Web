@@ -103,6 +103,7 @@ export function SubmissionTable({
                           rabFileSize={submission.rabFileSize}
                           torFileName={submission.torFileName}
                           torFileSize={submission.torFileSize}
+                          documentMode={submission.documentMode}
                           onPreviewRab={() => onPreview(submission)}
                           onPreviewTor={() => onPreviewTor(submission)}
                         />

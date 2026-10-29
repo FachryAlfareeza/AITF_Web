@@ -166,6 +166,10 @@ export interface SubmissionData {
   rabFileName: string;
   rabFileSize: string;
   pdfDataUrl?: string;
+  // How the TOR and RAB were supplied. "combined" = ONE PDF containing both, stored
+  // in the rabFileName/rabFileSize/pdfDataUrl fields (TOR fields stay empty).
+  // Absent or "separate" = standalone TOR and/or RAB files (legacy default).
+  documentMode?: "separate" | "combined";
   // Optional TOR (Term of Reference) document fields — optional so previously-stored
   // submissions (which have no TOR) stay valid when re-read from localStorage.
   torFileName?: string;

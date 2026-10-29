@@ -298,7 +298,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
             action: "REUPLOAD",
             performedBy: userLabel,
             timestamp: nowFormatted,
-            details: `Unggah perbaikan dokumen RAB PDF: ${reuploadFile.name}`,
+            details: `Unggah perbaikan dokumen ${reuploadSubmission.documentMode === "combined" ? "gabungan TOR + RAB" : "RAB"} PDF: ${reuploadFile.name}`,
           },
         ],
       };
@@ -611,8 +611,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
     reader.readAsDataURL(file);
   };
 
-  // Combined upload: one PDF that contains both TOR and RAB. The same file is
-  // stored in both the RAB and TOR slots so the rest of the flow is unchanged.
+  // Combined upload: one PDF that contains both TOR and RAB.
   const handleCombinedUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.currentTarget.value = "";
@@ -626,20 +625,8 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
       return;
     }
 
+    // Stored once, in the RAB slot only. The TOR slot stays empty.
     handleDirectFileUpload(file);
-
-    setTorFile(file);
-    setTorFileName(file.name);
-    setTorUploadError(null);
-    if (torBlobUrl && torBlobUrl.startsWith("blob:")) {
-      URL.revokeObjectURL(torBlobUrl);
-    }
-    setTorBlobUrl(URL.createObjectURL(file));
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setTorDataUrl(event.target?.result as string);
-    };
-    reader.readAsDataURL(file);
   };
 
   // Clears both uploaded documents (used when switching upload mode).
@@ -719,7 +706,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
       setUploadError("Wajib mengunggah berkas dokumen PDF RAB sebelum mengajukan telaah AI.");
       return;
     }
-    if (!torFile) {
+    if (!isCombinedUpload && !torFile) {
       setUploadError("Wajib mengunggah berkas dokumen PDF TOR sebelum mengajukan telaah AI.");
       return;
     }
@@ -794,9 +781,10 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
       rabFileName: rabFileName,
       rabFileSize: rabFile ? formatFileSize(rabFile.size) : "1.8 MB",
       pdfDataUrl: rabBlobUrl || rabDataUrl,
-      torFileName: torFileName,
-      torFileSize: torFile ? formatFileSize(torFile.size) : undefined,
-      torPdfDataUrl: torBlobUrl || torDataUrl,
+      documentMode: isCombinedUpload ? "combined" : "separate",
+      torFileName: isCombinedUpload ? undefined : torFileName,
+      torFileSize: !isCombinedUpload && torFile ? formatFileSize(torFile.size) : undefined,
+      torPdfDataUrl: isCombinedUpload ? undefined : torBlobUrl || torDataUrl,
       activeRegulationTitle: analysis?.activeRegulationTitle || regLabel,
 
       // Klasifikasi Kategori (Dropdown) & Deskripsi (Teks)
@@ -814,7 +802,9 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
           action: "CREATE",
           performedBy: userLabel,
           timestamp: nowFormatted,
-          details: `Pendaftaran berkas RAB PDF: ${rabFileName} & dokumen TOR PDF: ${torFileName}`,
+          details: isCombinedUpload
+            ? `Pendaftaran berkas gabungan TOR + RAB PDF: ${rabFileName}`
+            : `Pendaftaran berkas RAB PDF: ${rabFileName} & dokumen TOR PDF: ${torFileName}`,
         },
       ],
 
@@ -1121,7 +1111,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                   title="Upload PDF perbaikan untuk reviu terakhir yang ditolak"
                 >
                   <Upload className="w-4 h-4" />
-                  Upload Perbaikan RAB
+                  {reviewHistorySubmission.documentMode === "combined" ? "Upload Perbaikan TOR + RAB" : "Upload Perbaikan RAB"}
                 </button>
               )}
             </div>
@@ -1243,7 +1233,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
 
           <div className="bg-white dark:bg-slate-900 border-2 border-amber-500 rounded-2xl p-6 sm:p-8 space-y-6">
             <div>
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Upload Perbaikan RAB</h2>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">{reuploadSubmission.documentMode === "combined" ? "Upload Perbaikan TOR + RAB" : "Upload Perbaikan RAB"}</h2>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Unggah PDF pengganti untuk dokumen yang ditolak.</p>
             </div>
 
@@ -1530,7 +1520,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
 
                   {/* Toggle mode unggah: terpisah atau gabungan */}
                   <div className="flex flex-wrap items-center gap-3">
-                    <span className="text-xs font-bold text-slate-600 dark:text-slate-300">Mode unggah:</span>
+                    <span className="text-xs font-bold text-slate-600 dark:text-slate-300">Jenis berkas:</span>
                     <div role="group" aria-label="Mode unggah dokumen TOR dan RAB" className="inline-flex p-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                       <button
                         id="btn-upload-mode-separate"
@@ -1587,7 +1577,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                               </span>
                             )}
                           </div>
-                          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Pilih satu berkas PDF yang memuat TOR dan RAB sekaligus. Berkas yang sama akan dipakai sebagai Dokumen TOR dan Dokumen RAB.</p>
+                          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Pilih satu berkas PDF yang memuat TOR dan RAB sekaligus. Berkas ini disimpan dan ditampilkan sebagai satu dokumen gabungan TOR + RAB.</p>
                         </div>
                       </div>
 
@@ -2110,6 +2100,7 @@ export const SatkerView: React.FC<SatkerViewProps> = ({
                 rabFileSize={selectedDetailSubmission.rabFileSize}
                 torFileName={selectedDetailSubmission.torFileName}
                 torFileSize={selectedDetailSubmission.torFileSize}
+                documentMode={selectedDetailSubmission.documentMode}
                 onPreviewRab={() => setHistoryPreviewItem(selectedDetailSubmission)}
                 onPreviewTor={() => setHistoryTorPreviewItem(selectedDetailSubmission)}
               />

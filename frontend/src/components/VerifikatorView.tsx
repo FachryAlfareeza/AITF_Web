@@ -467,6 +467,7 @@ export const VerifikatorView: React.FC<VerifikatorViewProps> = ({
                                 rabFileSize={selectedSubmission.rabFileSize}
                                 torFileName={selectedSubmission.torFileName}
                                 torFileSize={selectedSubmission.torFileSize}
+                                documentMode={selectedSubmission.documentMode}
                                 onPreviewRab={() => setPreviewOpen(true)}
                                 onPreviewTor={() => setTorPreviewOpen(true)}
                               />
